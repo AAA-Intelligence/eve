@@ -1,4 +1,4 @@
-# boty
+# Project EVE
 Interactive Bot Chat
 
 # Get started
