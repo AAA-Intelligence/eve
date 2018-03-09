@@ -1,5 +1,5 @@
 PROJECT_NAME = eve
-PACKAGE = github.com/AAA-Intelligence/$(PROJECT_NAME)/app
+PACKAGE = github.com/AAA-Intelligence/$(PROJECT_NAME)
 
 # run args
 HTTP = 8080

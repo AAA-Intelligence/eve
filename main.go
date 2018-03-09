@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"text/template"
 
-	"github.com/AAA-Intelligence/eve/app/db"
+	"github.com/AAA-Intelligence/eve/db"
 )
 
 // Config configures web server
