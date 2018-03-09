@@ -86,10 +86,10 @@ func main() {
 		return
 	}
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", basicAuth(IndexHandler, true))
-	mux.HandleFunc("/register", basicAuth(RegisterHandler, false))
-	mux.HandleFunc("/createUser", basicAuth(createUser, false))
-	mux.HandleFunc("/ws", basicAuth(webSocket, true))
+	mux.HandleFunc("/", basicAuth(IndexHandler))
+	mux.HandleFunc("/register", RegisterHandler)
+	mux.HandleFunc("/createUser", createUser)
+	mux.HandleFunc("/ws", basicAuth(webSocket))
 
 	// handle static files like css
 	fs := http.FileServer(http.Dir("static"))

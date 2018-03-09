@@ -46,7 +46,7 @@ type key string
 const UserContextKey key = "user"
 
 // middleware for handler, that authenticates the user
-func basicAuth(h http.HandlerFunc, needsAuth bool) http.HandlerFunc {
+func basicAuth(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("WWW-Authenticate", `Basic realm="Restricted"`)
 
@@ -61,14 +61,10 @@ func basicAuth(h http.HandlerFunc, needsAuth bool) http.HandlerFunc {
 			if err != bcrypt.ErrMismatchedHashAndPassword {
 				log.Println(err)
 			}
-			if needsAuth {
-				http.Error(w, "invalid user credentials", http.StatusUnauthorized)
-				return
-			}
-		} else {
-			// save user data in context
-			r = r.WithContext(context.WithValue(r.Context(), UserContextKey, user))
+			http.Error(w, "invalid user credentials", http.StatusUnauthorized)
+			return
 		}
+		r = r.WithContext(context.WithValue(r.Context(), UserContextKey, user))
 
 		w.Header().Del("WWW-Authenticate")
 		h.ServeHTTP(w, r)
