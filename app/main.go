@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"text/template"
 
-	"github.com/AAA-Intelligence/eve/db"
+	"github.com/AAA-Intelligence/eve/app/db"
 )
 
 // Config configures web server
@@ -89,6 +89,12 @@ func main() {
 	mux.HandleFunc("/", basicAuth(IndexHandler, true))
 	mux.HandleFunc("/register", basicAuth(RegisterHandler, false))
 	mux.HandleFunc("/createUser", basicAuth(createUser, false))
+	mux.HandleFunc("/ws", basicAuth(webSocket, true))
+
+	// handle static files like css
+	fs := http.FileServer(http.Dir("static"))
+	mux.Handle("/static/", http.StripPrefix("/static/", fs))
+
 	server := http.Server{
 		Addr:    config.Host + ":" + strconv.Itoa(config.HTTP),
 		Handler: mux,

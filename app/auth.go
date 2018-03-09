@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/AAA-Intelligence/eve/db"
+	"github.com/AAA-Intelligence/eve/app/db"
 	"golang.org/x/crypto/bcrypt"
 )
 

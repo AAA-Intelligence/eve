@@ -1,11 +1,18 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
-   "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML>
 <html>
    <head>
-      <title>EVE</title>
+        <title>EVE</title>
+        <link rel="stylesheet" href="/static/style.css">
+        <script type="text/javascript" src="/static/ws.js"></script>
    </head>
    <body>
-        <p>User: {{.User.Name}}</p>
-        <p>Hello world!</p>
+        <div class="chat">
+            <p>User: {{.User.Name}}</p>
+            <div id="log"></div>
+            <form id="form">
+                <input type="text" id="msg"/>
+                <input type="submit" value="Send" id="send"/>
+            </form>
+        </div>
    </body>
 </html>
