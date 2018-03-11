@@ -122,7 +122,7 @@ func onShutdown() {
 
 func startBot() {
 	//generate new message
-	log.Println("(almost) bot succesfully startet")
+	log.Println("(almost) bot was succesfully started")
 	cmd := exec.Command("python", "bot/request_handler.py")
 	cmd.Run()
 
