@@ -13,7 +13,7 @@ window.onload = function () {
 
     function toMsg(text,style){
         var item = document.createElement("div");
-        item.innerHTML = "<div class=\""+style+"\">"+text+"</div>";
+        item.innerHTML = "<div class=\"msg "+style+"\">"+text+"</div>";
         return item
     }
     document.getElementById("form").onsubmit = function () {
