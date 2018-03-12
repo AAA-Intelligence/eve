@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os/exec"
 	"strconv"
 
 	"github.com/AAA-Intelligence/eve/db"
@@ -37,10 +38,7 @@ func loadConfig() *Config {
 	return &config
 }
 
-// ErrInternalServerError is displayed to the client if a HTTP status 505 is returned
-const ErrInternalServerError = "505 - Internal Server Error"
-
-//IndexHandler serves index page with chat client
+//IndexHandler serves index page
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	// make sure request is really for index page
 	if len(r.URL.Path) > 1 {
@@ -49,8 +47,8 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	tpl, err := template.ParseFiles("templates/index.gohtml")
 	if err != nil {
-		http.Error(w, ErrInternalServerError, http.StatusInternalServerError)
-		log.Println("error:", err.Error())
+		http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error loading template:", err.Error())
 		return
 	}
 	user := getUser(r.Context())
@@ -68,7 +66,9 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 		Bots: bots,
 	})
 	if err != nil {
-		log.Println("error:", err.Error())
+		http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error executing template:", err.Error())
+		return
 	}
 }
 
@@ -76,13 +76,15 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	tpl, err := template.ParseFiles("templates/register.gohtml")
 	if err != nil {
-		http.Error(w, ErrInternalServerError, http.StatusInternalServerError)
-		log.Println("error:", err.Error())
+		http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error loading template:", err)
 		return
 	}
 	err = saveExecute(w, tpl, nil)
 	if err != nil {
-		log.Println("error:", err.Error())
+		http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error executing template:", err)
+		return
 	}
 }
 
@@ -109,12 +111,15 @@ func main() {
 		Addr:    config.Host + ":" + strconv.Itoa(config.HTTP),
 		Handler: mux,
 	}
+	//go startBot()
+
+	log.Println("Starting web server")
 	server.RegisterOnShutdown(onShutdown)
-	log.Println("starting web server")
 	err = server.ListenAndServe()
 	if err != nil {
 		log.Println(err)
 	}
+
 }
 
 func onShutdown() {
@@ -124,4 +129,12 @@ func onShutdown() {
 		log.Panic("error closing connection to database: ", err)
 		return
 	}
+}
+
+func startBot() {
+	//generate new message
+	log.Println("(almost) bot was succesfully started")
+	cmd := exec.Command("python", "bot/request_handler.py")
+	cmd.Run()
+
 }

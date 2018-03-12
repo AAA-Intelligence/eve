@@ -12,11 +12,6 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-// Errors used by the Database handler
-var (
-	ErrConnectionClosed = errors.New("connection is closed or not established jet")
-)
-
 // default databaseConnection to use
 var dbConection struct {
 	// Path is the path of the sqlite file
@@ -71,20 +66,54 @@ func CreateUser(userName, password string) error {
 // User object data is returned if credentials are valid
 func CheckCredentials(userName, password string) (*User, error) {
 	var hash []byte
-	var userID int
-	err := dbConection.db.QueryRow("SELECT UserID,PasswordHash FROM User WHERE Name=$1", userName).Scan(&userID, &hash)
-	if err != nil {
-		return nil, err
+	user := User{
+		Name: userName,
+	}
+	var sessionKey sql.NullString
+	err := dbConection.db.QueryRow("SELECT UserID,PasswordHash,SessionKey FROM User WHERE Name=$1", user.Name).Scan(&user.ID, &hash, &sessionKey)
+	if err == sql.ErrNoRows {
+		return nil, ErrUserNotExists
+	} else if err != nil {
+		return nil, ErrInternalServerError
 	}
 	err = bcrypt.CompareHashAndPassword(hash, []byte(password))
-	if err != nil {
-		return nil, err
+	if err == bcrypt.ErrMismatchedHashAndPassword {
+		return nil, ErrWrongPassword
+	} else if err != nil {
+		return nil, ErrInternalServerError
 	}
+	return &user, nil
+}
 
-	return &User{
-		ID:   userID,
-		Name: userName,
-	}, nil
+//StoreSessionKey saves the key in the database for the given user and saves the key to the user struct
+func StoreSessionKey(user *User, key string) bool {
+	result, err := dbConection.db.Exec("UPDATE User SET SessionKey=$1 WHERE UserId = $2", key, user.ID)
+	if err != nil {
+		log.Println("cannot update session key for user ", user.ID, err)
+		return false
+	}
+	rows, err := result.RowsAffected()
+	if err != nil {
+		log.Println("session key was not stored:", err)
+		return false
+	} else if rows != 1 {
+		log.Println("cannot update session key for user: ", user.ID)
+		return false
+	}
+	return true
+}
+
+//GetUserForSession gets the user associated with the given session key
+func GetUserForSession(sessionKey string) *User {
+	var user User
+	err := dbConection.db.QueryRow("SELECT UserID,Name FROM User WHERE SessionKey=$1", sessionKey).Scan(&user.ID, &user.Name)
+	if err != nil {
+		if err != sql.ErrNoRows {
+			log.Println("cannot get user for sessionID:", err)
+		}
+		return nil
+	}
+	return &user
 }
 
 // Bot represents database entry of a bot

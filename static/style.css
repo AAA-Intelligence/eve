@@ -1,14 +1,14 @@
-*{
+* {
     font-family: 'Courier New', Courier, monospace;
 }
 
-.chat{
+.chat {
     width: 100%;
     max-width: 500px;
     margin: 0 auto;
 }
 
-#log{
+#log {
     padding: 5px;
     height: 300px;
     width: 100%;
@@ -17,20 +17,28 @@
     overflow-y: auto;
 }
 
-#msg{
+#msg {
     margin: 0;
     width: calc(90% - 20px);
+    resize: none;
 }
 
-#send{
+
+#send {
     margin: 0;
-    width:10%;
+    width: 10%;
+    vertical-align: top;
 }
 
-.bot{
-    text-align: left
+.bot {
+    float: left;
+    text-align: left;
+    clear: right;
 }
-.user{
+
+.user {
+    clear: left;
+    float: right;
     text-align: right
 }
 
@@ -48,4 +56,12 @@ li.bot:hover{
 #bot-active{
     background-color: red;
     color: white;
+}
+
+.msg {
+    width: 75%;
+}
+
+form{
+    vertical-align: top;
 }
