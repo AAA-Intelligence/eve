@@ -28,9 +28,6 @@ func loadConfig() *Config {
 	return &config
 }
 
-// ErrInternalServerError is displayed to the client if a HTTP status 505 is returned
-const ErrInternalServerError = "505 - Internal Server Error"
-
 //IndexHandler serves index page
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	if len(r.URL.Path) > 1 {
@@ -39,19 +36,19 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	tpl, err := template.ParseFiles("templates/index.gohtml")
 	if err != nil {
-		http.Error(w, ErrInternalServerError, http.StatusInternalServerError)
-		log.Println("error:", err.Error())
+		http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error loading template:", err.Error())
 		return
 	}
 	var buffer bytes.Buffer
 	err = tpl.Execute(&buffer, struct {
 		User *db.User
 	}{
-		User: getUser(r.Context()),
+		User: GetUserFromRequest(r),
 	})
 	if err != nil {
-		http.Error(w, ErrInternalServerError, http.StatusInternalServerError)
-		log.Println("error:", err.Error())
+		http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error executing template:", err.Error())
 		return
 	}
 	w.Write([]byte(buffer.String()))
@@ -59,21 +56,17 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 
 //RegisterHandler serves index page
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
-	if getUser(r.Context()) != nil {
-		http.Redirect(w, r, "//", http.StatusTemporaryRedirect)
-		return
-	}
 	tpl, err := template.ParseFiles("templates/register.gohtml")
 	if err != nil {
-		http.Error(w, ErrInternalServerError, http.StatusInternalServerError)
-		log.Println("error:", err.Error())
+		http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error loading template:", err)
 		return
 	}
 	var buffer bytes.Buffer
 	err = tpl.Execute(&buffer, nil)
 	if err != nil {
-		http.Error(w, ErrInternalServerError, http.StatusInternalServerError)
-		log.Println("error:", err.Error())
+		http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error executing template:", err)
 		return
 	}
 	w.Write([]byte(buffer.String()))
@@ -100,7 +93,7 @@ func main() {
 		Addr:    config.Host + ":" + strconv.Itoa(config.HTTP),
 		Handler: mux,
 	}
-	go startBot()
+	//go startBot()
 
 	log.Println("Starting web server")
 	server.RegisterOnShutdown(onShutdown)

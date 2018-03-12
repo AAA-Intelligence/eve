@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/websocket"
 )
 
 var upgrader = websocket.Upgrader{}
@@ -18,11 +19,16 @@ func webSocket(w http.ResponseWriter, r *http.Request) {
 	for {
 		mt, message, err := c.ReadMessage()
 		if err != nil {
-			log.Println("error reading:", err)
+			//log.Println("error reading:", err)
 			break
 		}
 
-		answer := handleMessage(string(message))
+		// cut messages longer than 200 characters
+		if len(message) > 200 {
+			message = message[:200]
+		}
+
+		answer := handleMessage(string(message), GetUserFromRequest(r))
 		err = c.WriteMessage(mt, []byte(answer))
 		if err != nil {
 			log.Println("error writing:", err)

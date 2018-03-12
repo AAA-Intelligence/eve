@@ -20,11 +20,14 @@
 #msg {
     margin: 0;
     width: calc(90% - 20px);
+    resize: none;
 }
+
 
 #send {
     margin: 0;
     width: 10%;
+    vertical-align: top;
 }
 
 .bot {
@@ -41,4 +44,8 @@
 
 .msg {
     width: 75%;
+}
+
+form{
+    vertical-align: top;
 }

@@ -4,17 +4,18 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"regexp"
 	"strings"
+	"time"
 
 	"github.com/AAA-Intelligence/eve/db"
-	"golang.org/x/crypto/bcrypt"
 )
 
+// regex rule for user names. all names must match this pattern at registration
+const userNameRule = "^[a-zA-Z0-9]+([^-\\s]?[a-zA-Z0-9])*$"
+
+// creates a user entry in database
 func createUser(w http.ResponseWriter, r *http.Request) {
-	if getUser(r.Context()) != nil {
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		return
-	}
 	if strings.ToLower(r.Method) != "post" {
 		http.Error(w, "HTTP POST only", http.StatusMethodNotAllowed)
 		return
@@ -31,6 +32,10 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "missing username or password", http.StatusBadRequest)
 		return
 	}
+	if ok, err := regexp.Match(userNameRule, []byte(username)); !ok || err != nil {
+		http.Error(w, "username must have form of: "+userNameRule, http.StatusBadRequest)
+		return
+	}
 	err = db.CreateUser(username, password)
 	if err != nil {
 		http.Error(w, "cannot register user", http.StatusInternalServerError)
@@ -45,34 +50,68 @@ type key string
 // UserContextKey is the key for the user data that is stored in the request context
 const UserContextKey key = "user"
 
-// middleware for handler, that authenticates the user
-func basicAuth(h http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("WWW-Authenticate", `Basic realm="Restricted"`)
+// SessionKey is the key for the cookie in the HTTP header
+const SessionKey = "eve-session"
 
+// middleware for handler, that authenticates the user
+func basicAuth(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// check if user is allready authenticated
+		cookie, err := r.Cookie(SessionKey)
+		if err == nil {
+			user := db.GetUserForSession(cookie.Value)
+			if user != nil {
+				r = r.WithContext(context.WithValue(r.Context(), UserContextKey, user))
+				next.ServeHTTP(w, r)
+				return
+			}
+			// delete invalid session key
+			c := &http.Cookie{
+				Name:    SessionKey,
+				Value:   "",
+				Path:    "/",
+				Expires: time.Unix(0, 0),
+			}
+			http.SetCookie(w, c)
+		}
+
+		// get credentials via basic auth
+		w.Header().Set("WWW-Authenticate", `Basic realm="Restricted"`)
 		username, password, authOK := r.BasicAuth()
 		if !authOK {
-			http.Error(w, "invalid user credentials", http.StatusUnauthorized)
+			http.Error(w, db.ErrNoUserCredentials.Error(), http.StatusUnauthorized)
+			return
+		}
+		user, err := db.CheckCredentials(username, password)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
 
-		user, err := db.CheckCredentials(username, password)
-		if err != nil {
-			if err != bcrypt.ErrMismatchedHashAndPassword {
-				log.Println(err)
-			}
-			http.Error(w, "invalid user credentials", http.StatusUnauthorized)
-			return
+		// set session key for safari
+		sessionKey, err := GenerateRandomString(11)
+		if err == nil {
+			http.SetCookie(w, &http.Cookie{
+				Name:    SessionKey,
+				Value:   sessionKey,
+				Expires: time.Now().Add(365 * 24 * time.Hour),
+				Path:    "/",
+			})
+			db.StoreSessionKey(user, sessionKey)
+		} else {
+			log.Println("cannot generate session key:", err)
 		}
 		r = r.WithContext(context.WithValue(r.Context(), UserContextKey, user))
 
 		w.Header().Del("WWW-Authenticate")
-		h.ServeHTTP(w, r)
+		next.ServeHTTP(w, r)
 	}
 }
 
-func getUser(ctx context.Context) *db.User {
-	user, ok := ctx.Value(UserContextKey).(*db.User)
+// GetUserFromRequest gets the user stored in the request
+// if no user is stored, nil is returned
+func GetUserFromRequest(r *http.Request) *db.User {
+	user, ok := r.Context().Value(UserContextKey).(*db.User)
 	if !ok {
 		return nil
 	}

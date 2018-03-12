@@ -1,28 +1,15 @@
 package main
 
 import (
-	"encoding/json"
-	"io/ioutil"
-	"log"
+	"strings"
+
+	"github.com/AAA-Intelligence/eve/db"
 )
 
-func handleMessage(message string) (answer string) {
-	reply := "messages/bot_msg.json"
-	//fmt.Println(reply)
-	f, err := ioutil.ReadFile(reply)
-	if err != nil {
-		log.Fatal(err)
+func handleMessage(message string, user *db.User) (answer string) {
+	if strings.HasPrefix(message, "nenn mich") {
+		user.Name = strings.TrimPrefix(message, "nenn mich")
 	}
-	byt := []byte(string(f))
-
-	//string to json
-	var dat map[string]interface{}
-	if err := json.Unmarshal(byt, &dat); err != nil {
-		log.Fatal(err)
-	}
-	answer = dat["content"].(string)
-
-	//fmt.Println(text)
-	//	answer = "ok"
+	answer = "ok, " + user.Name
 	return
 }
