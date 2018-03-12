@@ -31,7 +31,6 @@
 }
 
 .bot {
-    float: left;
     text-align: left;
     clear: right;
 }
@@ -42,14 +41,23 @@
     text-align: right
 }
 
-li.bot{
+.chat-list{
+    float: left;
+}
+
+.bot-list{
+    list-style: none;
+}
+
+.bot-list .bot{
     cursor: pointer;
     list-style: none;
     padding: 5px 0;
     border: 1px solid black;
+    display: block
 }
 
-li.bot:hover{
+.bot-list .bot:hover{
     background-color: lightgrey;
 }
 

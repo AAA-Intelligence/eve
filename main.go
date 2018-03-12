@@ -100,6 +100,7 @@ func main() {
 
 	mux.HandleFunc("/", basicAuth(IndexHandler))
 	mux.HandleFunc("/createBot", basicAuth(createBot))
+	mux.HandleFunc("/getmessages", basicAuth(getMessages))
 	mux.HandleFunc("/ws", basicAuth(webSocket))
 
 	// handle static files like css

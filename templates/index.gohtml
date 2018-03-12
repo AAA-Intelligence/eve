@@ -6,9 +6,9 @@
         <script type="text/javascript" src="/static/ws.js"></script>
    </head>
    <body>
-        <div style="float:left">
+        <div class="chat-list">
             <h2>Meine Chats:</h2>
-            <ul>
+            <ul class="bot-list">
             {{range $bot := .Bots}}
                 <li class="bot" botID="{{$bot.ID}}">{{$bot.Name}}</li>
             {{end}}

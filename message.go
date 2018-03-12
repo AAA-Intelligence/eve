@@ -25,11 +25,10 @@ func handleMessage(request MessageRequest) (answer string) {
 	err = db.StoreMessage(request.User.ID, db.Message{
 		Sender:    db.BotIsSender,
 		Bot:       request.Bot,
-		Content:   request.Message,
+		Content:   answer,
 		Timestamp: time.Now(),
 	})
 	if err != nil {
-		log.Println(err)
 		return "oh no i peed my pants"
 	}
 	return

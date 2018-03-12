@@ -26,7 +26,7 @@ func createBot(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 type BotInstance struct {
@@ -68,4 +68,19 @@ func createBotToPython() (botInstance BotInstance) {
 	}
 
 	return BotInstance{writer: writer, cmd: cmd, mutex: &sync.Mutex{}, reader: bufio.NewReader(reader)}
+}
+
+func getMessages(w http.ResponseWriter, r *http.Request) {
+	user := GetUserFromRequest(r)
+	messages, err := db.GetMessagesForUser(user)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	data, err := json.Marshal(*messages)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Write(data)
 }

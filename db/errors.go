@@ -24,5 +24,11 @@ var ErrInternalServerError = UserError("internal server error")
 // ErrNoUserCredentials is shown if no user credentials are provided
 var ErrNoUserCredentials = UserError("missing user credentials")
 
+// ErrMessageToLong is thrown when the sent message is too long
+var ErrMessageToLong = UserError("message is too long")
+
+// ErrBotDoesNotBelongToUser is thrown when the sent message is too long
+var ErrBotDoesNotBelongToUser = UserError("the bot does not belong to you")
+
 // ErrConnectionClosed is thrown if a database request is made, but the connection to the database is closed
 var ErrConnectionClosed = errors.New("connection is closed or not established jet")

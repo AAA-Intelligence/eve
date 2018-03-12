@@ -1,0 +1,174 @@
+{
+    "1": [{
+        "ID": 11,
+        "Bot": 1,
+        "Sender": 1,
+        "Timestamp": "2018-03-12T23:20:23.6842749+01:00",
+        "Content": "nice",
+        "Rating": 0
+    }, {
+        "ID": 12,
+        "Bot": 1,
+        "Sender": 0,
+        "Timestamp": "2018-03-12T23:20:23.6927754+01:00",
+        "Content": "ok, simon",
+        "Rating": 0
+    }, {
+        "ID": 13,
+        "Bot": 1,
+        "Sender": 1,
+        "Timestamp": "2018-03-12T23:20:26.4512755+01:00",
+        "Content": "das ist cool :D",
+        "Rating": 0
+    }, {
+        "ID": 14,
+        "Bot": 1,
+        "Sender": 0,
+        "Timestamp": "2018-03-12T23:20:26.4597814+01:00",
+        "Content": "ok, simon",
+        "Rating": 0
+    }, {
+        "ID": 15,
+        "Bot": 1,
+        "Sender": 1,
+        "Timestamp": "2018-03-12T23:20:29.1651057+01:00",
+        "Content": "tell me more",
+        "Rating": 0
+    }, {
+        "ID": 16,
+        "Bot": 1,
+        "Sender": 0,
+        "Timestamp": "2018-03-12T23:20:29.1746043+01:00",
+        "Content": "ok, simon",
+        "Rating": 0
+    }, {
+        "ID": 17,
+        "Bot": 1,
+        "Sender": 1,
+        "Timestamp": "2018-03-12T23:20:32.3759896+01:00",
+        "Content": "woooow",
+        "Rating": 0
+    }, {
+        "ID": 18,
+        "Bot": 1,
+        "Sender": 0,
+        "Timestamp": "2018-03-12T23:20:32.385989+01:00",
+        "Content": "ok, simon",
+        "Rating": 0
+    }, {
+        "ID": 19,
+        "Bot": 1,
+        "Sender": 1,
+        "Timestamp": "2018-03-12T23:20:36.2065013+01:00",
+        "Content": "so intressting",
+        "Rating": 0
+    }, {
+        "ID": 20,
+        "Bot": 1,
+        "Sender": 0,
+        "Timestamp": "2018-03-12T23:20:36.2150015+01:00",
+        "Content": "ok, simon",
+        "Rating": 0
+    }],
+    "2": [{
+        "ID": 33,
+        "Bot": 2,
+        "Sender": 1,
+        "Timestamp": "2018-03-12T23:43:13.4130959+01:00",
+        "Content": "adasdsa",
+        "Rating": 0
+    }, {
+        "ID": 34,
+        "Bot": 2,
+        "Sender": 0,
+        "Timestamp": "2018-03-12T23:43:13.4226559+01:00",
+        "Content": "ok, simon",
+        "Rating": 0
+    }],
+    "3": [{
+        "ID": 21,
+        "Bot": 3,
+        "Sender": 1,
+        "Timestamp": "2018-03-12T23:43:08.5030448+01:00",
+        "Content": "adasd",
+        "Rating": 0
+    }, {
+        "ID": 22,
+        "Bot": 3,
+        "Sender": 0,
+        "Timestamp": "2018-03-12T23:43:08.5125447+01:00",
+        "Content": "ok, simon",
+        "Rating": 0
+    }, {
+        "ID": 23,
+        "Bot": 3,
+        "Sender": 1,
+        "Timestamp": "2018-03-12T23:43:08.9052695+01:00",
+        "Content": "asdas",
+        "Rating": 0
+    }, {
+        "ID": 24,
+        "Bot": 3,
+        "Sender": 0,
+        "Timestamp": "2018-03-12T23:43:08.9132589+01:00",
+        "Content": "ok, simon",
+        "Rating": 0
+    }, {
+        "ID": 25,
+        "Bot": 3,
+        "Sender": 1,
+        "Timestamp": "2018-03-12T23:43:09.0593443+01:00",
+        "Content": "das",
+        "Rating": 0
+    }, {
+        "ID": 26,
+        "Bot": 3,
+        "Sender": 0,
+        "Timestamp": "2018-03-12T23:43:09.0678448+01:00",
+        "Content": "ok, simon",
+        "Rating": 0
+    }],
+    "4": [{
+        "ID": 27,
+        "Bot": 4,
+        "Sender": 1,
+        "Timestamp": "2018-03-12T23:43:11.1468878+01:00",
+        "Content": "dadasd",
+        "Rating": 0
+    }, {
+        "ID": 28,
+        "Bot": 4,
+        "Sender": 0,
+        "Timestamp": "2018-03-12T23:43:11.1558855+01:00",
+        "Content": "ok, simon",
+        "Rating": 0
+    }, {
+        "ID": 29,
+        "Bot": 4,
+        "Sender": 1,
+        "Timestamp": "2018-03-12T23:43:11.3321082+01:00",
+        "Content": "das",
+        "Rating": 0
+    }, {
+        "ID": 30,
+        "Bot": 4,
+        "Sender": 0,
+        "Timestamp": "2018-03-12T23:43:11.3416097+01:00",
+        "Content": "ok, simon",
+        "Rating": 0
+    }, {
+        "ID": 31,
+        "Bot": 4,
+        "Sender": 1,
+        "Timestamp": "2018-03-12T23:43:11.4623043+01:00",
+        "Content": "ads",
+        "Rating": 0
+    }, {
+        "ID": 32,
+        "Bot": 4,
+        "Sender": 0,
+        "Timestamp": "2018-03-12T23:43:11.4723052+01:00",
+        "Content": "ok, simon",
+        "Rating": 0
+    }]
+}

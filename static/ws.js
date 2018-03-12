@@ -1,12 +1,20 @@
 window.onload = function () {
 
     var bots = document.getElementsByClassName("bot")
-    if (bots.length > 0)
-        bots[0].setAttribute("id", "bot-active")
+    var messages = {};
+    // test load messages
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("GET", "/getmessages", true); // false for synchronous request
+    xmlHttp.send();
+    xmlHttp.onload = function () {
+        messages = JSON.parse(xmlHttp.responseText)
+        if (bots.length > 0)
+            changeActiveBot(bots[0])
+    }
+
     for (i in bots) {
         bots[i].onclick = function () {
-            document.getElementById("bot-active").removeAttribute("id")
-            this.setAttribute("id", "bot-active")
+            changeActiveBot(this)
         }
     }
 
@@ -51,10 +59,14 @@ window.onload = function () {
         var activeBot = document.getElementById("bot-active")
         if (!activeBot)
             return
+        var botID = parseInt(activeBot.getAttribute("botID"))
+        messages[botID].push({
+            "Content":message
+        })
         appendChat(message, "user")
         var request = {
             "message": message,
-            "bot": parseInt(activeBot.getAttribute("botID"))
+            "bot": botID
         }
         conn.send(JSON.stringify(request));
         msg.value = "";
@@ -69,6 +81,7 @@ window.onload = function () {
         conn.onmessage = function (evt) {
             var messages = evt.data.split('\n');
             for (var i = 0; i < messages.length; i++) {
+                //TODO store message localy
                 appendChat(messages[i], "bot");
             }
         };
@@ -81,5 +94,20 @@ window.onload = function () {
         var div = document.createElement('div');
         div.appendChild(text);
         return div.innerHTML;
+    }
+
+    function changeActiveBot(newActive) {
+        var active = document.getElementById("bot-active")
+        if (active == newActive)
+            return
+        // remove is there allready is a active one
+        active && active.removeAttribute("id")
+        newActive.setAttribute("id", "bot-active")
+        document.getElementById("log").innerHTML = ""
+        var botID = parseInt(newActive.getAttribute("botid"))
+        for(var index in messages[botID]){
+            var msg = messages[botID][index]
+            appendChat(msg["Content"],msg["Sender"]===1?"user":"bot")
+        }
     }
 };

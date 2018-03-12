@@ -129,14 +129,14 @@ type Bot struct {
 
 // CreateBot creates a bot entry in the database and fills the empty values in the given bot struct
 func CreateBot(bot *Bot) error {
-	v, err := dbConection.db.Exec("INSERT INTO Bot(Name,Image,Gender,User) VALUES($1,$2,$3,$4)", bot.Name, bot.Image, bot.Gender, bot.User)
+	v, err := dbConection.db.Exec("INSERT INTO Bot(Name,Image,Gender,User,Affection,Mood) VALUES($1,$2,$3,$4,$5,$6)", bot.Name, bot.Image, bot.Gender, bot.User, bot.Affection, bot.Mood)
 	if err != nil {
 		log.Println("error inserting new bot:", err)
 		return ErrInternalServerError
 	}
 	botID, err := v.LastInsertId()
 	if err != nil {
-		log.Println("error inserting new bot:", err)
+		log.Println("error receiving inserted rows:", err)
 		return ErrInternalServerError
 	}
 	bot.ID = int(botID)
@@ -170,22 +170,27 @@ const MessageMaxLength = 200
 // StoreMessage saves message in database
 func StoreMessage(userID int, msg Message) error {
 	if len(msg.Content) > MessageMaxLength {
-		return errors.New("message to long")
-	} else if len(msg.Content) < 1 {
-		return errors.New("cannot store empty message")
+		return ErrMessageToLong
 	}
 	exists, err := rowExists("SELECT * FROM Bot WHERE BotID=$1 AND User=$2", msg.Bot, userID)
 	if err != nil {
-		return err
+		log.Println("cannot check for bot:", err)
+		return ErrInternalServerError
 	} else if !exists {
-		return errors.New("bot does not belong to user")
+		return ErrBotDoesNotBelongToUser
 	}
-	_, err = dbConection.db.Exec("INSERT INTO Message(Bot,Sender,Timestamp,Content) VALUES($1,$2,$3,$4)", msg.Bot, int(msg.Sender), msg.Timestamp, msg.Content)
-	return err
+	_, err = dbConection.db.Exec(`
+		INSERT INTO Message(Bot,Sender,Timestamp,Content,Rating)
+					 VALUES($1,$2,$3,$4,$5)`, msg.Bot, int(msg.Sender), msg.Timestamp, msg.Content, msg.Rating)
+	if err != nil {
+		log.Println("cannot store message:", err)
+		return ErrInternalServerError
+	}
+	return nil
 }
 
-// GetMessages returns a list of all messages, that the user and bot sent each other
-func GetMessages(user, bot int) (*[]Message, error) {
+// GetMessagesForBot returns a list of all messages, that the user and bot sent each other
+func GetMessagesForBot(user, bot int) (*[]Message, error) {
 	rows, err := dbConection.db.Query(`
 		SELECT 	Timestamp,
 				Content,
@@ -239,6 +244,40 @@ func GetBotsForUser(userID int) (*[]Bot, error) {
 		return nil, err
 	}
 	return &bots, nil
+}
+
+//GetMessagesForUser returns alle messages the user has send with any bot
+func GetMessagesForUser(user *User) (*map[int][]Message, error) {
+	rows, err := dbConection.db.Query(`
+		SELECT	m.MessageID,
+				m.Sender,
+				m.Timestamp,
+				m.Content,
+				m.Rating,
+				b.BotID
+		FROM  Message m
+		INNER JOIN Bot b ON (b.BotID = m.Bot)
+		WHERE b.User = $1
+		ORDER BY b.BotID,m.Timestamp`, user.ID)
+	if err != nil {
+		log.Println("cannot get messages for user", user.ID, ":", err)
+		return nil, ErrInternalServerError
+	}
+	defer rows.Close()
+	var cursor Message
+	messages := make(map[int][]Message)
+	for rows.Next() {
+		if err = rows.Scan(&cursor.ID, &cursor.Sender, &cursor.Timestamp, &cursor.Content, &cursor.Rating, &cursor.Bot); err == nil {
+			messages[cursor.Bot] = append(messages[cursor.Bot], cursor)
+		} else {
+			log.Println(err)
+		}
+	}
+	if err := rows.Err(); err != nil {
+		log.Println(err)
+		return nil, ErrInternalServerError
+	}
+	return &messages, nil
 }
 
 func rowExists(query string, args ...interface{}) (bool, error) {
