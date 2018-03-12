@@ -5,7 +5,6 @@ import (
 	"flag"
 	"log"
 	"net/http"
-	"os/exec"
 	"strconv"
 	"text/template"
 
@@ -100,7 +99,7 @@ func main() {
 		Addr:    config.Host + ":" + strconv.Itoa(config.HTTP),
 		Handler: mux,
 	}
-	go startBot()
+	//eve := createBot()
 
 	log.Println("Starting web server")
 	server.RegisterOnShutdown(onShutdown)
@@ -118,12 +117,4 @@ func onShutdown() {
 		log.Panic("error closing connection to database: ", err)
 		return
 	}
-}
-
-func startBot() {
-	//generate new message
-	log.Println("(almost) bot was succesfully started")
-	cmd := exec.Command("python", "bot/request_handler.py")
-	cmd.Run()
-
 }

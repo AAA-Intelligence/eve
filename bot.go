@@ -1,0 +1,52 @@
+package main
+
+import (
+	"bufio"
+	"encoding/json"
+	"fmt"
+	"io"
+	"log"
+	"os/exec"
+	"sync"
+)
+
+type BotInstance struct {
+	cmd    *exec.Cmd
+	writer io.Writer
+	reader *bufio.Reader
+	mutex  *sync.Mutex
+}
+
+type MessageData struct {
+	text       string
+	user_id    int
+}
+
+func (b BotInstance) sendRequest(data MessageData) {
+	writer := b.writer
+	serialized, err := json.Marshal(data)
+	_, err = writer.Write(serialized)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(writer)
+	response, _, err := b.reader.ReadLine()
+	json.Unmarshal(response, &MessageData{})
+}
+
+func createBot() (botInstance BotInstance) {
+	cmd := exec.Command("python", "bot/__main__.py")
+	cmd.Start()
+
+	writer, err := cmd.StdinPipe()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	reader, err := cmd.StdoutPipe()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return BotInstance{writer: writer, cmd: cmd, mutex: &sync.Mutex{}, reader: bufio.NewReader(reader)}
+}
