@@ -11,7 +11,6 @@ import (
 	"github.com/AAA-Intelligence/eve/db"
 )
 
-
 // regex rule for user names. all names must match this pattern at registration
 const userNameRule = "^[a-zA-Z0-9]+([^-\\s]?[a-zA-Z0-9])*$"
 
@@ -62,7 +61,7 @@ const SessionKey = "eve-session"
 // middleware for handler, that authenticates the user
 // basic access authentication is used
 // see: https://en.wikipedia.org/wiki/Basic_access_authentication
-func basicAuth(h http.HandlerFunc) http.HandlerFunc {
+func basicAuth(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// check if user is allready authenticated
 		cookie, err := r.Cookie(SessionKey)

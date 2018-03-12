@@ -31,7 +31,7 @@ func webSocket(w http.ResponseWriter, r *http.Request) {
 			//log.Println("error reading:", err)
 			break
 		}
-		user := getUser(r.Context())
+		user := GetUserFromRequest(r)
 		if user == nil {
 			log.Println("error reading user from context")
 			break

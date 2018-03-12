@@ -131,11 +131,13 @@ type Bot struct {
 func CreateBot(bot *Bot) error {
 	v, err := dbConection.db.Exec("INSERT INTO Bot(Name,Image,Gender,User) VALUES($1,$2,$3,$4)", bot.Name, bot.Image, bot.Gender, bot.User)
 	if err != nil {
-		return err
+		log.Println("error inserting new bot:", err)
+		return ErrInternalServerError
 	}
 	botID, err := v.LastInsertId()
 	if err != nil {
-		return err
+		log.Println("error inserting new bot:", err)
+		return ErrInternalServerError
 	}
 	bot.ID = int(botID)
 	return nil

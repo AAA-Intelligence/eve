@@ -51,10 +51,10 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("error loading template:", err.Error())
 		return
 	}
-	user := getUser(r.Context())
+	user := GetUserFromRequest(r)
 	bots, err := db.GetBotsForUser(user.ID)
 	if err != nil {
-		http.Error(w, ErrInternalServerError, http.StatusInternalServerError)
+		http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
 		log.Println("error getting bots for user:", err.Error())
 		return
 	}

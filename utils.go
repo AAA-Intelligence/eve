@@ -2,8 +2,12 @@ package main
 
 import (
 	"bytes"
+	"crypto/rand"
+	"encoding/base64"
 	"html/template"
 	"net/http"
+
+	"github.com/AAA-Intelligence/eve/db"
 )
 
 // function executes the given template and writes the result to a buffer
@@ -13,12 +17,12 @@ func saveExecute(w http.ResponseWriter, tpl *template.Template, data interface{}
 	var buffer bytes.Buffer
 	err := tpl.Execute(&buffer, data)
 	if err != nil {
-		http.Error(w, ErrInternalServerError, http.StatusInternalServerError)
+		http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
 		return err
 	}
 	_, err = w.Write([]byte(buffer.String()))
 	return err
-)
+}
 
 // GenerateRandomBytes returns securely generated random bytes.
 // It will return an error if the system's secure random

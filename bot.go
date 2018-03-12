@@ -13,10 +13,11 @@ func createBot(w http.ResponseWriter, r *http.Request) {
 		Name:   lorem.Word(3, 10),
 		Image:  "hässlich.png",
 		Gender: "apache",
-		User:   getUser(r.Context()).ID,
+		User:   GetUserFromRequest(r).ID,
 	})
 	if err != nil {
-		http.Error(w, ErrInternalServerError, http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }

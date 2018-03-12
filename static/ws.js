@@ -1,11 +1,12 @@
 window.onload = function () {
 
     var bots = document.getElementsByClassName("bot")
-    bots[0].setAttribute("id","bot-active")
-    for(i in bots){
-        bots[i].onclick = function(){
+    if (bots.length > 0)
+        bots[0].setAttribute("id", "bot-active")
+    for (i in bots) {
+        bots[i].onclick = function () {
             document.getElementById("bot-active").removeAttribute("id")
-            this.setAttribute("id","bot-active")
+            this.setAttribute("id", "bot-active")
         }
     }
 
@@ -43,14 +44,17 @@ window.onload = function () {
         if (!conn) {
             return;
         }
-        if (!msg.value || msg.value.trim().length<1) {
+        if (!msg.value || msg.value.trim().length < 1) {
             return;
         }
         var message = escapeHtml(msg.value).trim()
-        appendChat(message,"user")
+        var activeBot = document.getElementById("bot-active")
+        if (!activeBot)
+            return
+        appendChat(message, "user")
         var request = {
-            "message":message,
-            "bot":parseInt(document.getElementById("bot-active").getAttribute("botID"))
+            "message": message,
+            "bot": parseInt(activeBot.getAttribute("botID"))
         }
         conn.send(JSON.stringify(request));
         msg.value = "";
@@ -71,6 +75,7 @@ window.onload = function () {
     } else {
         appendChat("<b>Your browser does not support WebSockets.</b>", "bot");
     }
+
     function escapeHtml(html) {
         var text = document.createTextNode(html);
         var div = document.createElement('div');
