@@ -10,11 +10,13 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// HTTP handler for creating a user
+// request METHOD needs to be post
+// request BODY needs to contain username and password
+// e.g. username=peter&password=super_secret_password
+//
+// if the creation was successful the response directs to the index page
 func createUser(w http.ResponseWriter, r *http.Request) {
-	if getUser(r.Context()) != nil {
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		return
-	}
 	if strings.ToLower(r.Method) != "post" {
 		http.Error(w, "HTTP POST only", http.StatusMethodNotAllowed)
 		return
@@ -46,6 +48,8 @@ type key string
 const UserContextKey key = "user"
 
 // middleware for handler, that authenticates the user
+// basic access authentication is used
+// see: https://en.wikipedia.org/wiki/Basic_access_authentication
 func basicAuth(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("WWW-Authenticate", `Basic realm="Restricted"`)
@@ -71,6 +75,7 @@ func basicAuth(h http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
+// gets user data from request context
 func getUser(ctx context.Context) *db.User {
 	user, ok := ctx.Value(UserContextKey).(*db.User)
 	if !ok {

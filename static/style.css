@@ -33,3 +33,19 @@
 .user{
     text-align: right
 }
+
+li.bot{
+    cursor: pointer;
+    list-style: none;
+    padding: 5px 0;
+    border: 1px solid black;
+}
+
+li.bot:hover{
+    background-color: lightgrey;
+}
+
+#bot-active{
+    background-color: red;
+    color: white;
+}

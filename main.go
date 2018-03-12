@@ -1,23 +1,33 @@
 package main
 
 import (
-	"bytes"
 	"flag"
+	"html/template"
 	"log"
 	"net/http"
 	"strconv"
-	"text/template"
 
 	"github.com/AAA-Intelligence/eve/db"
 )
 
 // Config configures web server
 type Config struct {
-	Host  string
-	HTTP  int
+
+	// Host e.g. google.de, mypage.com, localhost
+	Host string
+
+	// HTTP port
+	HTTP int
+
+	// HTTPS port
 	HTTPS int
 }
 
+// loads config data from program arguments
+// defaults are:
+// 		host: "" (empty)
+//		http: 80
+//		https: 443
 func loadConfig() *Config {
 	var config Config
 	flag.StringVar(&config.Host, "host", "", "hostname")
@@ -30,8 +40,9 @@ func loadConfig() *Config {
 // ErrInternalServerError is displayed to the client if a HTTP status 505 is returned
 const ErrInternalServerError = "505 - Internal Server Error"
 
-//IndexHandler serves index page
+//IndexHandler serves index page with chat client
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
+	// make sure request is really for index page
 	if len(r.URL.Path) > 1 {
 		http.Error(w, "not found", http.StatusNotFound)
 		return
@@ -42,40 +53,37 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("error:", err.Error())
 		return
 	}
-	var buffer bytes.Buffer
-	err = tpl.Execute(&buffer, struct {
-		User *db.User
-	}{
-		User: getUser(r.Context()),
-	})
+	user := getUser(r.Context())
+	bots, err := db.GetBotsForUser(user.ID)
 	if err != nil {
 		http.Error(w, ErrInternalServerError, http.StatusInternalServerError)
-		log.Println("error:", err.Error())
+		log.Println("error getting bots for user:", err.Error())
 		return
 	}
-	w.Write([]byte(buffer.String()))
+	err = saveExecute(w, tpl, struct {
+		User *db.User
+		Bots *[]db.Bot
+	}{
+		User: user,
+		Bots: bots,
+	})
+	if err != nil {
+		log.Println("error:", err.Error())
+	}
 }
 
-//RegisterHandler serves index page
+//RegisterHandler serves HTML page for user registration
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
-	if getUser(r.Context()) != nil {
-		http.Redirect(w, r, "//", http.StatusTemporaryRedirect)
-		return
-	}
 	tpl, err := template.ParseFiles("templates/register.gohtml")
 	if err != nil {
 		http.Error(w, ErrInternalServerError, http.StatusInternalServerError)
 		log.Println("error:", err.Error())
 		return
 	}
-	var buffer bytes.Buffer
-	err = tpl.Execute(&buffer, nil)
+	err = saveExecute(w, tpl, nil)
 	if err != nil {
-		http.Error(w, ErrInternalServerError, http.StatusInternalServerError)
 		log.Println("error:", err.Error())
-		return
 	}
-	w.Write([]byte(buffer.String()))
 }
 
 func main() {
@@ -86,9 +94,11 @@ func main() {
 		return
 	}
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", basicAuth(IndexHandler))
 	mux.HandleFunc("/register", RegisterHandler)
 	mux.HandleFunc("/createUser", createUser)
+
+	mux.HandleFunc("/", basicAuth(IndexHandler))
+	mux.HandleFunc("/createBot", basicAuth(createBot))
 	mux.HandleFunc("/ws", basicAuth(webSocket))
 
 	// handle static files like css

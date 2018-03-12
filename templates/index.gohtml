@@ -6,6 +6,17 @@
         <script type="text/javascript" src="/static/ws.js"></script>
    </head>
    <body>
+        <div style="float:left">
+            <h2>Meine Chats:</h2>
+            <ul>
+            {{range $bot := .Bots}}
+                <li class="bot" botID="{{$bot.ID}}">{{$bot.Name}}</li>
+            {{end}}
+            <form method="post" action="/createBot">
+                <input type="submit" value="Bot erstellen"/>
+            </form>
+            </ul>
+        </div>
         <div class="chat">
             <p>User: {{.User.Name}}</p>
             <div id="log"></div>
