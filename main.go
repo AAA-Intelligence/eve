@@ -5,7 +5,6 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"os/exec"
 	"strconv"
 
 	"github.com/AAA-Intelligence/eve/db"
@@ -129,12 +128,4 @@ func onShutdown() {
 		log.Panic("error closing connection to database: ", err)
 		return
 	}
-}
-
-func startBot() {
-	//generate new message
-	log.Println("(almost) bot was succesfully started")
-	cmd := exec.Command("python", "bot/request_handler.py")
-	cmd.Run()
-
 }
