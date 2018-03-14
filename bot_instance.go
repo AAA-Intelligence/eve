@@ -18,8 +18,8 @@ type BotInstance struct {
 }
 
 type MessageData struct {
-	text    string
-	user_id int
+	Text   string `json:"text"`
+	UserID int    `json:"user_id"`
 }
 
 func (b BotInstance) sendRequest(data MessageData) {
