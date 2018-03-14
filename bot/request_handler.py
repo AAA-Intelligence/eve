@@ -1,5 +1,5 @@
 from .logger import logger
-from .data import Request, Response
+from .data import Request, Response, parse_request
 import json
 
 
