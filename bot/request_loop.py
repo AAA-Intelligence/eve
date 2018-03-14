@@ -3,6 +3,7 @@ from .request import parse_request
 from .request_handler import handle_request
 import json
 
+
 def run_loop():
     logger.debug('Starting loop')
     while True:
