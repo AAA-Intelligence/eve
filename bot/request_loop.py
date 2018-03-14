@@ -18,7 +18,8 @@ def run_loop():
         except KeyboardInterrupt:
             # Interrupt requested by developer
             return
-        except:
+        except Exception as ex:
+            logger.error('{}: {}'.format(type(ex).__name__, str(ex)))
             # Pass error to Go and await next request
             print('error')
             continue
