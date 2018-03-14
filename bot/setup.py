@@ -10,7 +10,7 @@ def setup_logger():
 	ch.setLevel(logging.ERROR)
 
 	formatter = logging.Formatter(
-		'%(asctime)s - %(levelname)s - %(message)s')
+		'%(asctime)s  - %(message)s')
 	ch.setFormatter(formatter)
 	fh.setFormatter(formatter)
 
@@ -24,6 +24,4 @@ def setup_logger():
 
 
 if __name__ == '__main__':
-	# test1.py executed as script
-	# do something
 	setup_logger()

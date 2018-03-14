@@ -16,7 +16,10 @@ while True:
 	try:
 		i = input()
 		data = json.loads(i)
-		log_message = "new Message:%s" % data["content"]
+		logger.warning("MESSAGE - %s" % data["content"])
+	except(NameError):
+		logger.error("Unexpected error:", sys.exc_info()[0])
+		pass
 	except:
-		print("Unexpected error:", sys.exc_info()[0])
+		logger.error("Unexpected error:", sys.exc_info()[0])
 		break
