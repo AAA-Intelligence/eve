@@ -15,6 +15,11 @@ class Request(NamedTuple):
     user_id: str
 
 
+class Response(NamedTuple):
+    content: str
+    context: Context
+
+
 def parse_request(json_data: str):
     data = json.loads(json_data)
 
