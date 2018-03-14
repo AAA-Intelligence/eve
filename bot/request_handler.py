@@ -18,7 +18,7 @@ def handle_request(request: Request) -> Response:
     """
 
     logger.debug('Handling request')
-    raise NotImplementedError()
+    return Response('General Kenobi, you are a bold one', 1, 1)
 
 
 def run_loop():
