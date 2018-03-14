@@ -1,35 +1,36 @@
 from typing import NamedTuple
+from enum import Enum
 import json
 
 
-class Context(NamedTuple):
-    mood: float
-    affection: float
+class Gender(Enum):
+    MALE = 0
+    FEMALE = 1
 
 
 class Request(NamedTuple):
-    content: str
-    timestamp: int
-    context: Context
-    bot_id: str
-    user_id: str
+    text: str
+    mood: float
+    affection: float
+    bot_gender: Gender
+    bot_name: str
+    previous_text: str
 
 
 class Response(NamedTuple):
-    content: str
-    context: Context
+    text: str
+    mood: float
+    affection: float
 
 
 def parse_request(json_data: str):
     data = json.loads(json_data)
 
     return Request(
-        data["content"],
-        data["timestamp"],
-        Context(
-            data["context"]["mood"],
-            data["context"]["affection"]
-        ),
-        data["bot_id"],
-        data["user_id"]
+        data["text"],
+        data["mood"],
+        data["affection"],
+        Gender(data["bot_gender"]),
+        data["bot_name"],
+        data["previous_text"]
     )
