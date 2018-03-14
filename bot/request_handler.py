@@ -1,5 +1,8 @@
 from .logger import logger
 from .data import Request, Response, parse_request
+from .mood_analyzer import analyze
+from .pattern_recognizer import recognize_pattern
+from .text_processor import generate_answer
 import json
 
 
@@ -18,7 +21,15 @@ def handle_request(request: Request) -> Response:
     """
 
     logger.debug('Handling request')
-    return Response('General Kenobi, you are a bold one', 1, 1)
+
+    (mood, affection) = analyze(request.text)
+
+    answer = recognize_pattern(request)
+    if answer is None:
+        # No pattern found, fall back to generative model
+        answer = generate_answer(request, mood, affection)
+
+    return Response(answer, mood, affection)
 
 
 def run_loop():
