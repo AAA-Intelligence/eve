@@ -59,9 +59,11 @@ def run_loop():
             print(json.dumps(response))
         except EOFError:
             # Stdin pipe has been closed by Go
+            logger.info('EOF detected, aborting request loop')
             return
         except KeyboardInterrupt:
             # Interrupt requested by developer
+            logger.info('Keyboard interrupt detected, aborting request loop')
             return
         except Exception as ex:
             logger.error('{}: {}'.format(type(ex).__name__, str(ex)))
