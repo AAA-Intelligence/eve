@@ -1,7 +1,6 @@
-package main
+package manager
 
 import (
-	"flag"
 	"html/template"
 	"log"
 	"net/http"
@@ -9,33 +8,6 @@ import (
 
 	"github.com/AAA-Intelligence/eve/db"
 )
-
-// Config configures web server
-type Config struct {
-
-	// Host e.g. google.de, mypage.com, localhost
-	Host string
-
-	// HTTP port
-	HTTP int
-
-	// HTTPS port
-	HTTPS int
-}
-
-// loads config data from program arguments
-// defaults are:
-// 		host: "" (empty)
-//		http: 80
-//		https: 443
-func loadConfig() *Config {
-	var config Config
-	flag.StringVar(&config.Host, "host", "", "hostname")
-	flag.IntVar(&config.HTTP, "http", 80, "HTTP port")
-	flag.IntVar(&config.HTTPS, "https", 443, "HTTPS port")
-	flag.Parse()
-	return &config
-}
 
 //IndexHandler serves index page
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
@@ -87,13 +59,16 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func main() {
-	config := loadConfig()
-	err := db.Connect("eve.sqlite")
+func onShutdown() {
+	log.Println("shutting down...")
+	err := db.Close()
 	if err != nil {
-		log.Panic("error connecting to database: ", err)
+		log.Panic("error closing connection to database: ", err)
 		return
 	}
+}
+
+func StartWebServer(host string, httpPort int) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/register", RegisterHandler)
 	mux.HandleFunc("/createUser", createUser)
@@ -108,25 +83,15 @@ func main() {
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	server := http.Server{
-		Addr:    config.Host + ":" + strconv.Itoa(config.HTTP),
+		Addr:    host + ":" + strconv.Itoa(httpPort),
 		Handler: mux,
 	}
 	//go startBot()
 
 	log.Println("Starting web server")
 	server.RegisterOnShutdown(onShutdown)
-	err = server.ListenAndServe()
+	err := server.ListenAndServe()
 	if err != nil {
 		log.Println(err)
-	}
-
-}
-
-func onShutdown() {
-	log.Println("shutting down...")
-	err := db.Close()
-	if err != nil {
-		log.Panic("error closing connection to database: ", err)
-		return
 	}
 }

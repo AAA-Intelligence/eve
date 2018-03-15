@@ -1,5 +1,12 @@
 PROJECT_NAME = eve
 PACKAGE = github.com/AAA-Intelligence/$(PROJECT_NAME)
+cmd = $(PACKAGE)/cmd/$(PROJECT_NAME)
+
+ifeq ($(OS),Windows_NT)
+    FILENAME = $(PROJECT_NAME).exe
+else
+    FILENAME = $(PROJECT_NAME)
+endif
 
 # run args
 HTTP = 8080
@@ -7,13 +14,13 @@ HTTP = 8080
 all: build run
 
 build:
-	go build -o $(PROJECT_NAME) -v $(PACKAGE)
+	go build -o $(FILENAME) -v $(cmd)
 
 run:
-	./$(PROJECT_NAME) -http $(HTTP)
+	./$(FILENAME) -http $(HTTP)
 
 clean:
-	go clean $(PACKAGE)
+	go clean $(cmd)
 
 deps:
 	go get "github.com/gorilla/websocket"
