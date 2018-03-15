@@ -15,9 +15,6 @@ def handle_request(request: Request) -> Response:
 
     Returns:
         The response generated for the specified request.
-
-    Raises:
-        NotImplementedError: Raised because this function is yet to be implemented
     """
 
     logger.debug('Handling request')
