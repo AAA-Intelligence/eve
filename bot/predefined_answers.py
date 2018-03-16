@@ -1,8 +1,10 @@
-from enum import Enum
+from enum import IntEnum, unique
 
 
-class Category(Enum):
+@unique
+class Category(IntEnum):
     JOKE = 0
+    AGE = 1
 
 
 def get_predefined_answer(category: Category) -> str:

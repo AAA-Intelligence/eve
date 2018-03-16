@@ -1,0 +1,4 @@
+tensorflow
+numpy
+ntlk
+tflearn
