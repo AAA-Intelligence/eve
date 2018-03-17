@@ -18,7 +18,7 @@ def patterns_for_category(category: Category) -> Iterator[str]:
 
 def get_patterns() -> Dict[Category, List[str]]:
     patterns = {}
-    # Iterate over all defines categories
+    # Iterate over all defined categories
     for category in Category:
         # Store all patterns defined for the category under the respective category key
         # in the patterns dictionary as a list
