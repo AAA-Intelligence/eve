@@ -4,7 +4,7 @@ from enum import IntEnum, unique
 @unique
 class Category(IntEnum):
     JOKE = 0
-    AGE = 1
+    BOT_AGE = 1
 
 
 def get_predefined_answer(category: Category) -> str:
