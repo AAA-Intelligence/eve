@@ -9,7 +9,7 @@ dir = path.dirname(__file__)
 def patterns_for_category(category: Category) -> Iterator[str]:
     p = Path(dir, category.name + '.txt')
     if not p.is_file():
-        raise Exception(
+        raise FileNotFoundError(
             'No pattern definition file found for category {}'.format(category))
     with p.open() as f:
         for line in f:
