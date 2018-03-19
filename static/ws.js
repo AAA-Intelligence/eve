@@ -1,7 +1,7 @@
 window.onload = function () {
 
     var bots = document.getElementsByClassName("bot")
-    var messages = {};
+   /* var messages = {};
     // test load messages
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open("GET", "/getmessages", true); // false for synchronous request
@@ -16,7 +16,7 @@ window.onload = function () {
         bots[i].onclick = function () {
             changeActiveBot(this)
         }
-    }
+    }*/
 
     var conn;
     var msg = document.getElementById("msg");
@@ -60,9 +60,9 @@ window.onload = function () {
         if (!activeBot)
             return
         var botID = parseInt(activeBot.getAttribute("botID"))
-        messages[botID].push({
+        /*messages[botID].push({
             "Content":message
-        })
+        })*/
         appendChat(message, "user")
         var request = {
             "message": message,

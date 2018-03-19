@@ -190,21 +190,22 @@ func StoreMessage(userID int, msg Message) error {
 }
 
 // GetMessagesForBot returns a list of all messages, that the user and bot sent each other
-func GetMessagesForBot(user, bot int) (*[]Message, error) {
+func GetMessagesForBot(bot int) (*[]Message, error) {
 	rows, err := dbConection.db.Query(`
 		SELECT 	Timestamp,
 				Content,
+				Sender,
 				Rating 
 		FROM Message 
-		WHERE Bot=$1 AND User=$2`, bot, user)
+		WHERE Bot=$1`, bot)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var messages []Message
+	messages := []Message{}
 	var cursor Message
 	for rows.Next() {
-		if err := rows.Scan(&cursor.Timestamp, &cursor.Content, &cursor.Rating); err == nil {
+		if err := rows.Scan(&cursor.Timestamp, &cursor.Content, &cursor.Sender, &cursor.Rating); err == nil {
 			messages = append(messages, cursor)
 		} else {
 			log.Println(err)

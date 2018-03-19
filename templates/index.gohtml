@@ -7,23 +7,34 @@
    </head>
    <body>
         <div class="chat-list">
+        {{if .ActiveBot}}
             <h2>Meine Chats:</h2>
             <ul class="bot-list">
             {{range $bot := .Bots}}
-                <li class="bot" botID="{{$bot.ID}}">{{$bot.Name}}</li>
+                <li class="bot" id="{{if eq $.ActiveBot.ID $bot.ID}}bot-active{{end}}" botID="{{$bot.ID}}">
+                    <a href="/?bot={{$bot.ID}}">{{$bot.Name}}</a>
+                </li>
             {{end}}
+        {{end}}
             <form method="post" action="/createBot">
                 <input type="submit" value="Bot erstellen"/>
             </form>
             </ul>
         </div>
+        {{if .ActiveBot}}
         <div class="chat">
             <p>User: {{.User.Name}}</p>
-            <div id="log"></div>
+            <p>Bot: {{.ActiveBot.Name}}</p>
+            <div id="log">
+                {{range $msg := .Messages}}
+                <div class="msg {{if eq $msg.Sender 1}}user{{else}}bot{{end}}">{{$msg.Content}}</div>
+                {{end}}
+            </div>
             <form id="form" autocomplete="off">
                 <textarea id="msg" maxlength="200" rows="3"></textarea>
                 <input type="submit" value="Send" id="send"/>
             </form>
         </div>
+        {{end}}
    </body>
 </html>
