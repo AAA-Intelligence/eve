@@ -11,7 +11,7 @@ func main() {
 	config := loadConfig()
 	err := db.Connect("eve.sqlite")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln("error connecting to database: ", err)
 		return
 	}
 	manager.StartWebServer(config.Host, config.HTTP)
