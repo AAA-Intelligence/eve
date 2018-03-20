@@ -1,33 +1,7 @@
 from typing import Optional
 from .predefined_answers import Category, get_predefined_answer
 from .data import Request
-from .patterns import get_patterns
 from .logger import logger
-from nltk.stem.snowball import GermanStemmer
-import nltk
-
-# Define all punctuation we want to ignore in texts
-punctuation = ['.', ',', ';', '?', '!', '-', '(', ')', '{', '}', '/', '\\']
-# Create a word stemmer based on the snowball stemming algorithm for the German language
-stemmer = GermanStemmer()
-
-
-def remove_punctuation(text: str) -> str:
-    return ''.join(c for c in text if c not in punctuation)
-
-
-def train_model():
-    # Retrieve all patterns from the patterns module
-    patterns = get_patterns()
-
-
-def parse_pattern(pattern: str):
-    # Tokenize pattern into words
-    words = nltk.word_tokenize(pattern)
-    # Convert words into a set of stems to avoid duplicates
-    stems = {stemmer.stem(w.lower()) for w in words}
-    # Return an ordered list of stems
-    return sorted(list(stems))
 
 
 def detect_category(request: Request) -> Optional[Category]:
@@ -84,3 +58,5 @@ def demo():
         logger.debug('No answer found')
     else:
         logger.debug('Answer: {}'.format(answer))
+
+    train_model()

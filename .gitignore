@@ -16,3 +16,6 @@ fabric.properties
 eve
 *.pyc
 *.log
+
+tflearn_logs/
+bot/models/
