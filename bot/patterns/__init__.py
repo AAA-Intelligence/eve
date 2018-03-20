@@ -11,7 +11,7 @@ def patterns_for_category(category: Category) -> Iterator[str]:
     if not p.is_file():
         raise FileNotFoundError(
             'No pattern definition file found for category {}'.format(category))
-    with p.open() as f:
+    with p.open(encoding='utf-8') as f:
         for line in f:
             yield line
 

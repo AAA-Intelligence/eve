@@ -9,6 +9,7 @@ import random
 import numpy
 import tensorflow
 import tflearn
+import pickle
 
 dir = path.join(path.dirname(__file__), 'models')
 if not path.exists(dir):
@@ -27,7 +28,7 @@ def remove_punctuation(text: str) -> str:
 
 
 def train_model():
-    all_stems: Set[str] = set()
+    total_stems: Set[str] = set()
     patterns: List[Tuple[Category, Set[str]]] = []
 
     # Iterate over all defined categories
@@ -43,9 +44,9 @@ def train_model():
             patterns.append((category, stems))
             # Add stems to total set of stems, needed for conversion to numeric
             # TensorFlow training array
-            all_stems |= stems
+            total_stems |= stems
 
-    words = sorted(list(all_stems))
+    words = sorted(list(total_stems))
 
     # Now that all stems have been collected, we can create an array suitable
     # for training our TensorFlow model.
@@ -79,4 +80,12 @@ def train_model():
 
     # Start training (apply gradient descent algorithm)
     model.fit(train_x, train_y, n_epoch=1000, batch_size=8, show_metric=True)
-    model.save(path.join(dir, 'patterns_model.tflearn'))
+    model.save(path.join(dir, 'patterns.tflearn'))
+
+    # Save total_stems and training data
+    with open(path.join(dir, 'patterns.dump'), 'wb') as f:
+        pickle.dump({
+            'total_stems': words,
+            'train_x': train_x,
+            'train_y': train_y
+        }, f)

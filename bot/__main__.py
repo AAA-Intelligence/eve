@@ -1,5 +1,4 @@
 from sys import argv
-from .request_handler import run_loop
 from .logger import logger
 
 target = argv[1] if len(argv) > 1 else None
@@ -13,4 +12,5 @@ elif target == 'pattern-demo':
     logger.info('Running pattern recognizer demo')
     demo()
 else:
+    from .request_handler import run_loop
     run_loop()
