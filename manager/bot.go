@@ -1,7 +1,6 @@
 package manager
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/drhodes/golorem"
@@ -21,19 +20,4 @@ func createBot(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.Redirect(w, r, "/", http.StatusSeeOther)
-}
-
-func getMessages(w http.ResponseWriter, r *http.Request) {
-	user := GetUserFromRequest(r)
-	messages, err := db.GetMessagesForUser(user)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	data, err := json.Marshal(*messages)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	w.Write(data)
 }

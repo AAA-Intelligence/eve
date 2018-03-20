@@ -52,9 +52,13 @@
 .bot-list .bot{
     cursor: pointer;
     list-style: none;
-    padding: 5px 0;
     border: 1px solid black;
     display: block
+}
+.bot-list .bot a{
+    width: 100%;
+    padding: 5px;
+    display: inline-block;
 }
 
 .bot-list .bot:hover{
