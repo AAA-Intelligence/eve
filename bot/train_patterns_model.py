@@ -1,5 +1,5 @@
 from typing import List, Tuple, Set
-from os import path
+from os import path, mkdir
 from pathlib import Path
 from nltk.stem.snowball import GermanStemmer
 from .patterns import patterns_for_category
@@ -10,10 +10,10 @@ import numpy
 import tensorflow
 import tflearn
 
-dir: Path = Path(__file__).parent.joinpath('models')
-if not dir.exists():
-    dir.mkdir()
-if not dir.is_dir():
+dir = path.join(path.dirname(__file__), 'models')
+if not path.exists(dir):
+    mkdir(dir)
+if not path.isdir(dir):
     raise Exception('Models path is not a directory: {}'.format(dir))
 
 # Define all punctuation we want to ignore in texts
@@ -79,4 +79,4 @@ def train_model():
 
     # Start training (apply gradient descent algorithm)
     model.fit(train_x, train_y, n_epoch=1000, batch_size=8, show_metric=True)
-    model.save(str(dir.joinpath('patterns_model.tflearn')))
+    model.save(path.join(dir, 'patterns_model.tflearn'))
