@@ -56,7 +56,7 @@ def run_loop():
             json_data = input()
             request = parse_request(json_data)
             response = handle_request(request)
-            print(json.dumps(response))
+            print(json.dumps(response._asdict()))
         except EOFError:
             # Stdin pipe has been closed by Go
             return
