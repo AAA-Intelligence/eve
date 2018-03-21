@@ -110,7 +110,7 @@ def answer_for_pattern(request: Request) -> Optional[str]:
 
 def demo():
     request = Request(
-        text='Würdest du mir sagen, wie alt du bist?',
+        text=input('Please enter a question: '),
         mood=0.0,
         affection=0.0,
         bot_gender=0,
