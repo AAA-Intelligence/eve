@@ -13,6 +13,7 @@ crashlytics-build.properties
 fabric.properties
 .idea/
 *.exe
+*.exe~
 *.pyc
 *.log
 venv/*

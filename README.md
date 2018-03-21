@@ -20,12 +20,12 @@ make all
 ### Without Makefile
 #### Windows
 ```
-go build -o "eve.exe" "github.com/AAA-Intelligence/eve" 
+go build -o "eve.exe" "github.com/AAA-Intelligence/eve/cmd/eve" 
 eve.exe -http 8080
 ```
 #### macOS / linux
 ```
-go build -o "eve" "github.com/AAA-Intelligence/eve" 
+go build -o "eve" "github.com/AAA-Intelligence/eve/cmd/eve" 
 ./eve -http 8080
 ```
 

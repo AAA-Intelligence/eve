@@ -6,11 +6,14 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/AAA-Intelligence/eve/manager/bots"
+
 	"github.com/AAA-Intelligence/eve/db"
+	lorem "github.com/drhodes/golorem"
 )
 
-//IndexHandler serves HTML index page
-func IndexHandler(w http.ResponseWriter, r *http.Request) {
+//indexHandler serves HTML index page
+func indexHandler(w http.ResponseWriter, r *http.Request) {
 	// make sure request is really for index page
 	if len(r.URL.Path) > 1 {
 		http.Error(w, "not found", http.StatusNotFound)
@@ -57,8 +60,8 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//RegisterHandler serves HTML page for user registration
-func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+//registerHandler serves HTML page for user registration
+func registerHandler(w http.ResponseWriter, r *http.Request) {
 	tpl, err := template.ParseFiles("templates/register.gohtml")
 	if err != nil {
 		http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
@@ -73,23 +76,42 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func createBot(w http.ResponseWriter, r *http.Request) {
+	err := db.CreateBot(&db.Bot{
+		Name:   lorem.Word(3, 10),
+		Image:  "hässlich.png",
+		Gender: db.Female,
+		User:   GetUserFromRequest(r).ID,
+	})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
 func onShutdown() {
 	log.Println("shutting down...")
+	log.Println("killing bots...")
+	botPool.Close()
+	botPool.Wait()
+	log.Println("closing database connection...")
 	err := db.Close()
 	if err != nil {
 		log.Panic("error closing connection to database: ", err)
 		return
 	}
+	log.Println("shutdown complete")
 }
 
 // StartWebServer creates a handler for incomming http requests on the given host and port
 // The method only returns if the server is shut down or runs into an error
 func StartWebServer(host string, httpPort int) {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/register", RegisterHandler)
+	mux.HandleFunc("/register", registerHandler)
 	mux.HandleFunc("/createUser", createUser)
 
-	mux.HandleFunc("/", basicAuth(IndexHandler))
+	mux.HandleFunc("/", basicAuth(indexHandler))
 	mux.HandleFunc("/createBot", basicAuth(createBot))
 	mux.HandleFunc("/ws", basicAuth(webSocket))
 
@@ -105,6 +127,7 @@ func StartWebServer(host string, httpPort int) {
 
 	log.Println("Starting web server")
 	server.RegisterOnShutdown(onShutdown)
+	botPool = bots.NewBotPool(4)
 	err := server.ListenAndServe()
 	if err != nil {
 		log.Println(err)

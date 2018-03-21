@@ -4,6 +4,7 @@ from .mood_analyzer import analyze
 from .pattern_recognizer import recognize_pattern
 from .text_processor import generate_answer
 import json
+import time
 
 
 def handle_request(request: Request) -> Response:
@@ -22,6 +23,7 @@ def handle_request(request: Request) -> Response:
 
     logger.debug('Handling request')
 
+    time.sleep(1)
     (mood, affection) = analyze(request.text)
 
     answer = recognize_pattern(request)
@@ -59,9 +61,11 @@ def run_loop():
             print(json.dumps(response._asdict()))
         except EOFError:
             # Stdin pipe has been closed by Go
+            logger.info("instance closed")
             return
         except KeyboardInterrupt:
             # Interrupt requested by developer
+            logger.info("instance closed")
             return
         except Exception as ex:
             logger.error('{}: {}'.format(type(ex).__name__, str(ex)))

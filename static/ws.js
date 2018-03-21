@@ -1,27 +1,11 @@
 window.onload = function () {
 
     var bots = document.getElementsByClassName("bot")
-   /* var messages = {};
-    // test load messages
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", "/getmessages", true); // false for synchronous request
-    xmlHttp.send();
-    xmlHttp.onload = function () {
-        messages = JSON.parse(xmlHttp.responseText)
-        if (bots.length > 0)
-            changeActiveBot(bots[0])
-    }
-
-    for (i in bots) {
-        bots[i].onclick = function () {
-            changeActiveBot(this)
-        }
-    }*/
-
     var conn;
     var msg = document.getElementById("msg");
     var log = document.getElementById("log");
-    var form = document.getElementById("form")
+    var form = document.getElementById("form");
+    var sendBtn = document.getElementById("send");
 
     msg.onkeypress = function (key) {
         if (key.keyCode === 13 && !key.shiftKey) {
@@ -31,11 +15,8 @@ window.onload = function () {
     }
 
     function appendChat(item, sender) {
-        var doScroll = log.scrollTop > log.scrollHeight - log.clientHeight - 1;
         log.appendChild(toMsg(item, sender));
-        if (doScroll) {
-            log.scrollTop = log.scrollHeight - log.clientHeight;
-        }
+        scrollChatToBottom();
     }
 
     function toMsg(text, style) {
@@ -49,7 +30,7 @@ window.onload = function () {
     };
 
     function sendMsg() {
-        if (!conn) {
+        if (!conn || locked) {
             return;
         }
         if (!msg.value || msg.value.trim().length < 1) {
@@ -60,9 +41,6 @@ window.onload = function () {
         if (!activeBot)
             return
         var botID = parseInt(activeBot.getAttribute("botID"))
-        /*messages[botID].push({
-            "Content":message
-        })*/
         appendChat(message, "user")
         var request = {
             "message": message,
@@ -70,7 +48,18 @@ window.onload = function () {
         }
         conn.send(JSON.stringify(request));
         msg.value = "";
+        lock();
         return;
+    }
+
+    var locked = false
+    function lock(){
+        sendBtn.disabled = true;
+        locked = true
+    }
+    function unlock(){
+        sendBtn.disabled = false;
+        locked = false
     }
 
     if (window["WebSocket"]) {
@@ -81,9 +70,9 @@ window.onload = function () {
         conn.onmessage = function (evt) {
             var messages = evt.data.split('\n');
             for (var i = 0; i < messages.length; i++) {
-                //TODO store message localy
                 appendChat(messages[i], "bot");
             }
+            unlock();
         };
     } else {
         appendChat("<b>Your browser does not support WebSockets.</b>", "bot");
@@ -105,9 +94,15 @@ window.onload = function () {
         newActive.setAttribute("id", "bot-active")
         document.getElementById("log").innerHTML = ""
         var botID = parseInt(newActive.getAttribute("botid"))
-        for(var index in messages[botID]){
+        for (var index in messages[botID]) {
             var msg = messages[botID][index]
-            appendChat(msg["Content"],msg["Sender"]===1?"user":"bot")
+            appendChat(msg["Content"], msg["Sender"] === 1 ? "user" : "bot")
         }
     }
+
+    function scrollChatToBottom() {
+        var doScroll = log.scrollTop > log.scrollHeight - log.clientHeight - 1;
+        log.scrollTop = log.scrollHeight - log.clientHeight;
+    }
+    scrollChatToBottom();
 };
