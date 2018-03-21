@@ -6,8 +6,7 @@ from .patterns import patterns_for_category
 from .predefined_answers import Category
 import nltk
 import random
-import numpy
-import tensorflow
+import tensorflow as tf
 import tflearn
 import pickle
 
@@ -60,13 +59,12 @@ def train_model():
         training_data.append([bag_of_words, output_row])
 
     random.shuffle(training_data)
-    training_data = numpy.array(training_data)
 
-    train_x = list(training_data[:, 0])
-    train_y = list(training_data[:, 1])
+    train_x = [row[0] for row in training_data]
+    train_y = [row[1] for row in training_data]
 
     # Reset TensorFlow graph
-    tensorflow.reset_default_graph()
+    tf.reset_default_graph()
 
     # Build neural network
     net = tflearn.input_data(shape=[None, len(train_x[0])])
