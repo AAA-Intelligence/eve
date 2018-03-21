@@ -23,4 +23,4 @@ def get_predefined_answer(category: Category) -> str:
     # TODO: Implement
     # TODO: Determine how to pass values for formatting, like bot name or gender
 
-    return 'TODO: Implement (Category {})'.format(category.name)
+    return repr(category)
