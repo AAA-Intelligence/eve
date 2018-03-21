@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, NamedTuple
 from .predefined_answers import Category, get_predefined_answer
 from .data import Request
 from .logger import logger
@@ -8,7 +8,6 @@ import tensorflow
 import tflearn
 import nltk
 import pickle
-import numpy
 
 dir = path.dirname(__file__)
 
@@ -48,6 +47,13 @@ stemmer = GermanStemmer()
 # Threshold for pattern recognition
 ERROR_THRESHOLD = 0.9
 
+# Prediction result class
+
+
+class PredictionResult(NamedTuple):
+    category: Category
+    probability: float
+
 
 def detect_category(request: Request) -> Optional[Category]:
     """
@@ -71,18 +77,14 @@ def detect_category(request: Request) -> Optional[Category]:
                 bag[i] = 1
 
     # Predict category
-    results = model.predict([numpy.array(bag)])[0]
-    results = [
-        (Category(category), probability)
-        for category, probability in enumerate(results)
-        if probability > ERROR_THRESHOLD
-    ]
-    results.sort(key=lambda x: x[1], reverse=True)
+    results = model.predict([bag])[0]
+    results = [PredictionResult(Category(i), p) for i, p in enumerate(results)]
+    results.sort(key=lambda result: result.probability, reverse=True)
 
     logger.debug('Results: {}'.format(results))
 
-    if len(results) > 0:
-        return results[0][0]
+    if len(results) > 0 and results[0].probability > ERROR_THRESHOLD:
+        return results[0].category
 
     return None
 
