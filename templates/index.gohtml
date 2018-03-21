@@ -6,9 +6,22 @@
         <script type="text/javascript" src="/static/ws.js"></script>
    </head>
    <body>
-        <div class="chat-list">
+        <div class="content">
+		<div class="chat-list">
+			<div class="topBar">
+			<div id="title">
+				EVE - Datingbots
+			</div>
+			<div id="username">
+				{{.User.Name}} (Logout)
+			</div>
+			<div id="newBot">
+				<form method="post" action="/createBot">
+                <input id="newBotButton" type="submit" value=""/>
+			</div>
+            </form></div>
+			
         {{if .ActiveBot}}
-            <h2>Meine Chats:</h2>
             <ul class="bot-list">
             {{range $bot := .Bots}}
                 <li class="bot" id="{{if eq $.ActiveBot.ID $bot.ID}}bot-active{{end}}" botID="{{$bot.ID}}">
@@ -16,18 +29,17 @@
                 </li>
             {{end}}
         {{end}}
-            <form method="post" action="/createBot">
-                <input type="submit" value="Bot erstellen"/>
-            </form>
             </ul>
         </div>
         {{if .ActiveBot}}
         <div class="chat">
-            <p>User: {{.User.Name}}</p>
-            <p>Bot: {{.ActiveBot.Name}}</p>
+            <div class="topBar2">
+			<img src="http://via.placeholder.com/150x150">
+            <div id="botname">Bot: <b>{{.ActiveBot.Name}}</b></div>
+			</div>
             <div id="log">
                 {{range $msg := .Messages}}
-                <div class="msg {{if eq $msg.Sender 1}}user{{else}}bot{{end}}">{{$msg.Content}}</div>
+                <p class="msg {{if eq $msg.Sender 1}}user{{else}}bot{{end}}">{{$msg.Content}}</p>
                 {{end}}
             </div>
             <form id="form" autocomplete="off">
@@ -35,6 +47,7 @@
                 <input type="submit" value="Send" id="send"/>
             </form>
         </div>
+		</div>
         {{end}}
    </body>
 </html>

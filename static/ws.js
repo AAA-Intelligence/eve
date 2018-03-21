@@ -20,8 +20,8 @@ window.onload = function () {
     }
 
     function toMsg(text, style) {
-        var item = document.createElement("div");
-        item.innerHTML = "<div class=\"msg " + style + "\">" + text + "</div>";
+        var item = document.createElement("p");
+        item.innerHTML = "<p class=\"msg " + style + "\">" + text + "</p>";
         return item
     }
     form.onsubmit = function () {
@@ -80,9 +80,9 @@ window.onload = function () {
 
     function escapeHtml(html) {
         var text = document.createTextNode(html);
-        var div = document.createElement('div');
-        div.appendChild(text);
-        return div.innerHTML;
+        var p = document.createElement('p');
+        p.appendChild(text);
+        return p.innerHTML;
     }
 
     function changeActiveBot(newActive) {
