@@ -47,10 +47,12 @@ def run_loop():
     keyboard interrupt (Ctrl + C).
     """
 
-    logger.debug('Starting loop')
+    logger.info('Starting request loop')
     while True:
         try:
+            logger.info('Waiting for request input')
             json_data = input()
+            logger.info('Received request, parsing')
             request = parse_request(json_data)
             response = handle_request(request)
             print(json.dumps(response))
