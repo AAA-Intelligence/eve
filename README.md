@@ -1,7 +1,7 @@
 # Project EVE
 Interactive Bot Chat
 
-# how to run
+# How to run
 ## Installation
 
 ```
