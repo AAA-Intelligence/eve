@@ -16,7 +16,7 @@ def answers_for_category(category: Category) -> List[str]:
     all defined answers into memory which will be re-used by subsequent calls.
 
     Args:
-        category: The category to returns answers for.
+        category: The category to retrieve answers for.
 
     Raises:
         FileNotFoundError:
