@@ -2,47 +2,24 @@ from typing import Optional, NamedTuple
 from .predefined_answers import Category, get_predefined_answer
 from .data import Request
 from .logger import logger
+from .train_patterns_model import load_model
 from os import path
 from nltk.stem.snowball import GermanStemmer
-import tensorflow
-import tflearn
+from keras.preprocessing.text import Tokenizer
+import numpy as np
+import tensorflow as tf
 import nltk
 import pickle
 
 dir = path.dirname(__file__)
 
 
-def load_model(train_x, train_y):
-    # Reset TensorFlow graph
-    tensorflow.reset_default_graph()
-
-    # Build neural network
-    net = tflearn.input_data(shape=[None, len(train_x[0])])
-    net = tflearn.fully_connected(net, 8)
-    net = tflearn.fully_connected(net, 8)
-    net = tflearn.fully_connected(net, len(train_y[0]), activation='softmax')
-    net = tflearn.regression(net)
-
-    # Define model and setup tensorboard
-    model = tflearn.DNN(net, tensorboard_dir='tflearn_logs')
-    # Load model
-    model.load(path.join(dir, 'models', 'patterns.tflearn'))
-
-    return model
-
-
-def load_data():
-    # Load data dump
-    with open(path.join(dir, 'models', 'patterns.dump'), 'rb') as f:
-        return pickle.load(f)
-
-
-# Load data
-data = load_data()
-# Load model
-model = load_model(data['train_x'], data['train_y'])
+# Load model and data
+model, data = load_model()
 # Create German snowball stemmer
 stemmer = GermanStemmer()
+# Create Keras Tokenizer
+tokenizer = Tokenizer(len(data.total_stems))
 
 # Threshold for pattern recognition
 ERROR_THRESHOLD = 0.9
@@ -67,15 +44,18 @@ def detect_category(request: Request) -> Optional[Category]:
     # Tokenize pattern
     words = nltk.word_tokenize(request.text)
     stems = [stemmer.stem(word.lower()) for word in words]
-    total_stems = data['total_stems']
+    total_stems = data.total_stems
     bag = [0] * len(total_stems)
     for stem in stems:
         for i, s in enumerate(total_stems):
             if s == stem:
                 bag[i] = 1
 
+    # Convert to matrix
+    input_data = np.asarray([bag])
+
     # Predict category
-    results = model.predict([bag])[0]
+    results = model.predict(input_data)[0]
     results = [PredictionResult(Category(i), p) for i, p in enumerate(results)]
     results.sort(key=lambda result: result.probability, reverse=True)
 

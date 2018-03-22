@@ -1,12 +1,15 @@
-from typing import List, Tuple, Set
+from typing import List, Tuple, Set, NamedTuple
 from os import path, mkdir
 from pathlib import Path
 from nltk.stem.snowball import GermanStemmer
 from .patterns import patterns_for_category
 from .predefined_answers import Category
+from keras.models import Sequential, model_from_json
+from keras.layers import Dense, Dropout, Activation
 import nltk
 import random
 import tensorflow as tf
+import numpy as np
 import pickle
 
 dir = path.join(path.dirname(__file__), 'models')
@@ -19,6 +22,12 @@ if not path.isdir(dir):
 punctuation = ['.', ',', ';', '?', '!', '-', '(', ')', '{', '}', '/', '\\']
 # Create a word stemmer based on the snowball stemming algorithm for the German language
 stemmer = GermanStemmer()
+
+
+class TrainingData(NamedTuple):
+    total_stems: List[str]
+    train_x: List[int]
+    train_y: List[int]
 
 
 def remove_punctuation(text: str) -> str:
@@ -50,33 +59,51 @@ def train_model():
     # for training our TensorFlow model.
     # For this, we tell TensorFlow, by defining this array, which stems can lead
     # to which patterns.
-    training_data = []
+    train_x = []
+    train_y = []
     for category, stems in patterns:
         bag_of_words = [1 if word in stems else 0 for word in words]
         output_row = [0] * len(Category)
         output_row[category] = 1
-        training_data.append([bag_of_words, output_row])
+        train_x.append(bag_of_words)
+        train_y.append(output_row)
 
-    random.shuffle(training_data)
+    # Convert lists to numpy arrays
+    train_x = np.asarray(train_x)
+    train_y = np.asarray(train_y)
 
-    train_x = [row[0] for row in training_data]
-    train_y = [row[1] for row in training_data]
+    # Define neural network
+    model = Sequential()
+    model.add(Dense(512, input_shape=(len(train_x[0]),), activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(256, activation='sigmoid'))
+    model.add(Dropout(0.5))
+    model.add(Dense(len(train_y[0]), activation='softmax'))
 
-    identity_feature_column = tf.feature_column.categorical_column_with_identity(
-        key='category', num_buckets=len(Category))
-    numeric_feature_column = tf.feature_column.numeric_column(
-        key='bow', dtype=tf.int32)
+    # Compile neural network
+    model.compile(loss='categorical_crossentropy',
+                  optimizer='adam', metrics=['accuracy'])
+    # Train neural network
+    model.fit(train_x, train_y, batch_size=32, epochs=1000,
+              verbose=1, validation_split=0.1, shuffle=True)
 
-    # Define classifier
-    classifier = tf.estimator.LinearClassifier(
-        [identity_feature_column, numeric_feature_column], model_dir=dir)
-    # Start training
-    classifier.train(lambda: ({'bow': train_x, 'category': train_y}, [0]*680))
+    # Save model
+    with open(path.join(dir, 'patterns-model.json'), 'w') as f:
+        f.write(model.to_json())
+    model.save_weights(path.join(dir, 'patterns-weights.h5'))
 
     # Save total_stems and training data
     with open(path.join(dir, 'patterns.dump'), 'wb') as f:
-        pickle.dump({
-            'total_stems': words,
-            'train_x': train_x,
-            'train_y': train_y
-        }, f)
+        pickle.dump(TrainingData(words, train_x, train_y), f)
+
+
+def load_model() -> Tuple[Sequential, TrainingData]:
+    with open(path.join(dir, 'patterns.dump'), 'rb') as f:
+        data = pickle.load(f)
+
+    with open(path.join(dir, 'patterns-model.json')) as f:
+        model = model_from_json(f.read())
+
+    model.load_weights(path.join(dir, 'patterns-weights.h5'))
+
+    return model, data
