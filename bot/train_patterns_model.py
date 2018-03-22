@@ -18,23 +18,29 @@ if not path.exists(dir):
 if not path.isdir(dir):
     raise Exception('Models path is not a directory: {}'.format(dir))
 
-# Define all punctuation we want to ignore in texts
-punctuation = ['.', ',', ';', '?', '!', '-', '(', ')', '{', '}', '/', '\\']
 # Create a word stemmer based on the snowball stemming algorithm for the German language
 stemmer = GermanStemmer()
 
 
 class TrainingData(NamedTuple):
+    """
+    Data type for training data that will be saved after training,
+    used by the pattern recognizer to access the list of all stems
+    """
     total_stems: List[str]
     train_x: List[int]
     train_y: List[int]
 
 
-def remove_punctuation(text: str) -> str:
-    return ''.join(c for c in text if c not in punctuation)
-
-
 def train_model():
+    """
+    Trains a neural network with the defined patterns and categories.
+    Patterns will be split into words, stemmed by a German snowball stemmer and
+    indexed by saving all stems in a list of total stems and assigning indices.
+    The trained model will be saved in the models directory and can be loaded
+    by the pattern recognizer using the load_model function.
+    """
+
     total_stems: Set[str] = set()
     patterns: List[Tuple[Category, Set[str]]] = []
 
@@ -98,6 +104,15 @@ def train_model():
 
 
 def load_model() -> Tuple[Sequential, TrainingData]:
+    """
+    Loads a pre-trained model from disk, as well as the training data dump.
+
+    Returns:
+        A pre-trained model loaded from disk as well as an instance of
+        TrainingData, containg the data used for training and the list of total
+        stems used.
+    """
+
     with open(path.join(dir, 'patterns.dump'), 'rb') as f:
         data = pickle.load(f)
 

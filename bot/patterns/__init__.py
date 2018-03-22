@@ -7,6 +7,22 @@ dir = path.dirname(__file__)
 
 
 def patterns_for_category(category: Category) -> Iterator[str]:
+    """
+    Opens the pattern definition file for the specified category if possible
+    and returns an iterator for the pattern's lines.
+
+    Args:
+        category: The category to load patterns for.
+
+    Raises:
+        FileNotFoundError:
+            Raised if no pattern file is found for the specified category.
+
+    Returns:
+        A string iterator for iterating over all lines defined by the pattern
+        file.
+    """
+
     p = Path(dir, category.name + '.txt')
     if not p.is_file():
         raise FileNotFoundError(
@@ -14,14 +30,3 @@ def patterns_for_category(category: Category) -> Iterator[str]:
     with p.open(encoding='utf-8') as f:
         for line in f:
             yield line
-
-
-def get_patterns() -> Dict[Category, List[str]]:
-    patterns = {}
-    # Iterate over all defined categories
-    for category in Category:
-        # Store all patterns defined for the category under the respective category key
-        # in the patterns dictionary as a list
-        patterns[category] = list(patterns_for_category(category))
-
-    return patterns

@@ -22,6 +22,9 @@ ERROR_THRESHOLD = 0.9
 
 
 class PredictionResult(NamedTuple):
+    """
+    Data type for prediction results, used by detect_category
+    """
     category: Category
     probability: float
 
@@ -85,6 +88,10 @@ def answer_for_pattern(request: Request) -> Optional[str]:
 
 
 def demo():
+    """
+    Demo mode for the pattern recognizer
+    """
+
     request = Request(
         text=input('Please enter a question: '),
         mood=0.0,
