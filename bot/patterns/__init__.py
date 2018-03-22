@@ -1,7 +1,7 @@
 from typing import Dict, List, Iterator
 from os import path
 from pathlib import Path
-from ..predefined_answers import Category
+from ..answer_categories import Category
 
 dir = path.dirname(__file__)
 
@@ -29,4 +29,4 @@ def patterns_for_category(category: Category) -> Iterator[str]:
             'No pattern definition file found for category {}'.format(category))
     with p.open(encoding='utf-8') as f:
         for line in f:
-            yield line
+            yield line.rstrip('\n')
