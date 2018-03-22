@@ -6,6 +6,7 @@ from .logger import logger
 from .train_patterns_model import load_model
 from os import path
 from nltk.stem.snowball import GermanStemmer
+from datetime import date
 import numpy as np
 import tensorflow as tf
 import nltk
@@ -84,7 +85,7 @@ def answer_for_pattern(request: Request) -> Optional[str]:
     category = detect_category(request)
     if category is not None:
         # Pattern found, retrieve pre-defined answer
-        return get_static_answer(category)
+        return get_static_answer(category, request)
 
     return None
 
@@ -96,11 +97,13 @@ def demo():
 
     request = Request(
         text=input('Please enter a question: '),
+        previous_text='Ich bin ein Baum',
         mood=0.0,
         affection=0.0,
         bot_gender=0,
         bot_name='Lara',
-        previous_text='Ich bin ein Baum'
+        bot_birthdate=date(1995, 10, 5),
+        bot_favorite_color='grün'
     )
     answer = answer_for_pattern(request)
     if answer is None:

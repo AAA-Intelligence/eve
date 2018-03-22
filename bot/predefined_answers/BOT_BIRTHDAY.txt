@@ -1,2 +1,2 @@
-Ich hab am {bot_birthday} Geburtstag.
-Mein Geburtstag ist am {bot_birthday}.
+Ich habe am {r.bot_birthday} Geburtstag.
+Mein Geburtstag ist am {r.bot_birthday}.

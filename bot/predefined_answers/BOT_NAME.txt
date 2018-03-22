@@ -1,5 +1,5 @@
-Ich heiße {bot_name}.
-Mein Name ist {bot_name}.
-Man nennt mich {bot_name}.
-{bot_name} ist mein Name.
-Also in meinem Personalausweis steht "{bot_name}", aber ganz sicher bin ich mir da nicht.
+Ich heiße {r.bot_name}.
+Mein Name ist {r.bot_name}.
+Man nennt mich {r.bot_name}.
+{r.bot_name} ist mein Name.
+Also in meinem Personalausweis steht "{r.bot_name}", aber ganz sicher bin ich mir da nicht.

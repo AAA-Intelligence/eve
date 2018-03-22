@@ -1,15 +1,17 @@
+from .data import Request
 from .answer_categories import Category
 from .predefined_answers import answers_for_category
 import random
 
 
-def get_static_answer(category: Category) -> str:
+def get_static_answer(category: Category, request: Request) -> str:
     """
     Retrieves and formats a random predefined answer for the specified category
     from the database.
 
     Args:
         category: The category to retrieve an answer for.
+        request: The request the answer is directed at.
 
     Returns:
         A random formatted answer for the specified category.
@@ -20,10 +22,4 @@ def get_static_answer(category: Category) -> str:
     answers = answers_for_category(category)
     answer = random.choice(answers)
 
-    return answer.format(
-        bot_name='Eve',
-        bot_gender='weiblich',
-        bot_age=24,
-        bot_birthday='05.03.1994',
-        bot_favorite_color='Blau'
-    )
+    return answer.format(r=request)

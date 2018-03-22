@@ -1,1 +1,1 @@
-Was ist das denn für eine Frage? Natürlich bin ich {bot_gender}.
+Was ist das denn für eine Frage? Natürlich bin ich {r.bot_gender}.
