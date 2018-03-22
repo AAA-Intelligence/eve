@@ -5,7 +5,6 @@ from .logger import logger
 from .train_patterns_model import load_model
 from os import path
 from nltk.stem.snowball import GermanStemmer
-from keras.preprocessing.text import Tokenizer
 import numpy as np
 import tensorflow as tf
 import nltk
@@ -18,9 +17,6 @@ dir = path.dirname(__file__)
 model, data = load_model()
 # Create German snowball stemmer
 stemmer = GermanStemmer()
-# Create Keras Tokenizer
-tokenizer = Tokenizer(len(data.total_stems))
-
 # Threshold for pattern recognition
 ERROR_THRESHOLD = 0.9
 
