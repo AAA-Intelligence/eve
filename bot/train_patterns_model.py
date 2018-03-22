@@ -3,7 +3,7 @@ from os import path, mkdir
 from pathlib import Path
 from nltk.stem.snowball import GermanStemmer
 from .patterns import patterns_for_category
-from .predefined_answers import Category
+from .static_answers import Category
 from keras.models import Sequential, model_from_json
 from keras.layers import Dense, Dropout, Activation
 import nltk

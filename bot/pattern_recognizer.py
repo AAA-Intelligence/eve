@@ -1,5 +1,5 @@
 from typing import Optional, NamedTuple
-from .predefined_answers import Category, get_predefined_answer
+from .static_answers import Category, get_static_answer
 from .data import Request
 from .logger import logger
 from .train_patterns_model import load_model
@@ -82,7 +82,7 @@ def answer_for_pattern(request: Request) -> Optional[str]:
     category = detect_category(request)
     if category is not None:
         # Pattern found, retrieve pre-defined answer
-        return get_predefined_answer(category)
+        return get_static_answer(category)
 
     return None
 

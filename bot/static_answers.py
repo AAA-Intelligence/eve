@@ -8,7 +8,7 @@ class Category(IntEnum):
     BOT_NAME = 2
 
 
-def get_predefined_answer(category: Category) -> str:
+def get_static_answer(category: Category) -> str:
     """
     Retrieves and formats a random predefined answer for the specified category
     from the database.
