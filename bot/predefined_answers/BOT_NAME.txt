@@ -1,0 +1,4 @@
+Ich heiße {bot_name}.
+Mein Name ist {bot_name}.
+Man nennt mich {bot_name}.
+Wie ich heiße? {bot_name} ist mein Name!

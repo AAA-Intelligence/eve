@@ -1,11 +1,6 @@
-from enum import IntEnum, unique
-
-
-@unique
-class Category(IntEnum):
-    JOKE = 0
-    BOT_AGE = 1
-    BOT_NAME = 2
+from .answer_categories import Category
+from .predefined_answers import answers_for_category
+import random
 
 
 def get_static_answer(category: Category) -> str:
@@ -20,7 +15,12 @@ def get_static_answer(category: Category) -> str:
         A random formatted answer for the specified category.
     """
 
-    # TODO: Implement
     # TODO: Determine how to pass values for formatting, like bot name or gender
 
-    return repr(category)
+    answers = answers_for_category(category)
+    answer = random.choice(answers)
+
+    return answer.format(
+        bot_name='Eve',
+        bot_age=24
+    )

@@ -1,5 +1,6 @@
 from typing import Optional, NamedTuple
-from .static_answers import Category, get_static_answer
+from .static_answers import get_static_answer
+from .answer_categories import Category
 from .data import Request
 from .logger import logger
 from .train_patterns_model import load_model

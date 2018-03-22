@@ -1,7 +1,7 @@
 from typing import Dict, List, Iterator
 from os import path
 from pathlib import Path
-from ..static_answers import Category
+from ..answer_categories import Category
 
 dir = path.dirname(__file__)
 
