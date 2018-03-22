@@ -20,8 +20,7 @@ def handle_request(request: Request) -> Response:
 
     logger.debug('Handling request')
 
-    time.sleep(1)
-    (mood, affection) = analyze(request.text)
+    mood, affection = analyze(request.text)
 
     answer = answer_for_pattern(request)
     if answer is None:
@@ -56,6 +55,7 @@ def run_loop():
             json_data = input()
             logger.info('Received request, parsing')
             request = parse_request(json_data)
+            logger.info('Handling request: {}'.format(request))
             response = handle_request(request)
             print(json.dumps(response._asdict()))
         except EOFError:
