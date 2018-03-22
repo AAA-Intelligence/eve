@@ -1,0 +1,15 @@
+Wie ist mein Name?
+Wie heiße ich?
+Wie alt bin ich?
+Wie heißt Hans Peter?
+Wie alt ist Hans Peter?
+Erzähle mir keinen Witz
+Erzähl mir bloß keinen Witz
+Ich möchte keinen Witz hören
+Dein Alter interessiert mich nicht
+Ich bin 24 Jahre alt.
+Ich bin noch nicht sehr alt.
+Ich bin ein Mann.
+Ich bin eine Frau.
+Ich bin männlich.
+Ich bin weiblich.

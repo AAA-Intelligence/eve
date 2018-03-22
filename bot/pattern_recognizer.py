@@ -56,7 +56,8 @@ def detect_category(request: Request) -> Optional[Category]:
 
     # Predict category
     results = model.predict(input_data)[0]
-    results = [PredictionResult(Category(i), p) for i, p in enumerate(results)]
+    results = [PredictionResult(Category(i), p)
+               for i, p in enumerate(results) if i > 0]
     results.sort(key=lambda result: result.probability, reverse=True)
 
     logger.debug('Results: {}'.format(results))

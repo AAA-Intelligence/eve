@@ -35,6 +35,6 @@ def answers_for_category(category: Category) -> List[str]:
             'No answer definition file found for category {}'.format(category))
 
     with p.open(encoding='utf-8') as f:
-        answers = [line for line in f]
+        answers = f.read().splitlines()
         cache[category] = answers
         return answers
