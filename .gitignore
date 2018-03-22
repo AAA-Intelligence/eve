@@ -13,9 +13,10 @@ crashlytics-build.properties
 fabric.properties
 .idea/
 *.exe
-eve
+*.exe~
 *.pyc
 *.log
 
 tflearn_logs/
 bot/models/
+venv/*

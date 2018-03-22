@@ -4,6 +4,7 @@ from .mood_analyzer import analyze
 from .pattern_recognizer import answer_for_pattern
 from .text_processor import generate_answer
 import json
+import time
 
 
 def handle_request(request: Request) -> Response:
@@ -19,6 +20,7 @@ def handle_request(request: Request) -> Response:
 
     logger.debug('Handling request')
 
+    time.sleep(1)
     (mood, affection) = analyze(request.text)
 
     answer = answer_for_pattern(request)
@@ -55,7 +57,7 @@ def run_loop():
             logger.info('Received request, parsing')
             request = parse_request(json_data)
             response = handle_request(request)
-            print(json.dumps(response))
+            print(json.dumps(response._asdict()))
         except EOFError:
             # Stdin pipe has been closed by Go
             logger.info('EOF detected, aborting request loop')

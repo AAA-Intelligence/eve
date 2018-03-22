@@ -20,7 +20,7 @@ type MessageRequest struct {
 func webSocket(w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Print("upgrade:", err)
+		log.Println("error upgrading websocket:", err)
 		return
 	}
 	defer c.Close()
@@ -28,7 +28,9 @@ func webSocket(w http.ResponseWriter, r *http.Request) {
 		var request MessageRequest
 		err := c.ReadJSON(&request)
 		if err != nil {
-			//log.Println("error reading:", err)
+			if !websocket.IsCloseError(err, websocket.CloseGoingAway) {
+				log.Println("error reading:", err)
+			}
 			break
 		}
 		user := GetUserFromRequest(r)
