@@ -7,7 +7,6 @@ from .predefined_answers import Category
 import nltk
 import random
 import tensorflow as tf
-import tflearn
 import pickle
 
 dir = path.join(path.dirname(__file__), 'models')
@@ -63,22 +62,16 @@ def train_model():
     train_x = [row[0] for row in training_data]
     train_y = [row[1] for row in training_data]
 
-    # Reset TensorFlow graph
-    tf.reset_default_graph()
+    identity_feature_column = tf.feature_column.categorical_column_with_identity(
+        key='category', num_buckets=len(Category))
+    numeric_feature_column = tf.feature_column.numeric_column(
+        key='bow', dtype=tf.int32)
 
-    # Build neural network
-    net = tflearn.input_data(shape=[None, len(train_x[0])])
-    net = tflearn.fully_connected(net, 8)
-    net = tflearn.fully_connected(net, 8)
-    net = tflearn.fully_connected(net, len(train_y[0]), activation='softmax')
-    net = tflearn.regression(net)
-
-    # Define model and setup tensorboard
-    model = tflearn.DNN(net, tensorboard_dir='tflearn_logs')
-
-    # Start training (apply gradient descent algorithm)
-    model.fit(train_x, train_y, n_epoch=1000, batch_size=8, show_metric=True)
-    model.save(path.join(dir, 'patterns.tflearn'))
+    # Define classifier
+    classifier = tf.estimator.LinearClassifier(
+        [identity_feature_column, numeric_feature_column], model_dir=dir)
+    # Start training
+    classifier.train(lambda: ({'bow': train_x, 'category': train_y}, [0]*680))
 
     # Save total_stems and training data
     with open(path.join(dir, 'patterns.dump'), 'wb') as f:

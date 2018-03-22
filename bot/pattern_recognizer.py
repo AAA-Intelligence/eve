@@ -47,8 +47,6 @@ stemmer = GermanStemmer()
 # Threshold for pattern recognition
 ERROR_THRESHOLD = 0.9
 
-# Prediction result class
-
 
 class PredictionResult(NamedTuple):
     category: Category
@@ -121,6 +119,6 @@ def demo():
     )
     answer = answer_for_pattern(request)
     if answer is None:
-        logger.debug('No answer found')
+        print('No answer found')
     else:
-        logger.debug('Answer: {}'.format(answer))
+        print('Answer: {}'.format(answer))
