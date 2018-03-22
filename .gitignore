@@ -16,4 +16,7 @@ fabric.properties
 *.exe~
 *.pyc
 *.log
+
+tflearn_logs/
+bot/models/
 venv/*

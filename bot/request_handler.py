@@ -1,7 +1,7 @@
 from .logger import logger
 from .data import Request, Response, parse_request
 from .mood_analyzer import analyze
-from .pattern_recognizer import recognize_pattern
+from .pattern_recognizer import answer_for_pattern
 from .text_processor import generate_answer
 import json
 import time
@@ -16,9 +16,6 @@ def handle_request(request: Request) -> Response:
 
     Returns:
         The response generated for the specified request.
-
-    Raises:
-        NotImplementedError: Raised because this function is yet to be implemented
     """
 
     logger.debug('Handling request')
@@ -26,7 +23,7 @@ def handle_request(request: Request) -> Response:
     time.sleep(1)
     (mood, affection) = analyze(request.text)
 
-    answer = recognize_pattern(request)
+    answer = answer_for_pattern(request)
     if answer is None:
         # No pattern found, fall back to generative model
         answer = generate_answer(request, mood, affection)
@@ -52,20 +49,22 @@ def run_loop():
     keyboard interrupt (Ctrl + C).
     """
 
-    logger.debug('Starting loop')
+    logger.info('Starting request loop')
     while True:
         try:
+            logger.info('Waiting for request input')
             json_data = input()
+            logger.info('Received request, parsing')
             request = parse_request(json_data)
             response = handle_request(request)
             print(json.dumps(response._asdict()))
         except EOFError:
             # Stdin pipe has been closed by Go
-            logger.info("instance closed")
+            logger.info('EOF detected, aborting request loop')
             return
         except KeyboardInterrupt:
             # Interrupt requested by developer
-            logger.info("instance closed")
+            logger.info('Keyboard interrupt detected, aborting request loop')
             return
         except Exception as ex:
             logger.error('{}: {}'.format(type(ex).__name__, str(ex)))

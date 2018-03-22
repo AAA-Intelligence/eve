@@ -1,8 +1,11 @@
-from enum import Enum
+from enum import IntEnum, unique
 
 
-class Category(Enum):
+@unique
+class Category(IntEnum):
     JOKE = 0
+    BOT_AGE = 1
+    BOT_NAME = 2
 
 
 def get_predefined_answer(category: Category) -> str:
@@ -20,4 +23,4 @@ def get_predefined_answer(category: Category) -> str:
     # TODO: Implement
     # TODO: Determine how to pass values for formatting, like bot name or gender
 
-    return "TODO: Implement"
+    return repr(category)
