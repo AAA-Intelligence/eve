@@ -1,0 +1,3 @@
+Meine Lieblingsfarbe ist {bot_favorite_color}, und deine?
+Meine Lieblingsfarbe ist {bot_favorite_color}, danke der Nachfrage!
+Also mir gefällt ja die Farbe {bot_favorite_color} am meisten.

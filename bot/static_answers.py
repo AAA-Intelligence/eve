@@ -22,5 +22,8 @@ def get_static_answer(category: Category) -> str:
 
     return answer.format(
         bot_name='Eve',
-        bot_age=24
+        bot_gender='weiblich',
+        bot_age=24,
+        bot_birthday='05.03.1994',
+        bot_favorite_color='Blau'
     )

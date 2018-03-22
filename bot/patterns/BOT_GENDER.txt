@@ -1,0 +1,11 @@
+Was ist dein Geschlecht?
+Bist du ein Mann oder eine Frau?
+Bist du männlich oder weiblich?
+Bist du ein Mann?
+Bist du eine Frau?
+Bist du männlich?
+Bist du weiblich?
+Du bist ein Mann, oder?
+Du bist eine Frau, oder?
+Du bist männlich, oder?
+Du bist weiblich, oder?
