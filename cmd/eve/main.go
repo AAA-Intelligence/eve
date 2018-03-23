@@ -2,17 +2,24 @@ package main
 
 import (
 	"log"
-
-	"github.com/AAA-Intelligence/eve/manager"
+	"os"
 
 	"github.com/AAA-Intelligence/eve/db"
+	"github.com/AAA-Intelligence/eve/manager"
 )
+
+const dbFile = "eve.sqlite"
 
 func main() {
 	config := loadConfig()
-	err := db.Connect("eve.sqlite")
+	// check if db file exists
+	if _, err := os.Stat(dbFile); err != nil {
+		log.Fatalln("cannot find database file:", dbFile)
+		return
+	}
+	err := db.Connect(dbFile)
 	if err != nil {
-		log.Panic("error connecting to database: ", err)
+		log.Fatalln("error connecting to database: ", err)
 		return
 	}
 	manager.StartWebServer(config.Host, config.HTTP)

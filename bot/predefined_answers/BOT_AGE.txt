@@ -1,0 +1,3 @@
+Ich bin {r.bot_age} Jahre alt.
+Ich bin {r.bot_age} Jahre jung.
+Momentan bin ich {r.bot_age} Jahre alt.

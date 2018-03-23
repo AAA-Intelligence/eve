@@ -3,7 +3,6 @@ package main
 import "flag"
 
 // Config configures web server
-// used in cmd package
 type Config struct {
 
 	// Host e.g. google.de, mypage.com, localhost

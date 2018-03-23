@@ -116,12 +116,22 @@ func GetUserForSession(sessionKey string) *User {
 	return &user
 }
 
+// Gender defines the gender of a bot to be male or female
+type Gender int
+
+const (
+	// Male is the constant that defines that a bot is male (value = 0)
+	Male = Gender(0)
+	// Female is the constant that defines that a bot is female (value = 1)
+	Female = Gender(1)
+)
+
 // Bot represents database entry of a bot
 type Bot struct {
 	ID        int
 	Name      string
 	Image     string
-	Gender    string
+	Gender    Gender
 	User      int
 	Affection float64
 	Mood      float64
@@ -167,44 +177,66 @@ type Message struct {
 // MessageMaxLength defines the maximum message length
 const MessageMaxLength = 200
 
-// StoreMessage saves message in database
-func StoreMessage(userID int, msg Message) error {
-	if len(msg.Content) > MessageMaxLength {
-		return ErrMessageToLong
-	}
-	exists, err := rowExists("SELECT * FROM Bot WHERE BotID=$1 AND User=$2", msg.Bot, userID)
+// StoreMessages saves message in database
+func StoreMessages(userID, botID int, msgs []Message) error {
+	// check if bot belongs to user
+	exists, err := rowExists("SELECT * FROM Bot WHERE BotID=$1 AND User=$2", botID, userID)
 	if err != nil {
 		log.Println("cannot check for bot:", err)
 		return ErrInternalServerError
 	} else if !exists {
 		return ErrBotDoesNotBelongToUser
 	}
-	_, err = dbConection.db.Exec(`
-		INSERT INTO Message(Bot,Sender,Timestamp,Content,Rating)
-					 VALUES($1,$2,$3,$4,$5)`, msg.Bot, int(msg.Sender), msg.Timestamp, msg.Content, msg.Rating)
+
+	tx, err := dbConection.db.Begin()
 	if err != nil {
-		log.Println("cannot store message:", err)
+		log.Fatal(err)
+	}
+	stmt, err := tx.Prepare(`
+		INSERT INTO Message(Bot,Sender,Timestamp,Content,Rating)
+					 VALUES($1,$2,$3,$4,$5)`)
+	if err != nil {
+		tx.Rollback()
+		return ErrInternalServerError
+	}
+	defer stmt.Close()
+	for _, m := range msgs {
+		if len(m.Content) > MessageMaxLength {
+			tx.Rollback()
+			return ErrMessageToLong
+		}
+		_, err := stmt.Exec(botID, m.Sender, m.Timestamp, m.Content, m.Rating)
+		if err != nil {
+			tx.Rollback()
+			log.Println("cannot store message:", err)
+			return ErrInternalServerError
+		}
+	}
+	err = tx.Commit()
+	if err != nil {
+		log.Println("cannot commit changes:", err)
 		return ErrInternalServerError
 	}
 	return nil
 }
 
 // GetMessagesForBot returns a list of all messages, that the user and bot sent each other
-func GetMessagesForBot(user, bot int) (*[]Message, error) {
+func GetMessagesForBot(bot int) (*[]Message, error) {
 	rows, err := dbConection.db.Query(`
 		SELECT 	Timestamp,
 				Content,
+				Sender,
 				Rating 
 		FROM Message 
-		WHERE Bot=$1 AND User=$2`, bot, user)
+		WHERE Bot=$1`, bot)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var messages []Message
+	messages := []Message{}
 	var cursor Message
 	for rows.Next() {
-		if err := rows.Scan(&cursor.Timestamp, &cursor.Content, &cursor.Rating); err == nil {
+		if err := rows.Scan(&cursor.Timestamp, &cursor.Content, &cursor.Sender, &cursor.Rating); err == nil {
 			messages = append(messages, cursor)
 		} else {
 			log.Println(err)
@@ -280,6 +312,7 @@ func GetMessagesForUser(user *User) (*map[int][]Message, error) {
 	return &messages, nil
 }
 
+// checks if the given query returns at least one row
 func rowExists(query string, args ...interface{}) (bool, error) {
 	var exists bool
 	query = fmt.Sprintf("SELECT exists (%s)", query)
@@ -288,4 +321,25 @@ func rowExists(query string, args ...interface{}) (bool, error) {
 		return false, err
 	}
 	return exists, nil
+}
+
+// GetBot returns bot entry from database if bot belongs to user
+func GetBot(botID, userID int) (*Bot, error) {
+	bot := Bot{
+		ID:   botID,
+		User: userID,
+	}
+	err := dbConection.db.QueryRow(`
+		SELECT	b.Name,
+				b.Image,
+				b.Gender,
+				b.Affection,
+				b.Mood
+		FROM	Bot b
+		WHERE	b.BotID = $1 AND b.User = $2`, bot.ID, bot.User).Scan(
+		&bot.Name, &bot.Image, &bot.Gender, &bot.Affection, &bot.Mood)
+	if err != nil {
+		return nil, err
+	}
+	return &bot, nil
 }
