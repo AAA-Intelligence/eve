@@ -22,14 +22,14 @@
             </form></div>
 			
         {{if .ActiveBot}}
-            <ul class="bot-list">
+            <div class="bot-list"><ul>
             {{range $bot := .Bots}}
                 <li class="bot" id="{{if eq $.ActiveBot.ID $bot.ID}}bot-active{{end}}" botID="{{$bot.ID}}">
                     <a href="/?bot={{$bot.ID}}">{{$bot.Name}}</a>
                 </li>
             {{end}}
         {{end}}
-            </ul>
+            </ul></div>
         </div>
         {{if .ActiveBot}}
         <div class="chat">
