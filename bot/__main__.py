@@ -1,5 +1,8 @@
 from sys import argv
 from .logger import logger
+import nltk
+
+nltk.download('punkt', quiet=True)
 
 target = argv[1] if len(argv) > 1 else None
 
