@@ -19,12 +19,14 @@ func handleMessage(request MessageRequest) string {
 		return "Ok"
 	}
 	botAnswer := botPool.HandleRequest(bots.MessageData{
-		Text:         request.Message,
-		Mood:         bot.Mood,
-		Affection:    bot.Affection,
-		Gender:       int(bot.Gender),
-		Name:         bot.Name,
-		PreviousText: "prev text", //TODO load and add
+		Text:          request.Message,
+		Mood:          bot.Mood,
+		Affection:     bot.Affection,
+		Gender:        int(bot.Gender),
+		Name:          bot.Name,
+		PreviousText:  "prev text", //TODO load and add
+		Birthdate:     time.Date(1995, 7, 15, 0, 0, 0, 0, time.UTC).Unix(),
+		FavoriteColor: "Blau",
 	})
 
 	// store sent messages

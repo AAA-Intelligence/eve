@@ -14,6 +14,9 @@ elif target == 'pattern-demo':
     from .pattern_recognizer import demo
     logger.info('Running pattern recognizer demo')
     demo()
+elif target == 'demo':
+    from .request_handler import run_demo
+    run_demo()
 else:
     from .request_handler import run_loop
     run_loop()
