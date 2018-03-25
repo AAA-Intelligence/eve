@@ -200,15 +200,17 @@ p.user::after {
     width: 100%;
     padding: 12px;
     display: inline-block;
+	text-decoration: none;
 }
 
 .bot-list .bot:hover{
     background-color: lightgrey;
 }
 
-#bot-active{
-    background-color: red;
+#bot-active a{
+    background-color: #607D8B;
     color: white;
+	text-decoration: none;
 }
 
 
