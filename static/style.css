@@ -36,21 +36,42 @@
 .topBar {
 	width: 100%;
 	height: 55px;
-	background-color: #EEEEEE;
+	padding-left: 10px;
+	background-color: #F50057;
+	color: white;
 	overflow: hidden;
 	z-index: 500;
 	position: relative;
 	border-radius: 8px 0 0 0;
+	
+	/*Disable text highlighting*/
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently
+						supported by Chrome and Opera */
 }
 
 .topBar2 {
 	width: 100%;
 	height: 55px;
-	background-color: #EEEEEE;
+	background-color: #F50057;
+	color: white;
 	overflow: hidden;
 	z-index: 500;
 	position: relative;
 	border-radius: 0 8px 0 0;
+	
+	/*Disable text highlighting*/
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently
+						supported by Chrome and Opera */
 }
 
 .topBar2 img {
@@ -89,7 +110,7 @@
 
 p.bot {
   float: left;
-  margin: 0 0 0.5em;
+  margin: 0 1em 0.5em;
   border-radius: 1em;
   padding: 0.5em 1em;
   background: #e5e5ea;
@@ -110,15 +131,20 @@ p.bot::after {
 
 p.user {
   float: right;
-  background-color: #1289fe;
+  background-color: #FF196B;
   color: white;
-  margin: 0 0 0.5em;
+  margin: 0 1em 0.5em;
   border-radius: 1em;
   padding: 0.5em 1em;
-  background: #1289fe;
+  background: #FF196B;
   max-width: 75%;
   clear: both;
   position: relative;
+  
+  /**Disabled, as it somehow destroys the speechbubble-effect (cuts ::after)...
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;**/
 }
 p.user::after {
   content: "";
@@ -127,7 +153,7 @@ p.user::after {
   bottom: 0;
   width: 0.5em;
   height: 1em;
-  border-left: 0.5em solid #1289fe;
+  border-left: 0.5em solid #FF196B;
   border-bottom-left-radius: 1em 0.5em;
 }
 
@@ -175,6 +201,15 @@ p.user::after {
 	border-radius: 8px 0 0 8px;
 	white-space: nowrap;
 	overflow: hidden;
+	
+	/*Disable text highlighting*/
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently
+						supported by Chrome and Opera */
 }
 
 .bot-list{
@@ -190,6 +225,14 @@ p.user::after {
     list-style-type: none;
 }
 
+.bot-list img {
+	position: relative;
+	border-radius: 50%;
+	width: 42px;
+	height: 42px;
+	vertical-align: middle;
+}
+
 .bot-list .bot{
     cursor: pointer;
     list-style: none;
@@ -201,6 +244,7 @@ p.user::after {
     padding: 12px;
     display: inline-block;
 	text-decoration: none;
+	color: black;
 }
 
 .bot-list .bot:hover{
@@ -208,7 +252,7 @@ p.user::after {
 }
 
 #bot-active a{
-    background-color: #607D8B;
+    background-color: #A8003C;
     color: white;
 	text-decoration: none;
 }
