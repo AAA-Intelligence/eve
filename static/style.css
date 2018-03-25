@@ -37,7 +37,7 @@
 	width: 100%;
 	height: 55px;
 	padding-left: 10px;
-	background-color: #F50057;
+	background-color: #27B79B; /* Primary Color */
 	color: white;
 	overflow: hidden;
 	z-index: 500;
@@ -57,7 +57,7 @@
 .topBar2 {
 	width: 100%;
 	height: 55px;
-	background-color: #F50057;
+	background-color: #27B79B; /* Primary Color */
 	color: white;
 	overflow: hidden;
 	z-index: 500;
@@ -77,7 +77,7 @@
 .topBar2 img {
 	position: relative;
 	top: 5px;
-	left: 15px;
+	left: 30px;
 	border-radius: 50%;
 	width: 42px;
 	height: 42px;
@@ -87,24 +87,37 @@
     padding: 5px;
     height: 80%;
     width: 100%;
-    border: 1px solid black;
+    border: 1px solid lightgray;
     margin-bottom: 10px;
     overflow-y: auto;
 	box-sizing: border-box;
-	box-shadow: 0 15px 15px -15px inset;
+	/* Simon mag keinen Schatten: box-shadow: 0 15px 15px -15px inset; */
+	background-image: url('/static/bgpattern.png');
+	background-repeat: repeat;
 }
 
 #msg {
     margin: 0;
-    width: calc(90% - 20px);
+    width: calc(100% - 68px);
     resize: none;
 }
 
 
 #send {
     margin: 0;
-    width: 10%;
     vertical-align: top;
+	display: block;
+	float: right;
+	width: 42px;
+	height: 42px;
+	margin-left: 10px;
+	margin-right: 10px;
+	border: 1px solid #40CDB2; /* Third Color */
+	background-color: #106A59; /* Second Color */
+	background-image: url('/static/send.png');
+	background-repeat: no-repeat;
+	background-position: top 12px left 14px;
+	border-radius: 50%;
 }
 
 
@@ -131,12 +144,12 @@ p.bot::after {
 
 p.user {
   float: right;
-  background-color: #FF196B;
+  background-color: #40CDB2; /* Third Color */
   color: white;
   margin: 0 1em 0.5em;
   border-radius: 1em;
   padding: 0.5em 1em;
-  background: #FF196B;
+  background: #40CDB2; /* Third Color */
   max-width: 75%;
   clear: both;
   position: relative;
@@ -153,17 +166,20 @@ p.user::after {
   bottom: 0;
   width: 0.5em;
   height: 1em;
-  border-left: 0.5em solid #FF196B;
+  border-left: 0.5em solid #40CDB2; /* Third Color */
   border-bottom-left-radius: 1em 0.5em;
 }
 
 #title {
 	font-size: 15pt;
 	font-weight: bold;
+	margin-top: 5px;
+    margin-left: 5px;
 }
 
 #username {
 	font-size: 8pt;
+    margin-left: 5px;
 }
 
 #newBot {
@@ -174,7 +190,7 @@ p.user::after {
 
 #botname {
 	position: absolute;
-	left: 75px;
+	left: 90px;
 	top: 10px;
 	font-size: 18pt;
 }
@@ -185,8 +201,8 @@ p.user::after {
 	width: 42px;
 	height: 42px;
 	margin-left: 10px;
-	border: 1px solid $light;
-	background-color: $blue;
+	border: 1px solid #40CDB2; /* Third Color */
+	background-color: #106A59; /* Second Color */
 	background-image: url('/static/new.png');
 	background-repeat: no-repeat;
 	background-position: top 12px left 14px;
@@ -252,7 +268,7 @@ p.user::after {
 }
 
 #bot-active a{
-    background-color: #A8003C;
+    background-color: #106A59; /* Second Color */
     color: white;
 	text-decoration: none;
 }
