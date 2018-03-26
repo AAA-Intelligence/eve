@@ -153,9 +153,10 @@
 	margin-right: 10px;
 	border: 1px solid #40CDB2; /* Third Color */
 	background-color: #40CDB2; /* Third Color */
-	background-image: url('/static/send.png');
+	background-image: url('/static/send-128.png');
 	background-repeat: no-repeat;
 	background-position: top 12px left 14px;
+	background-size: 18px;
 	border-radius: 50%;
 	cursor: pointer;
 }
@@ -247,9 +248,10 @@ p.user::after {
 	margin-left: 10px;
 	border: 1px solid #40CDB2; /* Third Color */
 	background-color: #40CDB2; /* Third Color */
-	background-image: url('/static/new.png');
+	background-image: url('/static/new-128.png');
 	background-repeat: no-repeat;
-	background-position: top 12px left 14px;
+	background-position: top 12px left 12px;
+	background-size: 18px;
 	border-radius: 50%;
 	cursor: pointer;
 }
