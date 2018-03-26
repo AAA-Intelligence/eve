@@ -261,6 +261,7 @@ p.user::after {
     display: inline-block;
 	text-decoration: none;
 	color: black;
+	width: calc(100% - 24px);
 }
 
 .bot-list .bot:hover{
@@ -271,6 +272,7 @@ p.user::after {
     background-color: #106A59; /* Second Color */
     color: white;
 	text-decoration: none;
+	width: calc(100% - 24px);
 }
 
 
