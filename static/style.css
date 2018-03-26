@@ -158,8 +158,8 @@ p.user::after {
     width: 42px;
     height: 42px;
     margin-left: 10px;
-    border: 1px solid $ light;
-    background-color: $ blue;
+    border: 1px solid lightblue;
+    background-color: blue;
     background-image: url('/static/new.png');
     background-repeat: no-repeat;
     background-position: top 12px left 14px;
