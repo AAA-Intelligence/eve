@@ -19,6 +19,8 @@ fabric.properties
 
 tflearn_logs/
 venv/*
+/eve
+
 
 # mood anaylzer testing stuff
 bot/models/
