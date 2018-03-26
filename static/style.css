@@ -52,6 +52,7 @@
 	width: 100%;
 	height: 55px;
 	padding-left: 10px;
+	padding-top: 5px;
 	background-color: #27B79B; /* Primary Color */
 	color: white;
 	overflow: hidden;
@@ -72,6 +73,7 @@
 .topBar2 {
 	width: 100%;
 	height: 55px;
+	padding-top: 5px;
 	background-color: #27B79B; /* Primary Color */
 	color: white;
 	overflow: hidden;
@@ -135,7 +137,8 @@
 #msg {
     margin: 0;
     width: calc(100% - 68px);
-    resize: none;
+	resize: none;
+	font-size:16px;
 }
 
 
