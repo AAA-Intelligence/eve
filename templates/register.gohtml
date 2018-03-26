@@ -2,15 +2,31 @@
 <html>
    <head>
       <title>Register</title>
+	  <link rel="stylesheet" href="/static/style.css">
    </head>
    <body>
-   <h1>Registieren:</h1>
-        <form method="POST" action="/createUser">
-            <input type="text" name="username" placeholder="Benutzername"/>
-            </br>
-            <input type="password" name="password" placeholder="Passwort"/>
-            </br>
-            <input type="submit" value="Registrieren"/>
-        </form>
+   
+		
+	<div class="contentReg">
+			<div class="topBarReg">
+			<div id="title">
+				EVE - Datingbots
+			</div>
+			<div id="username">
+				Registrierungsformular
+			</div>
+			</div>	
+		
+        <div class="inputcontentpadding"><form method="POST" action="/createUser">
+			<div class="inputcontainer"><input type="text" name="username" maxlength="30" required=""/><label>Benutzername</label></div>
+			<div class="inputcontainer"><input type="password" name="password" maxlength="100" required=""/><label>Passwort</label></div>
+            <input type="submit" value="Registrieren" class="button"/>
+        </form></div>
+		
+		</div>
+		
+		
+		
+		
    </body>
 </html>
