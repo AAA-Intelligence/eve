@@ -20,3 +20,5 @@ fabric.properties
 tflearn_logs/
 bot/models/
 venv/*
+/eve
+
