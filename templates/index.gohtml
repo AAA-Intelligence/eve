@@ -22,14 +22,14 @@
             </form></div>
 			
         {{if .ActiveBot}}
-            <ul class="bot-list">
+            <div class="bot-list"><ul>
             {{range $bot := .Bots}}
                 <li class="bot" id="{{if eq $.ActiveBot.ID $bot.ID}}bot-active{{end}}" botID="{{$bot.ID}}">
-                    <a href="/?bot={{$bot.ID}}">{{$bot.Name}}</a>
+                    <a href="/?bot={{$bot.ID}}"><img src="http://via.placeholder.com/150x150"> {{$bot.Name}}</a>
                 </li>
             {{end}}
         {{end}}
-            </ul>
+            </ul></div>
         </div>
         {{if .ActiveBot}}
         <div class="chat">
@@ -43,8 +43,8 @@
                 {{end}}
             </div>
             <form id="form" autocomplete="off">
-                <textarea id="msg" maxlength="200" rows="3"></textarea>
-                <input type="submit" value="Send" id="send"/>
+                <textarea id="msg" maxlength="200"></textarea>
+                <input type="submit" value="" id="send"/>
             </form>
         </div>
 		</div>
