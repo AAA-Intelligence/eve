@@ -21,4 +21,4 @@ tflearn_logs/
 bot/models/
 venv/*
 *.pkl
-/bot/mood_amalyzer/demo/
+/bot/mood_analyzer/demo/
