@@ -149,11 +149,16 @@
 	margin-left: 10px;
 	margin-right: 10px;
 	border: 1px solid #40CDB2; /* Third Color */
-	background-color: #106A59; /* Second Color */
+	background-color: #40CDB2; /* Third Color */
 	background-image: url('/static/send.png');
 	background-repeat: no-repeat;
 	background-position: top 12px left 14px;
 	border-radius: 50%;
+	cursor: pointer;
+}
+
+#send:hover {
+	background-color: #106A59; /* Second Color */
 }
 
 
@@ -238,11 +243,15 @@ p.user::after {
 	height: 42px;
 	margin-left: 10px;
 	border: 1px solid #40CDB2; /* Third Color */
-	background-color: #106A59; /* Second Color */
+	background-color: #40CDB2; /* Third Color */
 	background-image: url('/static/new.png');
 	background-repeat: no-repeat;
 	background-position: top 12px left 14px;
 	border-radius: 50%;
+	cursor: pointer;
+}
+#newBotButton:hover {
+	background-color: #106A59; /* Second Color */
 }
 
 
