@@ -1,5 +1,8 @@
 from sys import argv
 from .logger import logger
+import nltk
+
+nltk.download('punkt', quiet=True)
 
 target = argv[1] if len(argv) > 1 else None
 
@@ -11,6 +14,9 @@ elif target == 'pattern-demo':
     from .pattern_recognizer import demo
     logger.info('Running pattern recognizer demo')
     demo()
+elif target == 'demo':
+    from .request_handler import run_demo
+    run_demo()
 else:
     from .request_handler import run_loop
     run_loop()
