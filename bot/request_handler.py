@@ -50,12 +50,8 @@ def run_demo():
             )
             response = handle_request(request)
             print('Response: ', response.text)
-        except EOFError:
-            # Stdin pipe has been closed by Go
-            logger.info('EOF detected, aborting request loop')
-            return
         except KeyboardInterrupt:
-            # Interrupt requested by developer
+            # Interrupt requested by user
             logger.info('Keyboard interrupt detected, aborting request loop')
             return
         except Exception as ex:
