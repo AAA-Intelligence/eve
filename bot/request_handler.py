@@ -3,6 +3,7 @@ from .data import Request, Response, parse_request
 from .mood_analyzer import analyze
 from .pattern_recognizer import answer_for_pattern
 from .text_processor import generate_answer
+from datetime import date
 import json
 import time
 
@@ -28,6 +29,34 @@ def handle_request(request: Request) -> Response:
         answer = generate_answer(request, mood, affection)
 
     return Response(answer, mood, affection)
+
+
+def run_demo():
+    """
+    Starts a command-line based demo request loop for debugging.
+    """
+    logger.info('Starting request loop')
+    while True:
+        try:
+            request = Request(
+                text=input('User input: '),
+                previous_text='Ich bin ein Baum',
+                mood=0.0,
+                affection=0.0,
+                bot_gender=0,
+                bot_name='Lara',
+                bot_birthdate=date(1995, 10, 5),
+                bot_favorite_color='grün'
+            )
+            response = handle_request(request)
+            print('Response: ', response.text)
+        except KeyboardInterrupt:
+            # Interrupt requested by user
+            logger.info('Keyboard interrupt detected, aborting request loop')
+            return
+        except Exception as ex:
+            logger.error('{}: {}'.format(type(ex).__name__, str(ex)))
+            continue
 
 
 def run_loop():

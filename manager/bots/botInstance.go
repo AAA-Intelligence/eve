@@ -26,7 +26,7 @@ type MessageData struct {
 	Affection     float64 `json:"affection"`
 	Gender        int     `json:"bot_gender"` // 0 for male, 1 for female
 	Name          string  `json:"bot_name"`
-	Birthdate     int     `json:"bot_birthdate"` // Unix timestamp
+	Birthdate     int64   `json:"bot_birthdate"` // Unix timestamp
 	FavoriteColor string  `json:"bot_favorite_color"`
 }
 
