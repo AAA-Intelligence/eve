@@ -28,10 +28,8 @@
 .contentReg {
 	position: absolute;
 	left: 35%;
-	/*height: 65%;*/
 	width: 30%;
 	margin: 4% 0 6% 0;
-	background-color: #F4F4F4;
 	padding: 0;
 	background-color: #F4F4F4;
 	box-shadow: 10px 10px 40px rgba(100, 100, 100, 0.4);
@@ -329,6 +327,68 @@ p.user::after {
 form{
 	vertical-align: top;
 }
+
+
+/**************************************** Popup for bot creation ****************************************/
+
+.blur {
+	filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius='3');
+	-webkit-filter: url(#blur-filter);
+	filter: url(#blur-filter);
+	-webkit-filter: blur(3px);
+	filter: blur(3px);
+}
+.blur-svg {
+	display: none;
+}
+
+#popup {
+	position: fixed;
+	background-color: #F4F4F4;
+	box-shadow: 10px 10px 40px rgba(100, 100, 100, 0.4);
+	border-radius: 8px;
+	visibility: hidden;
+	display:none;
+	margin-top: 15%;
+	padding: 20px;
+	width: 25%;
+	min-height: 400px;
+	height: 40%;
+	left: 37.5%;
+	z-index: 1000;
+}
+
+#popup h1 {
+	color: #40CDB2; /* Third Color */
+}
+
+#hidePopupButton {
+	position: absolute;
+	right: 5px;
+	top: 5px;
+}
+
+#hidePopupButton button {
+	display: block;
+	float: left;
+	width: 42px;
+	height: 42px;
+	margin-left: 10px;
+	border: 1px solid #40CDB2; /* Third Color */
+	background-color: #40CDB2; /* Third Color */
+	background-image: url('/static/cancel-128.png');
+	background-repeat: no-repeat;
+	background-position: top 12px left 12px;
+	background-size: 18px;
+	border-radius: 50%;
+	cursor: pointer;
+	color: white;
+}
+
+#hidePopupButton:hover button {
+	background-color: #106A59; /* Second Color */
+}
+
 
 
 /**************************************** Input at registration ****************************************/
