@@ -7,11 +7,11 @@ import nltk
 import numpy as np
 from nltk.stem.snowball import GermanStemmer
 
+from bot.model_definitions import Sentiment, Patterns
 from .data import Request
 from .logger import logger
-from .model_definitions import Patterns, Sentiment
 from .static_answers import get_static_answer
-from .train import load_model
+from .trainer import load_model
 
 dir = path.dirname(__file__)
 
@@ -31,7 +31,7 @@ class PredictionResult(NamedTuple):
 	probability: float
 
 
-def detect_category(request: Request) -> Optional[IntEnum]:
+def analyze_input(request: Request, Mode):
 	"""
 	Scans the supplied request for pre-defined patterns.
 
@@ -40,6 +40,7 @@ def detect_category(request: Request) -> Optional[IntEnum]:
 
 	Returns:
 		The category of the recognized pattern or None if none was found.
+		:param Mode:
 	"""
 
 	# Tokenize pattern
@@ -58,7 +59,7 @@ def detect_category(request: Request) -> Optional[IntEnum]:
 	# Predict category
 	results = model.predict(input_data)[0]
 
-	results = [PredictionResult(Patterns(i), p) for i, p in enumerate(results)
+	results = [PredictionResult(Mode(i), p) for i, p in enumerate(results)
 			   if i > 0]
 	results.sort(key=lambda result: result.probability, reverse=True)
 
@@ -66,42 +67,6 @@ def detect_category(request: Request) -> Optional[IntEnum]:
 
 	if len(results) > 0 and results[0].probability > ERROR_THRESHOLD:
 		return results[0].mode
-
-	return None
-
-
-def detect_mood(request: Request):
-	"""
-	Scans the supplied request for pre-defined patterns.
-
-	Args:
-		request: The request to scan for patterns.
-
-	Returns:
-		The category of the recognized pattern or None if none was found.
-	"""
-
-	# Tokenize pattern
-	words = nltk.word_tokenize(request.text)
-	stems = [stemmer.stem(word.lower()) for word in words]
-	total_stems = data.total_stems
-	bag = [0] * len(total_stems)
-	for stem in stems:
-		for result, s in enumerate(total_stems):
-			if s == stem:
-				bag[result] = 1
-
-	# Convert to matrix
-	input_data = np.asarray([bag])
-
-	# Predict category
-	results = model.predict(input_data)[0]
-	results = [PredictionResult(Sentiment(i), p) for i, p in
-			   enumerate(results)]
-	results.sort(key=lambda result: result.probability, reverse=True)
-	logger.debug('Results: {}'.format(results))
-	if len(results) > 0 and results[0].probability > ERROR_THRESHOLD - 0.1:
-		return results[0]
 
 	return None
 
@@ -119,13 +84,13 @@ def answer_for_pattern(request: Request, mode) -> Optional[str]:
 		answer isn't possible.
 	"""
 	if mode == "category":
-		category = detect_category(request)
+		category = analyze_input(request, Patterns)
 		if category is not None:
 			# Pattern found, retrieve pre-defined answer
 			return get_static_answer(category, request)
 
 	else:
-		mood = detect_mood(request)
+		mood = analyze_input(request, Sentiment)
 		if mood:
 			return "i am %s sure that you meant %s" % (
 				mood.probability, mood.mode)

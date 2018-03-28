@@ -3,7 +3,7 @@ from sys import argv
 import nltk
 
 from bot.logger import logger
-from bot.train import train_model
+from bot.trainer import train_model
 
 nltk.download('punkt', quiet=True)
 
@@ -14,10 +14,10 @@ if target == 'train-patterns':
 	logger.info('Running pattern training')
 	train_model("patterns")
 elif target == 'train-sentiments':
-	from bot import train
+	from bot import trainer
 
 	logger.info('Running sentiment analysis training')
-	train.train_model("sentiment")
+	trainer.train_model("sentiment")
 elif target == 'console-demo':
 	from bot.pattern_recognizer import demo
 

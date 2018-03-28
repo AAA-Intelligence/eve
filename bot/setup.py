@@ -8,7 +8,6 @@ from keras.layers import Dense, Dropout
 from bot.model_definitions import Patterns, Sentiment
 from bot.patterns import patterns_for_category
 from bot.sentiments import patterns_for_sentiment
-from bot.text_dealer import build_stems
 
 
 def setup_bot(Mode):
