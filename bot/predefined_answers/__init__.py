@@ -1,7 +1,8 @@
-from typing import Dict, List
 from os import path
 from pathlib import Path
-from ..answer_categories import Category
+from typing import Dict, List
+
+from ..model_definitions import Patterns
 
 # Cache for category answers
 cache: Dict[str, List[str]] = {}
@@ -9,7 +10,7 @@ cache: Dict[str, List[str]] = {}
 dir = path.dirname(__file__)
 
 
-def answers_for_category(category: Category) -> List[str]:
+def answers_for_category(category: Patterns) -> List[str]:
     """
     Returns all predefined answers for the given category if possible.
     Answers are cached per category, so the first call for a category will read

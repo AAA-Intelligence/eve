@@ -1,10 +1,11 @@
-from .data import Request
-from .answer_categories import Category
-from .predefined_answers import answers_for_category
 import random
 
+from .data import Request
+from .model_definitions import Patterns
+from .predefined_answers import answers_for_category
 
-def get_static_answer(category: Category, request: Request) -> str:
+
+def get_static_answer(category: Patterns, request: Request) -> str:
     """
     Retrieves and formats a random predefined answer for the specified category
     from the database.

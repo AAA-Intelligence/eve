@@ -6,7 +6,7 @@ from typing import Iterator
 dir = path.dirname(__file__)
 
 
-def patterns_for_category(mode: IntEnum) -> Iterator[str]:
+def patterns_for_sentiment(mode: IntEnum) -> Iterator[str]:
 	"""
 	Opens the pattern definition file for the specified category if possible
 	and returns an iterator for the pattern's lines.
@@ -26,7 +26,8 @@ def patterns_for_category(mode: IntEnum) -> Iterator[str]:
 	p = Path(dir, mode.name + '.txt')
 	if not p.is_file():
 		raise FileNotFoundError(
-			'No pattern definition file found for category {}'.format(mode))
+			'No pattern definition file found for sentiment {}'.format(mode))
 	with p.open(encoding='utf-8') as f:
 		for line in f:
 			yield line.rstrip('\n')
+
