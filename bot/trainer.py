@@ -8,7 +8,7 @@ from keras.models import Sequential, model_from_json
 
 from bot.setup import setup_bot
 from bot.training_data import TrainingData
-from .model_definitions import Mode
+from bot.model_definitions import Mode
 
 
 def setup_models_dir() -> str:

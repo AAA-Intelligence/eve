@@ -2,7 +2,8 @@ from enum import IntEnum
 from os import path
 from pathlib import Path
 from typing import Iterator
-from ..model_definitions import SentimentCategory
+
+from bot.model_definitions import SentimentCategory
 
 dir = path.dirname(__file__)
 

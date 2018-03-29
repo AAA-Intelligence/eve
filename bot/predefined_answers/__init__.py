@@ -2,7 +2,7 @@ from os import path
 from pathlib import Path
 from typing import Dict, List
 
-from ..model_definitions import PatternCategory
+from bot.model_definitions import PatternCategory
 
 # Cache for category answers
 cache: Dict[str, List[str]] = {}

@@ -1,8 +1,8 @@
 import random
 
-from .data import Request
-from .model_definitions import PatternCategory
-from .predefined_answers import answers_for_category
+from bot.data import Request
+from bot.model_definitions import PatternCategory
+from bot.predefined_answers import answers_for_category
 
 
 def get_static_answer(category: PatternCategory, request: Request) -> str:

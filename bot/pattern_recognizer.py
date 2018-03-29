@@ -8,10 +8,10 @@ import numpy as np
 from nltk.stem.snowball import GermanStemmer
 
 from bot.model_definitions import Mode, Category
-from .data import Request, Gender
-from .logger import logger
-from .static_answers import get_static_answer
-from .trainer import load_model
+from bot.data import Request, Gender
+from bot.logger import logger
+from bot.static_answers import get_static_answer
+from bot.trainer import load_model
 
 dir = path.dirname(__file__)
 
