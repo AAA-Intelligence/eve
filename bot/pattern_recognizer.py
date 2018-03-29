@@ -1,13 +1,13 @@
 from datetime import date
 from enum import IntEnum
 from os import path
-from typing import Optional, NamedTuple, Generic, TypeVar
+from typing import Optional, NamedTuple, Generic, TypeVar, Tuple, Dict
 
 import nltk
 import numpy as np
 from nltk.stem.snowball import GermanStemmer
 
-from bot.model_definitions import Mode, Category
+from bot.model_definitions import Mode, Category, PatternCategory
 from bot.data import Request, Gender
 from bot.logger import logger
 from bot.static_answers import get_static_answer
@@ -73,7 +73,25 @@ def analyze_input(text: str, mode: Mode) -> Optional[PredictionResult]:
     return None
 
 
-def answer_for_pattern(request: Request) -> Optional[str]:
+pattern_transitions: Dict[Tuple[PatternCategory, PatternCategory], PatternCategory] = {
+    (PatternCategory.FATHER_AGE, PatternCategory.ANY_NAME): PatternCategory.FATHER_NAME,
+    (PatternCategory.MOTHER_AGE, PatternCategory.ANY_NAME): PatternCategory.MOTHER_NAME,
+    (PatternCategory.FATHER_NAME, PatternCategory.ANY_AGE): PatternCategory.FATHER_AGE,
+    (PatternCategory.MOTHER_NAME, PatternCategory.ANY_AGE): PatternCategory.MOTHER_AGE,
+    (PatternCategory.BOT_NAME, PatternCategory.MOTHER_ANY): PatternCategory.MOTHER_NAME,
+    (PatternCategory.FATHER_NAME, PatternCategory.MOTHER_ANY): PatternCategory.MOTHER_NAME,
+    (PatternCategory.MOTHER_NAME, PatternCategory.FATHER_ANY): PatternCategory.FATHER_NAME,
+    (PatternCategory.BOT_AGE, PatternCategory.MOTHER_ANY): PatternCategory.MOTHER_AGE,
+    (PatternCategory.FATHER_AGE, PatternCategory.MOTHER_ANY): PatternCategory.MOTHER_AGE,
+    (PatternCategory.MOTHER_AGE, PatternCategory.FATHER_ANY): PatternCategory.FATHER_AGE,
+    (PatternCategory.FATHER_NAME, PatternCategory.BOT_ANY): PatternCategory.BOT_NAME,
+    (PatternCategory.MOTHER_NAME, PatternCategory.BOT_ANY): PatternCategory.BOT_NAME,
+    (PatternCategory.FATHER_AGE, PatternCategory.BOT_ANY): PatternCategory.BOT_AGE,
+    (PatternCategory.MOTHER_AGE, PatternCategory.BOT_ANY): PatternCategory.BOT_AGE,
+}
+
+
+def answer_for_pattern(request: Request) -> Optional[Tuple[PatternCategory, str]]:
     """
     Scans the supplied request for pre-defined patterns and returns a
     pre-defined answer if possible.
@@ -87,8 +105,15 @@ def answer_for_pattern(request: Request) -> Optional[str]:
     """
     result = analyze_input(request.text, Mode.PATTERNS)
     if result is not None:
-        # Pattern found, retrieve pre-defined answer
-        return get_static_answer(result.category, request)
+        # Pattern found
+        category = result.category
+        # Check context for a possible category transition
+        previous_category = request.previous_pattern
+        if previous_category and (previous_category, result.category) in pattern_transitions:
+            category = pattern_transitions[(
+                previous_category, result.category)]
+        # Retrieve pre-defined answer
+        return category, get_static_answer(category, request)
 
     return None
 

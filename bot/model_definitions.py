@@ -1,4 +1,4 @@
-from enum import Enum, IntEnum, unique
+from enum import Enum, IntEnum, unique, auto
 from typing import Union, Type
 
 
@@ -17,12 +17,22 @@ class SentimentCategory(IntEnum):
 @unique
 class PatternCategory(IntEnum):
     BLACKLIST = 0
-    JOKE = 1
-    BOT_AGE = 2
-    BOT_BIRTHDAY = 3
-    BOT_NAME = 4
-    BOT_GENDER = 5
-    BOT_FAVORITE_COLOR = 6
+    JOKE = auto()
+    BOT_ANY = auto()
+    BOT_AGE = auto()
+    BOT_BIRTHDAY = auto()
+    BOT_NAME = auto()
+    BOT_GENDER = auto()
+    BOT_FAVORITE_COLOR = auto()
+    FATHER_ANY = auto()
+    FATHER_AGE = auto()
+    FATHER_NAME = auto()
+    MOTHER_ANY = auto()
+    MOTHER_AGE = auto()
+    MOTHER_NAME = auto()
+    ANY_AGE = auto()
+    ANY_NAME = auto()
+    ANY_BIRTHDAY = auto()
 
 
 Category = Union[SentimentCategory, PatternCategory]

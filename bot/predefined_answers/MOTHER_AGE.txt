@@ -1,0 +1,2 @@
+Sie ist {r.mother_age} Jahre alt.
+Ich glaube sie ist {r.mother_age} Jahre alt, aber ich bin so schlecht darin, mir das zu merken.
