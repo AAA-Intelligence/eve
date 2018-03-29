@@ -17,7 +17,7 @@ def setup_bot(mode: Mode) -> Tuple[Sequential, np.ndarray, np.ndarray, List[str]
     # for training our TensorFlow model.
     # For this, we tell TensorFlow, by defining this array, which stems can lead
     # to which patterns.
-    train_x, train_y = setup_traing_data(Mode, elements, words)
+    train_x, train_y = setup_traing_data(mode.category_type, elements, words)
     model = setup_nn_model(train_x, train_y)
     return model, train_x, train_y, words
 

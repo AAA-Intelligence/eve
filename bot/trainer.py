@@ -33,8 +33,7 @@ def train_model(mode: Mode):
     """
     # Creates a directory where the trained models are stored
 
-    CategoryType = mode.category_type
-    model, train_x, train_y, words = setup_bot(CategoryType)
+    model, train_x, train_y, words = setup_bot(mode)
 
     # Compile neural network
     model.compile(loss='categorical_crossentropy',
@@ -47,12 +46,14 @@ def train_model(mode: Mode):
 
 
 def save_training(
-        file_name: str,
+        mode: Mode,
         model: Sequential,
         train_x: np.ndarray,
         train_y: np.ndarray,
         words: List[str]
 ):
+    file_name: str = mode.value
+
     # Save model
     with open(path.join(dir, '%s-model.json' % file_name), 'w') as f:
         f.write(model.to_json())

@@ -3,20 +3,6 @@ from typing import Union, Type
 
 
 @unique
-class Mode(Enum):
-    SENTIMENTS = 'sentiments'
-    PATTERNS = 'patterns'
-
-    @property
-    def category_type(self) -> Type[Category]:
-        if self == Mode.SENTIMENTS:
-            return SentimentCategory
-        if self == Mode.PATTERNS:
-            return PatternCategory
-        raise Exception('No category defined for mode {}'.format(self))
-
-
-@unique
 class SentimentCategory(IntEnum):
     """Can either be mood or affection"""
     # TODO separate sentiment and mood
@@ -40,3 +26,17 @@ class PatternCategory(IntEnum):
 
 
 Category = Union[SentimentCategory, PatternCategory]
+
+
+@unique
+class Mode(Enum):
+    SENTIMENTS = 'sentiments'
+    PATTERNS = 'patterns'
+
+    @property
+    def category_type(self) -> Type[Category]:
+        if self == Mode.SENTIMENTS:
+            return SentimentCategory
+        if self == Mode.PATTERNS:
+            return PatternCategory
+        raise Exception('No category defined for mode {}'.format(self))

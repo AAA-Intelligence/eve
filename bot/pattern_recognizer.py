@@ -29,7 +29,7 @@ class PredictionResult(NamedTuple):
     probability: float
 
 
-def analyze_input(text: str, mode: Mode) -> Optional[Category]:
+def analyze_input(text: str, mode: Mode) -> Optional[PredictionResult]:
     """
     Scans the supplied request for pre-defined patterns.
 
@@ -85,10 +85,10 @@ def answer_for_pattern(request: Request) -> Optional[str]:
             A pre-defined answer for the scanned request or None if a pre-defined
             answer isn't possible.
     """
-    category = analyze_input(request.text, Mode.PATTERNS)
-    if category is not None:
+    result = analyze_input(request.text, Mode.PATTERNS)
+    if result is not None:
         # Pattern found, retrieve pre-defined answer
-        return get_static_answer(category, request)
+        return get_static_answer(result.category, request)
 
     return None
 
