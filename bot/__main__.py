@@ -17,7 +17,7 @@ elif target == 'train-sentiments':
 	from bot import trainer
 
 	logger.info('Running sentiment analysis training')
-	trainer.train_model("sentiment")
+	trainer.train_model("sentiments")
 elif target == 'console-demo':
 	from bot.pattern_recognizer import demo
 
@@ -28,6 +28,6 @@ elif target == 'demo':
 
 	run_demo()
 else:
-	from .request_handler import run_loop
+	from bot.request_handler import run_loop
 
 	run_loop()

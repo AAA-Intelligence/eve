@@ -7,16 +7,14 @@ import nltk
 import numpy as np
 from nltk.stem.snowball import GermanStemmer
 
-from bot.model_definitions import Sentiment, Patterns
-from .data import Request
+from bot.model_definitions import Patterns
+from .data import Request, Gender
 from .logger import logger
 from .static_answers import get_static_answer
 from .trainer import load_model
 
 dir = path.dirname(__file__)
 
-# Load model and data
-model, data = load_model("sentiments")
 # Create German snowball stemmer
 stemmer = GermanStemmer()
 # Threshold for pattern recognition
@@ -31,7 +29,7 @@ class PredictionResult(NamedTuple):
 	probability: float
 
 
-def analyze_input(text, Mode):
+def analyze_input(text: str, Mode):
 	"""
 	Scans the supplied request for pre-defined patterns.
 
@@ -43,6 +41,8 @@ def analyze_input(text, Mode):
 		:param Mode:
 	"""
 
+	# Load model and data
+	model, data = load_model(Mode)
 	# Tokenize pattern
 	words = nltk.word_tokenize(text)
 	stems = [stemmer.stem(word.lower()) for word in words]
@@ -58,9 +58,12 @@ def analyze_input(text, Mode):
 
 	# Predict category
 	results = model.predict(input_data)[0]
+	lower_bound = -1
+	if Mode == Patterns:
+		lower_bound = 0
 
 	results = [PredictionResult(Mode(i), p) for i, p in enumerate(results)
-			   if i > 0]
+			   if i > lower_bound]
 	results.sort(key=lambda result: result.probability, reverse=True)
 
 	logger.debug('Results: {}'.format(results))
@@ -71,7 +74,7 @@ def analyze_input(text, Mode):
 	return None
 
 
-def answer_for_pattern(request: Request, mode) -> Optional[str]:
+def answer_for_pattern(request: Request) -> Optional[str]:
 	"""
 	Scans the supplied request for pre-defined patterns and returns a
 	pre-defined answer if possible.
@@ -83,19 +86,11 @@ def answer_for_pattern(request: Request, mode) -> Optional[str]:
 		A pre-defined answer for the scanned request or None if a pre-defined
 		answer isn't possible.
 	"""
-	if mode == "category":
-		category = analyze_input(request, Patterns).mode
-		if category is not None:
-			# Pattern found, retrieve pre-defined answer
-			return get_static_answer(category, request)
+	category = analyze_input(request.text, Patterns)
+	if category is not None:
+		# Pattern found, retrieve pre-defined answer
+		return get_static_answer(category.mode, request)
 
-	else:
-		sentiment = analyze_input(request, Sentiment)
-		if sentiment:
-			return "i am %s sure that you meant %s" % (
-				sentiment.probability, sentiment.mode)
-		else:
-			return "I cannot estimate the mood"
 	return None
 
 
@@ -109,12 +104,12 @@ def demo(mode: str):
 		previous_text='Ich bin ein Baum',
 		mood=0.0,
 		affection=0.0,
-		bot_gender=0,
+		bot_gender=Gender.APACHE,
 		bot_name='Lara',
 		bot_birthdate=date(1995, 10, 5),
 		bot_favorite_color='grün'
 		)
-	answer = answer_for_pattern(request, mode)
+	answer = answer_for_pattern(request)
 	if answer is None:
 		print('No answer found')
 	else:

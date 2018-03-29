@@ -59,14 +59,14 @@ def save_training(file_name, model, train_x, train_y, words):
 def set_mode(mode):
 	if mode == "patterns":
 		Mode: IntEnum = Patterns
-	elif mode == "sentiment":
+	elif mode == "sentiments":
 		Mode: IntEnum = Sentiment
 	else:
 		raise Exception
 	return Mode
 
 
-def load_model(file_name: str) -> Tuple[Sequential, TrainingData]:
+def load_model(Mode) -> Tuple[Sequential, TrainingData]:
 	"""
 	Loads a pre-trained model from disk, as well as the training data dump.
 
@@ -75,7 +75,7 @@ def load_model(file_name: str) -> Tuple[Sequential, TrainingData]:
 		TrainingData, containg the data used for training and the list of total
 		stems used.
 	"""
-
+	file_name = "sentiments" if Mode == Sentiment else "patterns"
 	with open(path.join(dir, '%s.dump' % file_name), 'rb') as f:
 		data = pickle.load(f)
 
