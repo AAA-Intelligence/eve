@@ -19,9 +19,11 @@ def setup_models_dir():
 		raise Exception('Models path is not a directory: {}'.format(dir))
 
 
+setup_models_dir()
+
+
 def train_model(mode: str):
 	# creates a directory where the trained models are stored
-	setup_models_dir()
 
 	"""
 	Trains a neural network with the defined patterns and categories.
@@ -41,9 +43,7 @@ def train_model(mode: str):
 	model.fit(train_x, train_y, batch_size=32, epochs=1000,
 			  verbose=1, validation_split=0.1, shuffle=True)
 
-	file_name = get_file_name_by_mode(mode)
-
-	save_training(file_name, model, train_x, train_y, words)
+	save_training(mode, model, train_x, train_y, words)
 
 
 def save_training(file_name, model, train_x, train_y, words):
@@ -66,7 +66,7 @@ def set_mode(mode):
 	return Mode
 
 
-def load_model(mode: str) -> Tuple[Sequential, TrainingData]:
+def load_model(file_name: str) -> Tuple[Sequential, TrainingData]:
 	"""
 	Loads a pre-trained model from disk, as well as the training data dump.
 
@@ -75,7 +75,6 @@ def load_model(mode: str) -> Tuple[Sequential, TrainingData]:
 		TrainingData, containg the data used for training and the list of total
 		stems used.
 	"""
-	file_name = get_file_name_by_mode(mode)
 
 	with open(path.join(dir, '%s.dump' % file_name), 'rb') as f:
 		data = pickle.load(f)
@@ -86,7 +85,3 @@ def load_model(mode: str) -> Tuple[Sequential, TrainingData]:
 	model.load_weights(path.join(dir, '%s-weights.h5' % file_name))
 
 	return model, data
-
-
-def get_file_name_by_mode(mode):
-	return "patterns" if mode == "Category" else "sentiments"

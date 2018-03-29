@@ -31,7 +31,7 @@ class PredictionResult(NamedTuple):
 	probability: float
 
 
-def analyze_input(request: Request, Mode):
+def analyze_input(text, Mode):
 	"""
 	Scans the supplied request for pre-defined patterns.
 
@@ -44,7 +44,7 @@ def analyze_input(request: Request, Mode):
 	"""
 
 	# Tokenize pattern
-	words = nltk.word_tokenize(request.text)
+	words = nltk.word_tokenize(text)
 	stems = [stemmer.stem(word.lower()) for word in words]
 	total_stems = data.total_stems
 	bag = [0] * len(total_stems)
@@ -66,7 +66,7 @@ def analyze_input(request: Request, Mode):
 	logger.debug('Results: {}'.format(results))
 
 	if len(results) > 0 and results[0].probability > ERROR_THRESHOLD:
-		return results[0].mode
+		return results[0]
 
 	return None
 
@@ -84,16 +84,16 @@ def answer_for_pattern(request: Request, mode) -> Optional[str]:
 		answer isn't possible.
 	"""
 	if mode == "category":
-		category = analyze_input(request, Patterns)
+		category = analyze_input(request, Patterns).mode
 		if category is not None:
 			# Pattern found, retrieve pre-defined answer
 			return get_static_answer(category, request)
 
 	else:
-		mood = analyze_input(request, Sentiment)
-		if mood:
+		sentiment = analyze_input(request, Sentiment)
+		if sentiment:
 			return "i am %s sure that you meant %s" % (
-				mood.probability, mood.mode)
+				sentiment.probability, sentiment.mode)
 		else:
 			return "I cannot estimate the mood"
 	return None

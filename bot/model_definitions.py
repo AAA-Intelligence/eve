@@ -4,8 +4,11 @@ from enum import IntEnum, unique
 # Can either be mood or affection
 @unique
 class Sentiment(IntEnum):
+	# TODO separate sentiment and mood
+	# A_*: Describes the affection data
 	A_NEG = 0
 	A_POS = 1
+	# M_*: Describes the mood data
 	M_NEG = 2
 	M_POS = 3
 

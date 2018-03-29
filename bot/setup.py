@@ -1,9 +1,11 @@
 from collections import Set
 from typing import List, Tuple
 
+import nltk
 import numpy as np
 from keras import Sequential
 from keras.layers import Dense, Dropout
+from nltk.stem.snowball import GermanStemmer
 
 from bot.model_definitions import Patterns, Sentiment
 from bot.patterns import patterns_for_category
@@ -34,10 +36,25 @@ def read_training_data(Mode):
 		else:
 			raise Exception
 		for e in elements:
-			total_stems = build_stems(element, enum_elements, e,
-									  total_stems)
+			total_stems = build_stems(e, element, enum_elements, total_stems)
+
 	words = sorted(list(total_stems))
 	return enum_elements, words
+
+
+def build_stems(e, element, enum_elements, total_stems):
+	# Tokenize pattern into words
+	words = nltk.word_tokenize(e)
+	# Get stems for the pattern's words, as a set to avoid duplicates
+	stemmer = GermanStemmer()
+	stems = {stemmer.stem(w.lower()) for w in words}
+	# Add stems associated with association to the category to the
+	# pattern list.
+	enum_elements.append((element, stems))
+	# Add stems to total set of stems, needed for conversion to numeric
+	# TensorFlow training array
+	total_stems |= stems
+	return total_stems
 
 
 def setup_traing_data(Mode, enum_elements, words):
