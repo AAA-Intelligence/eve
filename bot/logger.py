@@ -5,7 +5,7 @@ from sys import stderr
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
 file_handler = logging.FileHandler(
-	path.join(path.dirname(__file__), 'bot.log'))
+    path.join(path.dirname(__file__), 'bot.log'))
 file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(formatter)
 
