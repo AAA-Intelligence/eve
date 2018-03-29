@@ -1,410 +1,204 @@
 * {
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial,
-		sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
 }
 
 .content {
-	position: absolute;
-	height: 85%;
-	width: 86%;
-	margin: 4% 7% 6% 7%;
-	background-color: #F4F4F4;
+    height: 100%;
+    width: 86%;
+    margin: 50px 7% 80px 7%;
+    background-color: #F4F4F4;
     padding: 0;
     background-color: #F4F4F4;
     box-shadow: 10px 10px 40px rgba(100, 100, 100, 0.4);
     border-radius: 8px;
-	float: left;
-	box-sizing: border-box;
+    float: left;
+    box-sizing: border-box;
 }
 
 @media only screen and (max-width: 1160px) {
     .content {
-		width: 98%;
-		margin: 50px 0 80px 0;
+        width: 100%;
+        margin: 50px 0 80px 0;
     }
-}
-
-.contentReg {
-	position: absolute;
-	left: 35%;
-	/*height: 65%;*/
-	width: 30%;
-	margin: 4% 0 6% 0;
-	background-color: #F4F4F4;
-    padding: 0;
-    background-color: #F4F4F4;
-    box-shadow: 10px 10px 40px rgba(100, 100, 100, 0.4);
-    border-radius: 8px;
-	float: left;
-	box-sizing: border-box;
 }
 
 .chat {
     width: 75%;
     height: 100%;
     margin: 0 auto;
-	float: left;
-	border-radius: 0 8px 8px 0;
+    float: left;
+    border-radius: 0 8px 8px 0;
 }
 
 .topBar {
-	width: 100%;
-	height: 55px;
-	padding-left: 10px;
-	padding-top: 5px;
-	background-color: #27B79B; /* Primary Color */
-	color: white;
-	overflow: hidden;
-	z-index: 500;
-	position: relative;
-	border-radius: 8px 0 0 0;
-	
-	/*Disable text highlighting*/
-	-webkit-touch-callout: none; /* iOS Safari */
-	-webkit-user-select: none; /* Safari */
-	-khtml-user-select: none; /* Konqueror HTML */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* Internet Explorer/Edge */
-	user-select: none; /* Non-prefixed version, currently
-						supported by Chrome and Opera */
+    width: 100%;
+    height: 55px;
+    background-color: #EEEEEE;
+    overflow: hidden;
+    z-index: 500;
+    position: relative;
+    border-radius: 8px 0 0 0;
 }
 
 .topBar2 {
-	width: 100%;
-	height: 55px;
-	padding-top: 5px;
-	background-color: #27B79B; /* Primary Color */
-	color: white;
-	overflow: hidden;
-	z-index: 500;
-	position: relative;
-	border-radius: 0 8px 0 0;
-	
-	/*Disable text highlighting*/
-	-webkit-touch-callout: none; /* iOS Safari */
-	-webkit-user-select: none; /* Safari */
-	-khtml-user-select: none; /* Konqueror HTML */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* Internet Explorer/Edge */
-	user-select: none; /* Non-prefixed version, currently
-						supported by Chrome and Opera */
+    width: 100%;
+    height: 55px;
+    background-color: #EEEEEE;
+    overflow: hidden;
+    z-index: 500;
+    position: relative;
+    border-radius: 0 8px 0 0;
 }
 
 .topBar2 img {
-	position: relative;
-	top: 5px;
-	left: 30px;
-	border-radius: 50%;
-	width: 42px;
-	height: 42px;
-}
-
-.topBarReg {
-	width: calc(100% - 10px);
-	height: 55px;
-	padding-left: 10px;
-	background-color: #27B79B; /* Primary Color */
-	color: white;
-	overflow: hidden;
-	z-index: 500;
-	position: relative;
-	border-radius: 8px 8px 0 0;
-	
-	/*Disable text highlighting*/
-	-webkit-touch-callout: none; /* iOS Safari */
-	-webkit-user-select: none; /* Safari */
-	-khtml-user-select: none; /* Konqueror HTML */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* Internet Explorer/Edge */
-	user-select: none; /* Non-prefixed version, currently
-						supported by Chrome and Opera */
+    position: relative;
+    top: 5px;
+    left: 15px;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
 }
 
 #log {
     padding: 5px;
-    height: 80%;
+    height: 300px;
     width: 100%;
-    border: 1px solid lightgray;
+    border: 1px solid black;
     margin-bottom: 10px;
     overflow-y: auto;
-	box-sizing: border-box;
-	/* Simon mag keinen Schatten: box-shadow: 0 15px 15px -15px inset; */
-	background-image: url('/static/bgpattern.png');
-	background-repeat: repeat;
+    box-sizing: border-box;
+    box-shadow: 0 15px 15px -15px inset;
 }
 
 #msg {
     margin: 0;
-    width: calc(100% - 68px);
-	resize: none;
-	font-size:16px;
+    width: calc(90% - 20px);
+    resize: none;
 }
-
 
 #send {
     margin: 0;
+    width: 10%;
     vertical-align: top;
-	display: block;
-	float: right;
-	width: 42px;
-	height: 42px;
-	margin-left: 10px;
-	margin-right: 10px;
-	border: 1px solid #40CDB2; /* Third Color */
-	background-color: #106A59; /* Second Color */
-	background-image: url('/static/send.png');
-	background-repeat: no-repeat;
-	background-position: top 12px left 14px;
-	border-radius: 50%;
 }
-
 
 p.bot {
-  float: left;
-  margin: 0 1em 0.5em;
-  border-radius: 1em;
-  padding: 0.5em 1em;
-  background: #e5e5ea;
-  max-width: 75%;
-  clear: both;
-  position: relative;
+    float: left;
+    margin: 0 0 0.5em;
+    border-radius: 1em;
+    padding: 0.5em 1em;
+    background: #e5e5ea;
+    max-width: 75%;
+    clear: both;
+    position: relative;
 }
+
 p.bot::after {
-  content: "";
-  position: absolute;
-  left: -0.5em;
-  bottom: 0;
-  width: 0.5em;
-  height: 1em;
-  border-right: 0.5em solid #e5e5ea;
-  border-bottom-right-radius: 1em 0.5em;
+    content: "";
+    position: absolute;
+    left: -0.5em;
+    bottom: 0;
+    width: 0.5em;
+    height: 1em;
+    border-right: 0.5em solid #e5e5ea;
+    border-bottom-right-radius: 1em 0.5em;
 }
 
 p.user {
-  float: right;
-  background-color: #40CDB2; /* Third Color */
-  color: white;
-  margin: 0 1em 0.5em;
-  border-radius: 1em;
-  padding: 0.5em 1em;
-  background: #40CDB2; /* Third Color */
-  max-width: 75%;
-  clear: both;
-  position: relative;
-  
-  /**Disabled, as it somehow destroys the speechbubble-effect (cuts ::after)...
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;**/
+    float: right;
+    background-color: #1289fe;
+    color: white;
+    margin: 0 0 0.5em;
+    border-radius: 1em;
+    padding: 0.5em 1em;
+    background: #1289fe;
+    max-width: 75%;
+    clear: both;
+    position: relative;
 }
+
 p.user::after {
-  content: "";
-  position: absolute;
-  right: -0.5em;
-  bottom: 0;
-  width: 0.5em;
-  height: 1em;
-  border-left: 0.5em solid #40CDB2; /* Third Color */
-  border-bottom-left-radius: 1em 0.5em;
+    content: "";
+    position: absolute;
+    right: -0.5em;
+    bottom: 0;
+    width: 0.5em;
+    height: 1em;
+    border-left: 0.5em solid #1289fe;
+    border-bottom-left-radius: 1em 0.5em;
 }
 
 #title {
-	font-size: 15pt;
-	font-weight: bold;
-	margin-top: 5px;
-    margin-left: 5px;
+    font-size: 15pt;
+    font-weight: bold;
 }
 
 #username {
-	font-size: 8pt;
-    margin-left: 5px;
+    font-size: 8pt;
 }
 
 #newBot {
-	position: absolute;
-	right: 10px;
-	top: 5px;
+    position: absolute;
+    right: 10px;
+    top: 5px;
 }
 
 #botname {
-	position: absolute;
-	left: 90px;
-	top: 10px;
-	font-size: 18pt;
+    position: absolute;
+    left: 75px;
+    top: 10px;
+    font-size: 18pt;
 }
 
 #newBotButton {
-	display: block;
-	float: left;
-	width: 42px;
-	height: 42px;
-	margin-left: 10px;
-	border: 1px solid #40CDB2; /* Third Color */
-	background-color: #106A59; /* Second Color */
-	background-image: url('/static/new.png');
-	background-repeat: no-repeat;
-	background-position: top 12px left 14px;
-	border-radius: 50%;
-}
-
-
-.chat-list{
+    display: block;
     float: left;
-	width: 25%;
-	height: 98%;
-	border-radius: 8px 0 0 8px;
-	white-space: nowrap;
-	overflow: hidden;
-	
-	/*Disable text highlighting*/
-	-webkit-touch-callout: none; /* iOS Safari */
-	-webkit-user-select: none; /* Safari */
-	-khtml-user-select: none; /* Konqueror HTML */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* Internet Explorer/Edge */
-	user-select: none; /* Non-prefixed version, currently
-						supported by Chrome and Opera */
+    width: 42px;
+    height: 42px;
+    margin-left: 10px;
+    border: 1px solid lightblue;
+    background-color: blue;
+    background-image: url('/static/new.png');
+    background-repeat: no-repeat;
+    background-position: top 12px left 14px;
+    border-radius: 50%;
 }
 
-.bot-list{
-	top: -16px;
-	position: relative;
-	height: 100%;
-	white-space: nowrap;
-	overflow: scroll;
+.chat-list {
+    float: left;
+    width: 25%;
+    height: 100%;
+    border-radius: 8px 0 0 8px;
 }
-.bot-list ul {
+
+.bot-list {
     list-style: none;
-	padding: 0;
-    list-style-type: none;
 }
 
-.bot-list img {
-	position: relative;
-	border-radius: 50%;
-	width: 42px;
-	height: 42px;
-	vertical-align: middle;
-}
-
-.bot-list .bot{
+.bot-list .bot {
     cursor: pointer;
     list-style: none;
-    border: 1px solid lightgray;
+    border: 1px solid black;
     display: block
 }
-.bot-list .bot a{
+
+.bot-list .bot a {
     width: 100%;
-    padding: 12px;
+    padding: 5px;
     display: inline-block;
-	text-decoration: none;
-	color: black;
-	width: calc(100% - 24px);
 }
 
-.bot-list .bot:hover{
+.bot-list .bot:hover {
     background-color: lightgrey;
 }
 
-#bot-active a{
-    background-color: #106A59; /* Second Color */
+#bot-active {
+    background-color: red;
     color: white;
-	text-decoration: none;
-	width: calc(100% - 24px);
 }
 
-
-form{
+form {
     vertical-align: top;
-}
-
-
-/**************************************** Input at registration ****************************************/
-
-.inputcontainer input::-webkit-input-placeholder, .button, .buttonSelected {
-  transition: all 0.3s ease-in-out;
-}
-
-.button {
-    background-color: #40CDB2; /* Third Color */
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-}
-.button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.2);
-}
-a.button {
-    color: white;
-}
-
-.buttonSelected:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.2);
-}
-a.buttonSelected {
-    color: white;
-}
-
-.inputcontainer input{
-  height: 30px;
-  width: 100%;
-  border-radius: 2px;
-  border: 1px solid #ccc;
-  outline: none;
-  padding: 10px;
-  background-color: rgba(204, 204, 204, 0.62);
-}
-
-
-.inputcontainertextarea textarea{
-  height: 140px;
-  width:270px;
-  min-width: 270px;
-  min-height: 140px;
-  border-radius: 2px;
-  border: 1px solid #ccc;
-  outline: none;
-  padding: 10px;
-  background-color: rgba(204, 204, 204, 0.62);
-}
-
-.inputcontainer input:focus,.input:valid{
-  border-bottom: 3px solid #40CDB2; /* Third Color */
-}
-
-.inputcontainer label{
-  position: absolute;
-  pointer-events: none;
-  transition: 0.3s;
-  padding-left: 10px;
-  color: #000000;
-  font-size: 16px;
-}
-
-.inputcontainer input:focus ~ label,.inputcontainer input:valid ~ label{
-  transform: translateY(-40px);
-  color: #40CDB2; /* Third Color */
-  font-size: 13px;
-}
-
-.inputcontainer{
-  width: 100%;
-  height: 110px;
-  display: flex;
-  align-items: center;
-}
-
-.inputcontentpadding{
-  padding: 10px;
-  padding-bottom: 30px;
-  text-align: center;
 }
