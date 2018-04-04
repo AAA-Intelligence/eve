@@ -4,6 +4,13 @@
         <title>EVE</title>
         <link rel="stylesheet" href="/static/style.css">
         <script type="text/javascript" src="/static/ws.js"></script>
+		<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="blur-svg">
+			<defs>
+				<filter id="blur-filter">
+					<feGaussianBlur stdDeviation="3"></feGaussianBlur>
+				</filter>
+			</defs>
+		</svg>
    </head>
    <body>
         <div class="content">
@@ -16,10 +23,11 @@
 				{{.User.Name}} (Logout)
 			</div>
 			<div id="newBot">
-				<form method="post" action="/createBot">
-                <input id="newBotButton" type="submit" value=""/>
+				<form method="post" action="">
+                <input id="newBotButton" onclick="showPopup()" value=""/>
 			</div>
-            </form></div>
+            </form>
+			</div>
 			
         {{if .ActiveBot}}
             <div class="bot-list"><ul>
@@ -48,6 +56,18 @@
             </form>
         </div>
 		</div>
+		
         {{end}}
+		
+		<div id="popup">
+		<h1>New chat.</h1>
+		<div id="hidePopupButton"><button onclick="hidePopup()">hide</button></div>
+		<div id="">
+				<form method="post" action="/createBot">
+                <input id="newBotButton" type="submit" value=""/>
+				</form>
+		</div>
+		</div>
+		
    </body>
 </html>
