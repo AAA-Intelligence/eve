@@ -20,21 +20,26 @@ type botInstance struct {
 
 // MessageData is used so send all needed information to the bot instance
 type MessageData struct {
-	Text          string  `json:"text"`
-	PreviousText  string  `json:"previous_text"`
-	Mood          float64 `json:"mood"`
-	Affection     float64 `json:"affection"`
-	Gender        int     `json:"bot_gender"` // 0 for male, 1 for female
-	Name          string  `json:"bot_name"`
-	Birthdate     int     `json:"bot_birthdate"` // Unix timestamp
-	FavoriteColor string  `json:"bot_favorite_color"`
+	Text            string  `json:"text"`
+	PreviousPattern *int    `json:"previous_pattern,omitempty"`
+	Mood            float64 `json:"mood"`
+	Affection       float64 `json:"affection"`
+	Gender          int     `json:"bot_gender"` // 0 for male, 1 for female
+	Name            string  `json:"bot_name"`
+	Birthdate       int64   `json:"bot_birthdate"` // Unix timestamp
+	FavoriteColor   string  `json:"bot_favorite_color"`
+	FatherName      string  `json:"father_name"`
+	FatherAge       int     `json:"father_age"`
+	MotherName      string  `json:"mother_name"`
+	MotherAge       int     `json:"mother_age"`
 }
 
 // BotAnswer is the answer returned by the bot instance
 type BotAnswer struct {
-	Text      string  `json:"text"`
-	Mood      float64 `json:"mood"`
-	Affection float64 `json:"affection"`
+	Text            string  `json:"text"`
+	PreviousPattern *int    `json:"previous_pattern,omitempty"`
+	Mood            float64 `json:"mood"`
+	Affection       float64 `json:"affection"`
 }
 
 func (b *botInstance) sendRequest(data MessageData) *BotAnswer {
