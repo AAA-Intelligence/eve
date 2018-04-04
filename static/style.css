@@ -239,6 +239,8 @@ p.user::after {
 }
 
 #newBotButton {
+	position: relative;
+	top: 5px;
 	display: block;
 	float: left;
 	width: 42px;
@@ -344,22 +346,37 @@ form{
 
 #popup {
 	position: fixed;
+	text-align: center;
 	background-color: #F4F4F4;
 	box-shadow: 10px 10px 40px rgba(100, 100, 100, 0.4);
 	border-radius: 8px;
 	visibility: hidden;
 	display:none;
-	margin-top: 15%;
-	padding: 20px;
-	width: 25%;
-	min-height: 400px;
-	height: 40%;
+	margin-top: 10%;
+	padding: 10px 60px 10px 60px;
+	min-width: 300px;
+	width: calc(25% - 120px);
+	min-height: 485px;
+	height: 50%;
 	left: 37.5%;
 	z-index: 1000;
 }
 
 #popup h1 {
 	color: #40CDB2; /* Third Color */
+}
+
+#imageinput {
+	padding: 5px;
+	border-radius: 50%;
+	width: 100px;
+	height: 100px;
+	color: white;
+	font-weight: bold;
+	background-color: #CCCCCC;
+	background-image: url('');
+	background-repeat: no-repeat;
+	background-position: center;
 }
 
 #hidePopupButton {
@@ -376,7 +393,7 @@ form{
 	margin-left: 10px;
 	border: 1px solid #40CDB2; /* Third Color */
 	background-color: #40CDB2; /* Third Color */
-	background-image: url('/static/cancel-128.png');
+	background-image: url('/static/cross-128.png');
 	background-repeat: no-repeat;
 	background-position: top 12px left 12px;
 	background-size: 18px;
@@ -391,7 +408,7 @@ form{
 
 
 
-/**************************************** Input at registration ****************************************/
+/**************************************** Input at registration & bot creation ****************************************/
 
 .inputcontainer input::-webkit-input-placeholder, .button, .buttonSelected {
 	transition: all 0.3s ease-in-out;
@@ -479,3 +496,69 @@ a.buttonSelected {
 	padding-bottom: 30px;
 	text-align: center;
 }
+
+.formheadermanual {
+	position: absolute;
+	padding-left: 10px;
+	color: #40CDB2; /* Third Color */
+	font-size: 13px;
+}
+
+/* By thestizmedia */
+.switch-field {
+	overflow: hidden;
+	padding-left: calc(50% - 180px/2);
+}
+
+.switch-field input {
+	position: absolute !important;
+	clip: rect(0, 0, 0, 0);
+	height: 1px;
+	width: 1px;
+	border: 0;
+	overflow: hidden;
+}
+
+.switch-field label {
+	float: left;
+}
+
+.switch-field label {
+	display: inline-block;
+	width: 60px;
+	background-color: #e4e4e4;
+	color: rgba(0, 0, 0, 0.6);
+	font-size: 14px;
+	font-weight: normal;
+	text-align: center;
+	text-shadow: none;
+	padding: 6px 14px;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	-webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+	-webkit-transition: all 0.1s ease-in-out;
+	-moz-transition:    all 0.1s ease-in-out;
+	-ms-transition:     all 0.1s ease-in-out;
+	-o-transition:      all 0.1s ease-in-out;
+	transition:         all 0.1s ease-in-out;
+}
+
+.switch-field label:hover {
+	cursor: pointer;
+}
+
+.switch-field input:checked + label {
+	background-color: #106A59; /* Second Color */
+	color: white;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.switch-field label:first-of-type {
+	border-radius: 4px 0 0 4px;
+}
+
+.switch-field label:last-of-type {
+	border-radius: 0 4px 4px 0;
+}
+/* END By thestizmedia */
