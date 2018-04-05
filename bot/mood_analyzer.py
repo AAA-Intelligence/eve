@@ -15,7 +15,7 @@ def affect(mood: float) -> float:
 
 def analyze(text: str) -> Tuple[SentimentCategory, float]:
     # TODO determine how which percentages influence mood and affection
-    result = analyze_input(text, Mode.SENTIMENTS).category
+    result = analyze_input(text, Mode.SENTIMENTS)
     if result:
         return result.category, 0.0
     return None, 0.0
