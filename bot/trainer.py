@@ -2,7 +2,7 @@ import pickle
 import numpy as np
 from enum import IntEnum
 from os import path, mkdir
-from typing import Tuple, List
+from typing import Tuple, List, Dict
 
 from keras.models import Sequential, model_from_json
 
@@ -63,6 +63,10 @@ def save_training(
         pickle.dump(TrainingData(words, train_x, train_y), f)
 
 
+# Cache for avoiding unnecessary multiple loading of models
+model_cache: Dict[Mode, Tuple[Sequential, TrainingData]] = {}
+
+
 def load_model(mode: Mode) -> Tuple[Sequential, TrainingData]:
     """
     Loads a pre-trained model from disk, as well as the training data dump.
@@ -72,6 +76,10 @@ def load_model(mode: Mode) -> Tuple[Sequential, TrainingData]:
         TrainingData, containg the data used for training and the list of total
         stems used.
     """
+
+    if mode in model_cache:
+        return model_cache[mode]
+
     file_name: str = mode.value
     with open(path.join(dir, '%s.dump' % file_name), 'rb') as f:
         data = pickle.load(f)
@@ -81,4 +89,11 @@ def load_model(mode: Mode) -> Tuple[Sequential, TrainingData]:
 
     model.load_weights(path.join(dir, '%s-weights.h5' % file_name))
 
+    model_cache[mode] = (model, data)
+
     return model, data
+
+
+# Pre-cache pattern and sentiment models
+load_model(Mode.PATTERNS)
+load_model(Mode.SENTIMENTS)
