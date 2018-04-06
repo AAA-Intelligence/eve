@@ -92,8 +92,3 @@ def load_model(mode: Mode) -> Tuple[Sequential, TrainingData]:
     model_cache[mode] = (model, data)
 
     return model, data
-
-
-# Pre-cache pattern and sentiment models
-load_model(Mode.PATTERNS)
-load_model(Mode.SENTIMENTS)
