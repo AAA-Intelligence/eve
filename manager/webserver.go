@@ -30,7 +30,10 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
-	tpl, err := template.ParseFiles("templates/index.gohtml")
+	tpl := template.New("index").Funcs(template.FuncMap{
+		"time": formatTime,
+	})
+	tpl, err := tpl.ParseFiles("templates/index.gohtml")
 	if err != nil {
 		http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
 		log.Println("error loading template:", err.Error())
@@ -42,7 +45,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("error getting bots for user:", err.Error())
 		return
 	}
-	err = saveExecute(w, tpl, struct {
+	err = saveExecute(w, tpl.Lookup("index.gohtml"), struct {
 		User      *db.User
 		Bots      *[]db.Bot
 		ActiveBot *db.Bot

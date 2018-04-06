@@ -21,7 +21,9 @@ window.onload = function () {
 
     function toMsg(text, style) {
         var item = document.createElement("p");
-        item.innerHTML = "<p class=\"msg " + style + "\">" + text + "</p>";
+        var time = new Date()
+        var mytime = time.getHours()+":"+time.getMinutes();
+        item.innerHTML = "<p class=\"msg " + style + "\">" + text +"<span class=\"timestamp\">"+mytime+"</span>"+"</p>";
         return item
     }
     form.onsubmit = function () {
