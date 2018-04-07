@@ -8,9 +8,12 @@ import (
 	"github.com/AAA-Intelligence/eve/manager"
 )
 
+// database filename (absolute or relative to working directory)
 const dbFile = "eve.sqlite"
 
+// usage: eve -host [hostname] -http [http port] -https [https port]
 func main() {
+	// get web server config from program arguments
 	config := loadConfig()
 	// check if db file exists
 	if _, err := os.Stat(dbFile); err != nil {

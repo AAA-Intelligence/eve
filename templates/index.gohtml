@@ -46,7 +46,10 @@
 			</div>
             <div id="log">
                 {{range $msg := .Messages}}
-                <p class="msg {{if eq $msg.Sender 1}}user{{else}}bot{{end}}">{{$msg.Content}}</p>
+                <p class="msg {{if eq $msg.Sender 1}}user{{else}}bot{{end}}">
+                    {{$msg.Content}}
+                        <span class="timestamp">{{time $msg.Timestamp}}</span>
+                </p>
                 {{end}}
             </div>
             <form id="form" autocomplete="off">
