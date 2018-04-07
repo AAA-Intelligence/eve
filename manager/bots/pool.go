@@ -13,8 +13,8 @@ type botTask struct {
 }
 
 // BotPool manages a pool of running instances of the bot python script.
-// In order to generate the bot answers faster for multiple users, any incomming request is forwarded to a free bot instance.
-// For every incomming request a task is generated and executed by the next free instance.
+// In order to generate the bot answers faster for multiple users, any incoming request is forwarded to a free bot instance.
+// For every incoming request a task is generated and executed by the next free instance.
 // The Number of bot instances can be resized to allow dynamic load balancing.
 type BotPool struct {
 	mu    sync.Mutex
@@ -92,7 +92,7 @@ func (p *BotPool) worker() {
 
 // Resize changes the count of bot instances
 // The size can be any positiv number including zero.
-// Decreasing the size can take a while, because only bot instances that are not currently working, can be destroyed.
+// Decreasing the size can take a while, because only bot instances that are not currently working can be destroyed.
 func (p *BotPool) Resize(n int) {
 	p.mu.Lock()
 	defer p.mu.Unlock()

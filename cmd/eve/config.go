@@ -20,7 +20,7 @@ type Config struct {
 // 		host: "" (empty)
 //		http: 80
 //		https: 443
-// programm usage e.g.: eve -host eve.de -http 80 -https 443
+// program usage e.g.: eve -host eve.de -http 80 -https 443
 func loadConfig() *Config {
 	var config Config
 	flag.StringVar(&config.Host, "host", "", "hostname")

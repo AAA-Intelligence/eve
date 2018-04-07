@@ -138,7 +138,7 @@ const (
 )
 
 // Bot represents a bots entry in the database
-// A bot is only accesable for one user
+// A bot is only accessible for one user
 // The entry holds personal information about the bot but also information about the current mood and affection to the user.
 type Bot struct {
 	// The bots unique id
@@ -214,7 +214,7 @@ type Message struct {
 	Rating float64
 }
 
-// MessageMaxLength defines the maximum message length that a user can sent to a bot
+// MessageMaxLength defines the maximum message length that a user can send to a bot
 const MessageMaxLength = 200
 
 // StoreMessages stores messages in database

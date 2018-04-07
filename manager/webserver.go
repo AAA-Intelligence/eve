@@ -150,7 +150,7 @@ func StartWebServer(host string, httpPort int) {
 }
 
 // GetBotFromRequest checks if there is a bot id in the request (HTTP GET e.g. ?bot=2)
-// Also it checks if the bot belongs to the authenticated user
+// It also checks if the bot belongs to the authenticated user
 // If no bot id is provided in the request the first bot for the user is returned
 // If an error occures or there is no bot in the request or database nil is returned
 func GetBotFromRequest(r *http.Request) *db.Bot {
