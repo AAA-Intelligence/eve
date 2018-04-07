@@ -51,6 +51,7 @@ func GenerateRandomString(s int) (string, error) {
 	return base64.RawURLEncoding.EncodeToString(b)[:s], err
 }
 
+// Formats the time struct to hh:mm (e.g. 19:45)
 func formatTime(time *time.Time) string {
 	return fmt.Sprintf("%d:%d", time.Hour(), time.Minute())
 }

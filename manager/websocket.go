@@ -8,15 +8,20 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+// a simple upgrader to establish a WebSocket from a HTTP request
 var upgrader = websocket.Upgrader{}
 
 // MessageRequest represents a message request from the user
+// The client sends a message as json string.
+// The json contains a message and the id of the bot the message is sent to.
 type MessageRequest struct {
 	Message string `json:"message"`
 	Bot     int    `json:"bot"`
 	User    *db.User
 }
 
+// webSocket upgrades the HTTP request to the WebSocket protocol.
+// all messages sent between the server and clint are communicated over the websocket.
 func webSocket(w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -24,6 +29,7 @@ func webSocket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer c.Close()
+	// wait for messsages
 	for {
 		var request MessageRequest
 		err := c.ReadJSON(&request)

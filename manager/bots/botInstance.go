@@ -102,6 +102,7 @@ func newBotInstance() (*botInstance, error) {
 }
 
 // The answer that is returned when the bot instance returns no valid answer
+// The Text is "Ok" and the given mood and affection is used
 func errorBotAnswer(mood, affection float64) *BotAnswer {
 	return &BotAnswer{
 		Text:      "Ok",
