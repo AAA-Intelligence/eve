@@ -158,10 +158,34 @@ window.onload = function () {
 		content.style["-webkit-filter"] = "";
 	}
 	
+	function fetchJSON(sex, callback) {
+		fetch(`./getRandomName?sex=`+sex)
+		.then(response => response.json())
+		.then(json => callback(null, json.result))
+		.catch(error => callback(error, null))
+	}
+	
 	function genName() {
-		id = Math.floor(Math.random() * 5);
-		names = ["Lina", "Laura", "Lisa", "Loreen", "Linda"];
-		setNameOnCreation(names[id]);
+		/*id = Math.floor(Math.random() * 5);
+		names = ["Lina", "Laura", "Lisa", "Loreen", "Linda"];*/
+		
+		//Fetch selected sex
+		if (document.getElementById("switch_left").checked) {
+			sex = 0;
+		} else {
+			sex = 1;
+		}
+		
+		fetchJSON(sex, (error, result) => {
+			if (error) 
+				console.log(error)
+			else 
+				name = result[Name]
+		})
+		
+		if (sex==0) name = "Laura";
+		else name = "Peter";
+		setNameOnCreation(name);
 	}
 	
 	function setNameOnCreation(newName) {
