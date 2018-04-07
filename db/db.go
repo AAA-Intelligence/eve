@@ -343,3 +343,36 @@ func GetBot(botID, userID int) (*Bot, error) {
 	}
 	return &bot, nil
 }
+
+// Name represents database entry
+type Name struct {
+	ID        	int
+	Name      	string
+	Sex     	int
+}
+
+// GEtNames returns all bots which belong to the given user
+func GetNames(sex int) (*[]Name, error) {
+	rows, err := dbConection.db.Query(`
+		SELECT 	*
+		FROM Name 
+		WHERE Sex = $1`,sex)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var names []Name
+	var cursor Name
+	for rows.Next() {
+		if err := rows.Scan(&cursor.ID, &cursor.Name, &cursor.Sex); err == nil {
+			bots = append(bots, cursor)
+		} else {
+			log.Println(err)
+		}
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return &names, nil
+}
+

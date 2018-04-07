@@ -5,11 +5,11 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-
+	"math/rand"
 	"github.com/AAA-Intelligence/eve/manager/bots"
 
 	"github.com/AAA-Intelligence/eve/db"
-	lorem "github.com/drhodes/golorem"
+	
 )
 
 //indexHandler serves HTML index page
@@ -76,18 +76,60 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func createBot(w http.ResponseWriter, r *http.Request) {
+func getRandomName(res http.ResponseWriter, req *http.Request) {
+	log.Println("Trigger")
+	sex := r.URL.Query().Get("sex")
+	names, err := db.GetNames(sex)
+	if err != nil || len(*names) < 1 {
+		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error loading names")
+		return
+	}
+
+	tpl, err := template.ParseFiles("templates/register.gohtml")
+
+	err = saveExecute(res, tpl, struct{
+		Name	*db.Name
+	}{
+		Name	names[rand.Intn(len(names))]
+	})
+	if err != nil {
+		http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error executing template:", err)
+		return
+	}
+
+}
+
+
+func createBot(res http.ResponseWriter, req *http.Request) {
+
+	
+
+	// tpl,err2 := template.ParseFiles("templates/index.gohtml")
+	// if err2 != nil {
+	// 	http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+	// 	log.Println("error loading template:", err2.Error())
+	// 	return
+	// }
+	// err2 = saveExecute(w, tpl, nil)
+	// if err2 != nil {
+	// 	http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+	// 	log.Println("error executing template:", err2)
+	// 	return
+	// }
+
 	err := db.CreateBot(&db.Bot{
-		Name:   lorem.Word(3, 10),
+		Name:   names[rand.Intn(9)],
 		Image:  "hässlich.png",
 		Gender: db.Female,
 		User:   GetUserFromRequest(r).ID,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(res, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(res, req, "/", http.StatusSeeOther)
 }
 
 func onShutdown() {
@@ -113,6 +155,7 @@ func StartWebServer(host string, httpPort int) {
 
 	mux.HandleFunc("/", basicAuth(indexHandler))
 	mux.HandleFunc("/createBot", basicAuth(createBot))
+	mux.HandleFunc("/getRandomName", basicAuth(getRandomName))
 	mux.HandleFunc("/ws", basicAuth(webSocket))
 
 	// handle static files like css

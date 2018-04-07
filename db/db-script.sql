@@ -37,3 +37,10 @@ CREATE TABLE User
   Name         TEXT NOT NULL,
   PasswordHash TEXT NOT NULL
 );
+
+CREATE TABLE Names
+(
+  NameID       INTEGER PRIMARY KEY AUTOINCREMENT,
+  Name         TEXT NOT NULL,
+  Sex          INTEGER NOT NULL
+);
