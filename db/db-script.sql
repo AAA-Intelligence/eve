@@ -1,52 +1,79 @@
-CREATE TABLE Bot
+-- we don't know how to generate schema main (class Schema) :(
+create table Name
 (
-  BotID     INTEGER PRIMARY KEY AUTOINCREMENT ,
-  Name      TEXT    NOT NULL,
-  Image     TEXT    NOT NULL,
-  Gender    TEXT    NOT NULL,
-  User      INTEGER NOT NULL
-    CONSTRAINT Bot_User_UserID_fk
-    REFERENCES User,
-  Affection REAL    NOT NULL,
-  Mood      REAL    NOT NULL
-);
-
-
-CREATE TABLE Message
-(
-  MessageID INTEGER PRIMARY KEY AUTOINCREMENT,
-  Bot       INTEGER  NOT NULL
-    CONSTRAINT Message_Bot_BotID_fk
-    REFERENCES Bot (BotID),
-  Sender    INTEGER  NOT NULL,
-  Timestamp DATETIME NOT NULL,
-  Content   TEXT     NOT NULL,
-  Rating    REAL     NOT NULL
-);
-
-CREATE TABLE PredefinedAnswer
-(
-  PredefinedAnswerID INTEGER PRIMARY KEY AUTOINCREMENT,
-  Category           INTEGER NOT NULL,
-  Answer             TEXT    NOT NULL
-);
-
-CREATE TABLE User
-(
-  UserID       INTEGER PRIMARY KEY AUTOINCREMENT,
-  Name         TEXT NOT NULL,
-  PasswordHash TEXT NOT NULL
-);
-
-CREATE TABLE Names
-(
-  NameID       INTEGER PRIMARY KEY AUTOINCREMENT,
-  Name         TEXT NOT NULL,
-  Sex          INTEGER NOT NULL
-);
+	NameID INTEGER not null,
+	Name TEXT not null,
+	Sex int not null
+)
+;
 
 create unique index Name_NameID_uindex
-  on Name (NameID);
+	on Name (NameID)
+;
 
 create unique index Name_Name_uindex
-  on Name (Name);
+	on Name (Name)
+;
+
+-- unexpected locus for key
+;
+
+create table PredefinedAnswer
+(
+	PredefinedAnswerID INTEGER
+		primary key
+		 autoincrement,
+	Category INTEGER not null,
+	Answer TEXT not null
+)
+;
+
+create table User
+(
+	UserID INTEGER
+		primary key,
+	Name TEXT not null,
+	PasswordHash TEXT not null,
+	SessionKey TEXT
+)
+;
+
+create table Bot
+(
+	BotID INTEGER
+		primary key
+		 autoincrement,
+	Name TEXT not null,
+	Image TEXT not null,
+	Gender INTEGER not null,
+	User INTEGER not null
+		constraint Bot_User_UserID_fk
+			references User,
+	Affection REAL not null,
+	Mood REAL not null
+)
+;
+
+create table Message
+(
+	MessageID INTEGER
+		primary key
+		 autoincrement,
+	Bot INTEGER not null
+		constraint Message_Bot_BotID_fk
+			references Bot,
+	Sender INTEGER not null,
+	Timestamp DATETIME not null,
+	Content TEXT not null,
+	Rating REAL not null
+)
+;
+
+create unique index User_Name_uindex
+	on User (Name)
+;
+
+create unique index User_SessionKey_uindex
+	on User (SessionKey)
+;
+
