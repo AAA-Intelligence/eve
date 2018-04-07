@@ -192,3 +192,8 @@ window.onload = function () {
 		var namefield = document.getElementById("generatedName");
 		namefield.innerHTML = newName+"<button onclick='genName()'></button>";		
 	}
+	
+	function onSexChange() {
+		genName();
+		//+ Change picture!
+	}
