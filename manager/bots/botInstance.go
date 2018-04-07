@@ -10,11 +10,19 @@ import (
 	"time"
 )
 
-// a instance of the python script
+// A instance of the bot python script
+// This struct can be used to communicate with the pyhton script via stdin and stdout
 type botInstance struct {
-	cmd      *exec.Cmd
-	writer   io.WriteCloser
-	reader   *bufio.Reader
+	// The command that started the script
+	cmd *exec.Cmd
+
+	// everything that is written to this writer is sent to the script
+	writer io.WriteCloser
+
+	// read the scripts output
+	reader *bufio.Reader
+
+	// last time the bot instance was used / handled a requests
 	lastUsed time.Time
 }
 
@@ -37,6 +45,8 @@ type BotAnswer struct {
 	Affection float64 `json:"affection"`
 }
 
+// sends request to bot instance, waits for the response and returns it.
+// the function always returns an answer
 func (b *botInstance) sendRequest(data MessageData) *BotAnswer {
 	b.lastUsed = time.Now()
 	writer := b.writer
@@ -58,7 +68,6 @@ func (b *botInstance) sendRequest(data MessageData) *BotAnswer {
 			// bot instance returns "error" if the request could not be processed
 			log.Println("an error in the bot instance occurred")
 		} else {
-			fmt.Println(string(response))
 			log.Println("error reading response:", err)
 		}
 		return errorBotAnswer(data.Mood, data.Affection)
@@ -67,16 +76,19 @@ func (b *botInstance) sendRequest(data MessageData) *BotAnswer {
 }
 
 // creates new instance of python script that handles message requests
+// if no error occures the bot instance struct is returned
 func newBotInstance() (*botInstance, error) {
 	cmd := exec.Command("python", "-m", "bot")
 
 	writer, err := cmd.StdinPipe()
 	if err != nil {
-		log.Fatal("error creating stdin pipe:", err)
+		//log.Fatal("error creating stdin pipe:", err)
+		return nil, err
 	}
 	reader, err := cmd.StdoutPipe()
 	if err != nil {
-		log.Fatal("error creating stdout pipe:", err)
+		//log.Fatal("error creating stdout pipe:", err)
+		return nil, err
 	}
 
 	if err = cmd.Start(); err != nil {
@@ -89,6 +101,7 @@ func newBotInstance() (*botInstance, error) {
 	}, nil
 }
 
+// The answer that is returned when the bot instance returns no valid answer
 func errorBotAnswer(mood, affection float64) *BotAnswer {
 	return &BotAnswer{
 		Text:      "Ok",
@@ -100,5 +113,4 @@ func errorBotAnswer(mood, affection float64) *BotAnswer {
 // Close closes the pipe to the python script and thereby the process is stoped
 func (b *botInstance) Close() {
 	b.writer.Close()
-	//TODOn kill process if it does not stop afer one second
 }

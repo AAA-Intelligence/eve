@@ -8,6 +8,7 @@ window.onload = function () {
     var sendBtn = document.getElementById("send");
 
     msg.onkeypress = function (key) {
+        // send message on press enter
         if (key.keyCode === 13 && !key.shiftKey) {
             sendMsg()
             return false;

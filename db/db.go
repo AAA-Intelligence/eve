@@ -12,7 +12,8 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-// default databaseConnection to use
+// The connection, which is used for all database requests
+// It is not accessable from outside the package to make sure all interaction with the database is made over the defined functions
 var dbConection struct {
 	// Path is the path of the sqlite file
 	Path string
@@ -21,7 +22,8 @@ var dbConection struct {
 	db *sql.DB
 }
 
-// User holds user data
+// User represents a user entry in the database
+// Every person that uses eve needs to have a user entry in the database, because it is used for authentication.
 type User struct {
 
 	// UserID in database
@@ -31,7 +33,9 @@ type User struct {
 	Name string
 }
 
-// Connect creates a connection to database
+// Connect creates a connection to a sqlite3 database
+// The given path is the location of the datbase file
+// If the function runs without errors, the database is ready for requests
 func Connect(path string) error {
 	dbConection.Path = path
 	db, err := sql.Open("sqlite3", path)
@@ -42,17 +46,20 @@ func Connect(path string) error {
 	return nil
 }
 
-// Close closes a connection to database
+// Close closes the connection to the database
 func Close() error {
 	// check if database is conntected
 	if dbConection.db == nil {
 		return ErrConnectionClosed
 	}
+	// remove connection object to avoid requests to closed connection
 	defer func() { dbConection.db = nil }()
 	return dbConection.db.Close()
 }
 
-// CreateUser adds user to database
+// CreateUser adds a new user to the database
+// It creates a new entry in the table "User"
+// The password is hashed with bcrypt
 func CreateUser(userName, password string) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -62,15 +69,15 @@ func CreateUser(userName, password string) error {
 	return err
 }
 
-// CheckCredentials checks if combination of userName and password is valid
-// User object data is returned if credentials are valid
+// CheckCredentials verifies if the combination of userName and password is valid.
+// The function checks if a user with the given name exists and compares the password with the one in the database.
+// The complete user data is returned if the credentials are valid.
 func CheckCredentials(userName, password string) (*User, error) {
 	var hash []byte
 	user := User{
 		Name: userName,
 	}
-	var sessionKey sql.NullString
-	err := dbConection.db.QueryRow("SELECT UserID,PasswordHash,SessionKey FROM User WHERE Name=$1", user.Name).Scan(&user.ID, &hash, &sessionKey)
+	err := dbConection.db.QueryRow("SELECT UserID,PasswordHash FROM User WHERE Name=$1", user.Name).Scan(&user.ID, &hash)
 	if err == sql.ErrNoRows {
 		return nil, ErrUserNotExists
 	} else if err != nil {
@@ -85,7 +92,9 @@ func CheckCredentials(userName, password string) (*User, error) {
 	return &user, nil
 }
 
-//StoreSessionKey saves the key in the database for the given user and saves the key to the user struct
+// StoreSessionKey saves the session key in the database in the "User" table
+// This session key authenticates the user in further requests
+// The function returns true if the storing was successfull
 func StoreSessionKey(user *User, key string) bool {
 	result, err := dbConection.db.Exec("UPDATE User SET SessionKey=$1 WHERE UserId = $2", key, user.ID)
 	if err != nil {
@@ -103,7 +112,9 @@ func StoreSessionKey(user *User, key string) bool {
 	return true
 }
 
-//GetUserForSession gets the user associated with the given session key
+// GetUserForSession checks if the given sesssion key is associated with any user in the database.
+// If the key exists in the database the User, which the session belongs to, is returned.
+// An invalid key resolves in the return of a nil pointer
 func GetUserForSession(sessionKey string) *User {
 	var user User
 	err := dbConection.db.QueryRow("SELECT UserID,Name FROM User WHERE SessionKey=$1", sessionKey).Scan(&user.ID, &user.Name)
@@ -126,18 +137,34 @@ const (
 	Female = Gender(1)
 )
 
-// Bot represents database entry of a bot
+// Bot represents a bots entry in the database
+// A bot is only accesable for one user
+// The entry holds personal information about the bot but also information about the current mood and affection to the user.
 type Bot struct {
-	ID        int
-	Name      string
-	Image     string
-	Gender    Gender
-	User      int
+	// The bots unique id
+	ID int
+
+	// The bots name, which the user can see
+	Name string
+
+	// The path to the bots profile picture
+	Image string
+
+	Gender Gender
+
+	// The user the bot belongs to. Only this user can communicate with the bot
+	User int
+
+	// The bots current affection to the user
 	Affection float64
-	Mood      float64
+
+	// The bots current mood
+	Mood float64
 }
 
-// CreateBot creates a bot entry in the database and fills the empty values in the given bot struct
+// CreateBot creates a bot entry in the database
+// The following fields in the bot struct need to be filled: Name, Image, Gender, User, Affection and Mood
+// If the insertion was successful the generated bot id is saved in the given bot struct.
 func CreateBot(bot *Bot) error {
 	v, err := dbConection.db.Exec("INSERT INTO Bot(Name,Image,Gender,User,Affection,Mood) VALUES($1,$2,$3,$4,$5,$6)", bot.Name, bot.Image, bot.Gender, bot.User, bot.Affection, bot.Mood)
 	if err != nil {
@@ -165,19 +192,33 @@ const (
 )
 
 // Message represents database entry of a message
+// A messsage is a text that was sent between the user and a bot
+// Since a bot can only communicate with one user a message is always associated with the bot
 type Message struct {
-	ID        int
-	Bot       int
-	Sender    MessageSender
+	// ID is a unique id
+	ID int
+
+	// The bot who sent the message or received it
+	Bot int
+
+	// The sender of the message
+	Sender MessageSender
+
+	// The point in time that the message was sent
 	Timestamp time.Time
-	Content   string
-	Rating    float64
+
+	// The text that was sent
+	Content string
+
+	//
+	Rating float64
 }
 
-// MessageMaxLength defines the maximum message length
+// MessageMaxLength defines the maximum message length that a user can sent to a bot
 const MessageMaxLength = 200
 
-// StoreMessages saves message in database
+// StoreMessages stores messages in database
+// The messages need to be sent between the given bot and user
 func StoreMessages(userID, botID int, msgs []Message) error {
 	// check if bot belongs to user
 	exists, err := rowExists("SELECT * FROM Bot WHERE BotID=$1 AND User=$2", botID, userID)
@@ -188,6 +229,7 @@ func StoreMessages(userID, botID int, msgs []Message) error {
 		return ErrBotDoesNotBelongToUser
 	}
 
+	// start a new database transaction
 	tx, err := dbConection.db.Begin()
 	if err != nil {
 		log.Fatal(err)
@@ -278,40 +320,6 @@ func GetBotsForUser(userID int) (*[]Bot, error) {
 	return &bots, nil
 }
 
-//GetMessagesForUser returns alle messages the user has send with any bot
-func GetMessagesForUser(user *User) (*map[int][]Message, error) {
-	rows, err := dbConection.db.Query(`
-		SELECT	m.MessageID,
-				m.Sender,
-				m.Timestamp,
-				m.Content,
-				m.Rating,
-				b.BotID
-		FROM  Message m
-		INNER JOIN Bot b ON (b.BotID = m.Bot)
-		WHERE b.User = $1
-		ORDER BY b.BotID,m.Timestamp`, user.ID)
-	if err != nil {
-		log.Println("cannot get messages for user", user.ID, ":", err)
-		return nil, ErrInternalServerError
-	}
-	defer rows.Close()
-	var cursor Message
-	messages := make(map[int][]Message)
-	for rows.Next() {
-		if err = rows.Scan(&cursor.ID, &cursor.Sender, &cursor.Timestamp, &cursor.Content, &cursor.Rating, &cursor.Bot); err == nil {
-			messages[cursor.Bot] = append(messages[cursor.Bot], cursor)
-		} else {
-			log.Println(err)
-		}
-	}
-	if err := rows.Err(); err != nil {
-		log.Println(err)
-		return nil, ErrInternalServerError
-	}
-	return &messages, nil
-}
-
 // checks if the given query returns at least one row
 func rowExists(query string, args ...interface{}) (bool, error) {
 	var exists bool
@@ -324,6 +332,7 @@ func rowExists(query string, args ...interface{}) (bool, error) {
 }
 
 // GetBot returns bot entry from database if bot belongs to user
+// This funtion can be used to check if a bot belongs to the given user.
 func GetBot(botID, userID int) (*Bot, error) {
 	bot := Bot{
 		ID:   botID,

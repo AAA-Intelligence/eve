@@ -10,7 +10,7 @@ import (
 
 var botPool *bots.BotPool
 
-// takes incomming message requests, sends them to the bot instance and returns the answer
+// takes incomming message requests, sends them to the bot instance and returns the bots answer
 func handleMessage(request MessageRequest) string {
 
 	bot, err := db.GetBot(request.Bot, request.User.ID)

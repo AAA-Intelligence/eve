@@ -2,7 +2,7 @@ package main
 
 import "flag"
 
-// Config configures web server
+// Config holds information to configure the web server
 type Config struct {
 
 	// Host e.g. google.de, mypage.com, localhost
@@ -20,6 +20,7 @@ type Config struct {
 // 		host: "" (empty)
 //		http: 80
 //		https: 443
+// programm usage e.g.: eve -host eve.de -http 80 -https 443
 func loadConfig() *Config {
 	var config Config
 	flag.StringVar(&config.Host, "host", "", "hostname")
