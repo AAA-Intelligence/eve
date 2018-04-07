@@ -3,13 +3,13 @@ package manager
 import (
 	"html/template"
 	"log"
+	"math/rand"
 	"net/http"
 	"strconv"
-	"math/rand"
+
 	"github.com/AAA-Intelligence/eve/manager/bots"
 
 	"github.com/AAA-Intelligence/eve/db"
-	
 )
 
 //indexHandler serves HTML index page
@@ -78,8 +78,13 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 
 func getRandomName(res http.ResponseWriter, req *http.Request) {
 	log.Println("Trigger")
-	sex := r.URL.Query().Get("sex")
-	names, err := db.GetNames(sex)
+	sex := req.URL.Query().Get("sex")
+	sexId, err := strconv.Atoi(sex)
+	if err != nil {
+		http.Error(res, "invalid sex", http.StatusBadRequest)
+		return
+	}
+	names, err := db.GetNames(sexId)
 	if err != nil || len(*names) < 1 {
 		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
 		log.Println("error loading names")
@@ -88,23 +93,20 @@ func getRandomName(res http.ResponseWriter, req *http.Request) {
 
 	tpl, err := template.ParseFiles("templates/register.gohtml")
 
-	err = saveExecute(res, tpl, struct{
-		Name	*db.Name
+	err = saveExecute(res, tpl, struct {
+		Name db.Name
 	}{
-		Name	names[rand.Intn(len(names))]
+		Name: (*names)[rand.Intn(len(*names))],
 	})
 	if err != nil {
-		http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
 		log.Println("error executing template:", err)
 		return
 	}
 
 }
 
-
 func createBot(res http.ResponseWriter, req *http.Request) {
-
-	
 
 	// tpl,err2 := template.ParseFiles("templates/index.gohtml")
 	// if err2 != nil {
