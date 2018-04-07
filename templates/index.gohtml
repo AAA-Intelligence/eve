@@ -3,6 +3,7 @@
    <head>
         <title>EVE</title>
         <link rel="stylesheet" href="/static/style.css">
+		<link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
         <script type="text/javascript" src="/static/ws.js"></script>
 		<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="blur-svg">
 			<defs>
@@ -58,22 +59,21 @@
         {{end}}
 		
 		<div id="popup">
-		<h1>New chat.</h1>
+		<!--<h1>New chat.</h1>-->
 		<div id="hidePopupButton"><button onclick="hidePopup()"></button></div>
 		<div id="">
+				<br /><div class="newbotdesc">Click on the picture to change your partner.</div><br /><br />
+				<button id="imageinput" onclick="changeImagePopup()" value=""></button>
 				
-				<div class="formheadermanual">Gender</div><br />
+				<br /><p id="generatedName">Lara<button onclick="genName()"></button></p>
+				
 				<div class="switch-field"><input type="radio" id="switch_left" name="gender" value="f" checked />
 				<label for="switch_left">Female</label>
 				<input type="radio" id="switch_right" name="gender" value="m" />
-				<label for="switch_right">Male</label></div>
-				<br />
-				<div class="formheadermanual">Profile picture</div><br />
-				<button id="imageinput" onclick="changeImagePopup()" value="">Select</button>
-				<br /><br />
-				<div class="formheadermanual">Name of your partner</div><div class="inputcontainer"><input type="text" name="botname" maxlength="30" value="Generated name goes here" readonly /></div>
-                <form method="post" action="/createBot">
-				<input class="button" type="submit" value="Create new chat"/>
+				<label for="switch_right">Male</label></div><br />
+				
+                <br /><form method="post" action="/createBot">
+				<input class="button" type="submit" value="Let's go!"/>
 				</form>
 		</div>
 		</div>

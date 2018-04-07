@@ -366,19 +366,6 @@ form{
 	color: #40CDB2; /* Third Color */
 }
 
-#imageinput {
-	padding: 5px;
-	border-radius: 50%;
-	width: 100px;
-	height: 100px;
-	color: white;
-	font-weight: bold;
-	background-color: #CCCCCC;
-	background-image: url('');
-	background-repeat: no-repeat;
-	background-position: center;
-}
-
 #hidePopupButton {
 	position: absolute;
 	right: 5px;
@@ -400,6 +387,7 @@ form{
 	border-radius: 50%;
 	cursor: pointer;
 	color: white;
+	box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.3);
 }
 
 #hidePopupButton:hover button {
@@ -504,6 +492,51 @@ a.buttonSelected {
 	font-size: 13px;
 }
 
+.newbotdesc {
+	color: #40CDB2; /* Third Color */
+	font-size: 13px;
+}
+
+#imageinput {
+	padding: 5px;
+	border-radius: 50%;
+	width: 150px;
+	height: 150px;
+	color: white;
+	font-weight: bold;
+	background-color: #CCCCCC;
+	background-image: url('https://i.imgur.com/ru8D0SC.jpg');
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 100%;
+	border: 0px;
+}
+
+#generatedName {
+	display: block;
+	font: 400 35px 'Pacifico', Helvetica, sans-serif;
+	margin-top: 0px;
+}
+
+#generatedName button {
+	width: 18px;
+	height: 18px;
+	margin-left: 10px;
+	border: 0px;
+	background-color: transparent;
+	background-image: url('/static/refresh-128.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 100%;
+	border-radius: 0%;
+	cursor: pointer;
+}
+
+#generatedName button:hover {
+	background-image: url('/static/refresh-128-h.png');
+}
+
+
 /* By thestizmedia */
 .switch-field {
 	overflow: hidden;
@@ -548,7 +581,7 @@ a.buttonSelected {
 }
 
 .switch-field input:checked + label {
-	background-color: #106A59; /* Second Color */
+	background-color: #40CDB2; /* Third Color */
 	color: white;
 	-webkit-box-shadow: none;
 	box-shadow: none;

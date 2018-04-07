@@ -154,3 +154,14 @@ window.onload = function () {
 		content.style["filter"] = "";
 		content.style["-webkit-filter"] = "";
 	}
+	
+	function genName() {
+		id = Math.floor(Math.random() * 5);
+		names = ["Lina", "Laura", "Lisa", "Loreen", "Linda"];
+		setNameOnCreation(names[id]);
+	}
+	
+	function setNameOnCreation(newName) {
+		var namefield = document.getElementById("generatedName");
+		namefield.innerHTML = newName+"<button onclick='genName()'></button>";		
+	}
