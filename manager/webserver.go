@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"math/rand"
@@ -77,34 +78,20 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getRandomName(res http.ResponseWriter, req *http.Request) {
-	
+
 	sex := req.URL.Query().Get("sex")
-	sexId, err := strconv.Atoi(sex)
+	sexID, err := strconv.Atoi(sex)
 	if err != nil {
 		http.Error(res, "invalid sex", http.StatusBadRequest)
 		return
 	}
-	names, err := db.GetNames(sexId)
+	names, err := db.GetNames(sexID)
 	if err != nil || len(*names) < 1 {
 		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
 		log.Println("error loading names")
 		return
 	}
-
-	log.Println(names)
-	tpl, err := template.ParseFiles("templates/register.gohtml")
-
-	err = saveExecute(res, tpl, struct {
-		Name db.Name
-	}{
-		Name: (*names)[rand.Intn(len(*names))],
-	})
-	if err != nil {
-		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
-		log.Println("error executing template:", err)
-		return
-	}
-
+	fmt.Fprint(res, (*names)[rand.Intn(len(*names))])
 }
 
 func createBot(res http.ResponseWriter, req *http.Request) {
