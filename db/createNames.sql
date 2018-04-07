@@ -1,0 +1,14 @@
+INSERT INTO "Name" ("Name", "Sex") VALUES ('Nele', 0);
+INSERT INTO "Name" ("Name", "Sex") VALUES ('Lara', 0);
+INSERT INTO "Name" ("Name", "Sex") VALUES ('Michelle', 0);
+INSERT INTO "Name" ("Name", "Sex") VALUES ('Sara', 0);
+INSERT INTO "Name" ("Name", "Sex") VALUES ('Leila', 0);
+INSERT INTO "Name" ("Name", "Sex") VALUES ('Padme', 0);
+INSERT INTO "Name" ("Name", "Sex") VALUES ('Uhura', 0);
+INSERT INTO "Name" ("Name", "Sex") VALUES ('Daniel', 1);
+INSERT INTO "Name" ("Name", "Sex") VALUES ('Nikolas', 1);
+INSERT INTO "Name" ("Name", "Sex") VALUES ('Tom', 1);
+INSERT INTO "Name" ("Name", "Sex") VALUES ('Arne', 1);
+INSERT INTO "Name" ("Name", "Sex") VALUES ('Max', 1);
+INSERT INTO "Name" ("Name", "Sex") VALUES ('Tim', 1);
+INSERT INTO "Name" ("Name", "Sex") VALUES ('Michael', 1);
