@@ -42,6 +42,9 @@ func Connect(path string) error {
 	if err != nil {
 		return err
 	}
+	if _, err := db.Exec(DatabaseCreationScript); err != nil {
+		return err
+	}
 	dbConection.db = db
 	return nil
 }

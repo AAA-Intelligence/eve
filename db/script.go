@@ -1,0 +1,38 @@
+package db
+
+const DatabaseCreationScript = `
+BEGIN TRANSACTION;
+CREATE TABLE IF NOT EXISTS 'User' (
+	'UserID'	INTEGER,
+	'Name'	TEXT NOT NULL,
+	'PasswordHash'	TEXT NOT NULL,
+	'SessionKey'	TEXT,
+	PRIMARY KEY('UserID')
+);
+CREATE TABLE IF NOT EXISTS 'Message' (
+	'MessageID'	INTEGER PRIMARY KEY AUTOINCREMENT,
+	'Bot'	INTEGER NOT NULL,
+	'Sender'	INTEGER NOT NULL,
+	'Timestamp'	DATETIME NOT NULL,
+	'Content'	TEXT NOT NULL,
+	'Rating'	REAL NOT NULL,
+	CONSTRAINT 'Message_Bot_BotID_fk' FOREIGN KEY('Bot') REFERENCES 'Bot'('BotID')
+);
+CREATE TABLE IF NOT EXISTS 'Bot' (
+	'BotID'	INTEGER PRIMARY KEY AUTOINCREMENT,
+	'Name'	TEXT NOT NULL,
+	'Image'	TEXT NOT NULL,
+	'Gender'	INTEGER NOT NULL,
+	'User'	INTEGER NOT NULL,
+	'Affection'	REAL NOT NULL,
+	'Mood'	REAL NOT NULL,
+	CONSTRAINT 'Bot_User_UserID_fk' FOREIGN KEY('User') REFERENCES 'User'
+);
+CREATE UNIQUE INDEX IF NOT EXISTS 'User_SessionKey_uindex' ON 'User' (
+	'SessionKey'
+);
+CREATE UNIQUE INDEX IF NOT EXISTS 'User_Name_uindex' ON 'User' (
+	'Name'
+);
+COMMIT;
+`
