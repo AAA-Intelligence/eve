@@ -77,7 +77,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getRandomName(res http.ResponseWriter, req *http.Request) {
-	log.Println("Trigger")
+	
 	sex := req.URL.Query().Get("sex")
 	sexId, err := strconv.Atoi(sex)
 	if err != nil {
@@ -91,6 +91,7 @@ func getRandomName(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	log.Println(names)
 	tpl, err := template.ParseFiles("templates/register.gohtml")
 
 	err = saveExecute(res, tpl, struct {
@@ -119,13 +120,13 @@ func createBot(res http.ResponseWriter, req *http.Request) {
 	// 	http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
 	// 	log.Println("error executing template:", err2)
 	// 	return
-	// }
+	// }names[rand.Intn(9)]
 
 	err := db.CreateBot(&db.Bot{
-		Name:   names[rand.Intn(9)],
+		Name:   "Nina",
 		Image:  "hässlich.png",
 		Gender: db.Female,
-		User:   GetUserFromRequest(r).ID,
+		User:   GetUserFromRequest(req).ID,
 	})
 	if err != nil {
 		http.Error(res, err.Error(), http.StatusInternalServerError)
