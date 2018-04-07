@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -96,7 +97,8 @@ func createBot(w http.ResponseWriter, r *http.Request) {
 		User:   user.ID,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		fmt.Println("error creating bot:", err)
+		http.Error(w, "cannot create bot", http.StatusInternalServerError)
 		return
 	}
 	http.Redirect(w, r, "/", http.StatusSeeOther)
