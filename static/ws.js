@@ -111,6 +111,9 @@ window.onload = function () {
 	
 };
 
+var sex = 0;
+
+
 	function showPopup() {
 		var popup = document.getElementById("popup");
 		var contentAr = document.getElementsByClassName("content");
@@ -166,26 +169,16 @@ window.onload = function () {
 	}
 	
 	function genName() {
-		/*id = Math.floor(Math.random() * 5);
-		names = ["Lina", "Laura", "Lisa", "Loreen", "Linda"];*/
-		
-		//Fetch selected sex
-		if (document.getElementById("switch_left").checked) {
-			sex = 0;
-		} else {
-			sex = 1;
-		}
-		
 		fetchJSON(sex, (error, result) => {
 			if (error) 
 				console.log(error)
 			else 
-				name = result[Name]
+				name = result["Name"]
+				nameID = result["ID"]
 		})
 		
-		if (sex==0) name = "Laura";
-		else name = "Peter";
 		setNameOnCreation(name);
+		setHiddenValue("nameID", nameID);
 	}
 	
 	function setNameOnCreation(newName) {
@@ -193,7 +186,22 @@ window.onload = function () {
 		namefield.innerHTML = newName+"<button onclick='genName()'></button>";		
 	}
 	
+	function setHiddenValue(id, val) {
+		document.getElementById(id).value = val;
+	}
+	
+	function fetchSex() {
+		//Fetch selected sex
+		if (document.getElementById("switch_left").checked) {
+			sex = 0;
+		} else {
+			sex = 1;
+		}
+	}
+	
 	function onSexChange() {
+		fetchSex();
 		genName();
+		setHiddenValue("sex", sex);
 		//+ Change picture!
 	}
