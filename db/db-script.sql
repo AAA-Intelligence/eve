@@ -44,3 +44,9 @@ CREATE TABLE Names
   Name         TEXT NOT NULL,
   Sex          INTEGER NOT NULL
 );
+
+create unique index Name_NameID_uindex
+  on Name (NameID);
+
+create unique index Name_Name_uindex
+  on Name (Name);

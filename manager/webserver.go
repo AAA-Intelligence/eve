@@ -1,13 +1,13 @@
 package manager
 
 import (
-	"fmt"
+	//"fmt"
 	"html/template"
 	"log"
 	"math/rand"
 	"net/http"
 	"strconv"
-
+	"encoding/json"
 	"github.com/AAA-Intelligence/eve/manager/bots"
 
 	"github.com/AAA-Intelligence/eve/db"
@@ -91,23 +91,28 @@ func getRandomName(res http.ResponseWriter, req *http.Request) {
 		log.Println("error loading names")
 		return
 	}
-	fmt.Fprint(res, (*names)[rand.Intn(len(*names))])
+
+	res.Header().Set("Content-Type", "application/json")
+    res.WriteHeader(http.StatusCreated)
+    json.NewEncoder(res).Encode((*names)[rand.Intn(len(*names))])
+	
 }
 
 func createBot(res http.ResponseWriter, req *http.Request) {
 
-	// tpl,err2 := template.ParseFiles("templates/index.gohtml")
-	// if err2 != nil {
-	// 	http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
-	// 	log.Println("error loading template:", err2.Error())
+	// nameID := req.URL.Query().Get("nameID")
+	// nameID, err := strconv.Atoi(sex)
+	// if err != nil {
+	// 	http.Error(res, "invalid id", http.StatusBadRequest)
 	// 	return
 	// }
-	// err2 = saveExecute(w, tpl, nil)
-	// if err2 != nil {
-	// 	http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
-	// 	log.Println("error executing template:", err2)
+	// name, err := db.GetName(nameID)
+	// if err != nil {
+	// 	http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+	// 	log.Println("error loading name")
 	// 	return
-	// }names[rand.Intn(9)]
+	// }
+
 
 	err := db.CreateBot(&db.Bot{
 		Name:   "Nina",

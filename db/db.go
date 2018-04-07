@@ -376,3 +376,18 @@ func GetNames(sex int) (*[]Name, error) {
 	return &names, nil
 }
 
+// GetName returns all bots which belong to the given user
+func GetName(id int) (*Name, error) {
+	
+	name := Name{}
+	err := dbConection.db.QueryRow(`
+		SELECT 	*
+		FROM Name 
+		WHERE NameID = $1`,id).Scan(&name.ID, &name.Name, &name.Sex)
+
+	if err != nil {
+		return nil, err
+	}
+	return &name, nil
+}
+
