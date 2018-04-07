@@ -365,7 +365,7 @@ func GetNames(sex int) (*[]Name, error) {
 	var cursor Name
 	for rows.Next() {
 		if err := rows.Scan(&cursor.ID, &cursor.Name, &cursor.Sex); err == nil {
-			bots = append(bots, cursor)
+			names = append(names, cursor)
 		} else {
 			log.Println(err)
 		}
