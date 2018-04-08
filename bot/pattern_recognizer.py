@@ -67,8 +67,11 @@ def analyze_input(text: str, mode: Mode) -> Optional[PredictionResult]:
 
     logger.debug('Results: {}'.format(results))
 
+    global ERROR_THRESHOLD
     if mode == Mode.MOODS or mode == mode.AFFECTIONS:
         ERROR_THRESHOLD = 0.5
+    else:
+        ERROR_THRESHOLD = 0.9
 
     if len(results) > 0 and results[0].probability > ERROR_THRESHOLD:
         return results[0]

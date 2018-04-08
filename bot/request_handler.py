@@ -55,12 +55,12 @@ def run_demo():
                 mood=0.0,
                 affection=0.0,
                 bot_gender=0,
-                bot_name='Lara',
+                bot_name='Lana',
                 bot_birthdate=date(1995, 10, 5),
                 bot_favorite_color='grün',
                 father_name='Georg',
                 father_age=49,
-                mother_name='Mara',
+                mother_name='Agathe',
                 mother_age=47
                 )
             response = handle_request(request)

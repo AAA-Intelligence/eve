@@ -1,10 +1,10 @@
-from bot.model_definitions import Mode, MoodCategory
+from bot.model_definitions import Mode, MoodCategory, AffectionCategory
 from bot.pattern_recognizer import analyze_input
 
 
 def fit_in_range(sign: int, probability: float) -> float:
     # Fits probabilites between 0.5 and 1 into the range of [-1,1] depending on the result
-    return sign * (2 * probability - 2)
+    return sign * (2 * probability - 1)
 
 
 def analyze(text: str):
@@ -22,7 +22,7 @@ def analyze(text: str):
     # Estimate the affection through the neural network
     analyzed_affection = analyze_input(text, Mode.AFFECTIONS)
     if analyzed_affection:
-        sign = -1 if Mode.AFFECTIONS == MoodCategory.A_NEG else 1
+        sign = -1 if Mode.AFFECTIONS == AffectionCategory.A_NEG else 1
         # calculate a value from the probability which could be fed to the neural network for text processing
         affection = fit_in_range(sign, analyzed_affection.probability)
     else:
