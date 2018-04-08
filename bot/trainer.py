@@ -1,14 +1,13 @@
 import pickle
-import numpy as np
-from enum import IntEnum
 from os import path, mkdir
 from typing import Tuple, List, Dict
 
+import numpy as np
 from keras.models import Sequential, model_from_json
 
+from bot.model_definitions import Mode
 from bot.setup import setup_bot
 from bot.training_data import TrainingData
-from bot.model_definitions import Mode
 
 
 def setup_models_dir() -> str:
@@ -46,12 +45,12 @@ def train_model(mode: Mode):
 
 
 def save_training(
-        mode: Mode,
-        model: Sequential,
-        train_x: np.ndarray,
-        train_y: np.ndarray,
-        words: List[str]
-):
+    mode: Mode,
+    model: Sequential,
+    train_x: np.ndarray,
+    train_y: np.ndarray,
+    words: List[str]
+    ):
     file_name: str = mode.value
 
     # Save model
