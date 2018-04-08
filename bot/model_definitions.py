@@ -3,15 +3,18 @@ from typing import Union, Type
 
 
 @unique
-class SentimentCategory(IntEnum):
-    """Can either be mood or affection"""
+class AffectionCategory(IntEnum):
     # TODO separate sentiment and mood
     # A_*: Describes the affection data
     A_NEG = 0
     A_POS = 1
+
+
+@unique
+class MoodCategory(IntEnum):
     # M_*: Describes the mood data
-    M_NEG = 2
-    M_POS = 3
+    M_NEG = 0
+    M_POS = 1
 
 
 @unique
@@ -35,18 +38,21 @@ class PatternCategory(IntEnum):
     ANY_BIRTHDAY = auto()
 
 
-Category = Union[SentimentCategory, PatternCategory]
+Category = Union[MoodCategory, AffectionCategory, PatternCategory]
 
 
 @unique
 class Mode(Enum):
-    SENTIMENTS = 'sentiments'
+    MOODS = 'moods'
     PATTERNS = 'patterns'
+    AFFECTIONS = 'affections'
 
     @property
     def category_type(self) -> Type[Category]:
-        if self == Mode.SENTIMENTS:
-            return SentimentCategory
+        if self == Mode.MOODS:
+            return MoodCategory
+        if self == Mode.AFFECTIONS:
+            return AffectionCategory
         if self == Mode.PATTERNS:
             return PatternCategory
         raise Exception('No category defined for mode {}'.format(self))
