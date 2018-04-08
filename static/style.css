@@ -4,6 +4,23 @@
 		sans-serif;
 }
 
+::-webkit-scrollbar {
+    width: 2px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: #eee;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #888;
+}
+::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(100,100,100,0.4); 
+}
+
 .content {
 	position: absolute;
 	height: 85%;
@@ -373,6 +390,40 @@ form{
 
 #popup h1 {
 	color: #40CDB2; /* Third Color */
+}
+
+#imagepopup {
+	position: fixed;
+	text-align: center;
+	background-color: #F4F4F4;
+	box-shadow: 10px 10px 40px rgba(100, 100, 100, 0.4);
+	border-radius: 8px;
+	visibility: hidden;
+	display:none;
+	margin-top: 10%;
+	padding: 10px 60px 10px 60px;
+	min-width: 300px;
+	width: calc(50% - 120px);
+	height: 50%;
+	left: 25%;
+	z-index: 1000;
+}
+
+#imagepopupcontainer {
+	height: calc(100% - 45px);
+	overflow-y: scroll;
+}
+
+#imagepopupcontainer button {
+	margin: 5px;
+	border-radius: 50%;
+	width: 100px;
+	height: 100px;
+	background-color: #CCCCCC;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 100%;
+	border: 0px;
 }
 
 #hidePopupButton {

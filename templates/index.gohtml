@@ -24,7 +24,7 @@
 				{{.User.Name}} (Logout)
 			</div>
 			<div id="newBot">
-                <button id="newBotButton" onclick="showPopup()" value=""></button>
+                <button id="newBotButton" onclick="showPopup('popup')" value=""></button>
 			</div>
 			</div>
 			
@@ -61,12 +61,13 @@
 		
         {{end}}
 		
+		<!-- Bot creation popup -->
 		<div id="popup">
 		<!--<h1>New chat.</h1>-->
-		<div id="hidePopupButton"><button onclick="hidePopup()"></button></div>
+		<div id="hidePopupButton"><button onclick="hidePopup('popup')"></button></div>
 		<div id="">
 				<br /><div class="newbotdesc">Click on the picture to change your partner.</div><br /><br />
-				<button id="imageinput" onclick="changeImagePopup()" value=""></button>
+				<button id="imageinput" onclick="showChangeImagePopup()" value=""></button>
 				
 				<br /><p id="generatedName">Lara<button onclick="genName()"></button></p>
 				
@@ -77,6 +78,14 @@
 				
                 <br /><button class="button" onclick="submitBotCreation()">Let's go!</button>
 		</div>
+		</div>
+		
+		<!-- Bot image selection popup -->
+		<div id="imagepopup">
+		<div id="hidePopupButton"><button onclick="hidePopup('imagepopup'); showPopup('popup');"></button></div><br />
+				<div id="imagepopupcontainer">
+				<!-- Content added by JS -->
+				</div>
 		</div>
 		
    </body>

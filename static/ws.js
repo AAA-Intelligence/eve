@@ -116,8 +116,8 @@ var picID = 0;
 var nameID = 0;
 
 
-	function showPopup() {
-		var popup = document.getElementById("popup");
+	function showPopup(id) {
+		var popup = document.getElementById(id);
 		var contentAr = document.getElementsByClassName("content");
 		var content = contentAr[0];
 		
@@ -141,8 +141,8 @@ var nameID = 0;
 		content.style["filter"] = "blur(3px)";
 	}
 	
-	function hidePopup() {
-		var popup = document.getElementById("popup");
+	function hidePopup(id) {
+		var popup = document.getElementById(id);
 		var contentAr = document.getElementsByClassName("content");
 		var content = contentAr[0];
 		
@@ -163,29 +163,69 @@ var nameID = 0;
 		content.style["-webkit-filter"] = "";
 	}
 	
-	function fetchJSON(sex, callback) {
+	function showChangeImagePopup() {
+		hidePopup('popup');
+		showPopup('imagepopup');
+		
+		var imagesarea = document.getElementById("imagepopupcontainer");
+		
+		/*demo = ["https://i.imgur.com/ru8D0SC.jpg", "https://i.imgur.com/WWQrYvd.jpg", "https://i.imgur.com/M7iNM4D.png"];*/
+		
+		fetchImagesJSON(sex, (error, result) => {
+			if (error) 
+				console.log(error)
+			else {
+			//TESTING: uncomment the following line and comment the if-statements
+			//result = JSON.parse('{"images":[{"id":"0","url":"https://i.imgur.com/ru8D0SC.jpg"},{"id":"1","url":"https://i.imgur.com/WWQrYvd.jpg"},{"id":"3","url":"https://i.imgur.com/M7iNM4D.png"}]}');
+				for(key in result.images) {
+					if(result.images.hasOwnProperty(key)) {
+						var item = document.createElement("button");
+						item.setAttribute('onclick','setImage('+result.images[key].id+', '+result.images[key].url+')');
+						item.style["background-image"] = "url("+result.images[key].url+")";
+						imagesarea.appendChild(item);
+					}
+				}
+			}
+		})
+		
+		
+
+	}
+	
+	function fetchNameJSON(sex, callback) {
 		fetch(`./getRandomName?sex=`+sex)
 		.then(response => response.json())
 		.then(json => callback(null, json.result))
 		.catch(error => callback(error, null))
 	}
 	
+	function fetchImagesJSON(sex, callback) {
+		fetch(`./getImages?sex=`+sex)
+		.then(response => response.json())
+		.then(json => callback(null, json.result))
+		.catch(error => callback(error, null))
+	}
+	
 	function genName() {
-		fetchJSON(sex, (error, result) => {
+		fetchNameJSON(sex, (error, result) => {
 			if (error) 
 				console.log(error)
-			else 
-				gname = result["Name"]
-				gnameID = result["ID"]
+			else {
+				setNameOnCreation(result.Name);
+				nameID = result.ID;
+			}
 		})
-		
-		setNameOnCreation(gname);
-		nameID = gnameID;
 	}
 	
 	function setNameOnCreation(newName) {
 		var namefield = document.getElementById("generatedName");
 		namefield.innerHTML = newName+"<button onclick='genName()'></button>";		
+	}
+	
+	function setImage(id, url) {
+		picID = id;
+		var imagebutton = document.getElementById("imageinput");
+		imagebutton.style["background-image"] = "url("+url+")";
 	}
 	
 	function fetchSex() {
@@ -200,11 +240,11 @@ var nameID = 0;
 	function onSexChange() {
 		fetchSex();
 		genName();
-		//+ Change picture!
+		//TODO: + Change picture!
 	}
 	
 	function submitBotCreation() {
-		post("http://httpbin.org/post"/*/createBot*/, {nameID: nameID, picID: picID, sex: sex});
+		post("http://httpbin.org/post"/*"/createBot"*/, {nameID: nameID, picID: picID, sex: sex});
 	}
 	
 	function post(path, params, method) {
