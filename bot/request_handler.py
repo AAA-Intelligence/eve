@@ -1,11 +1,11 @@
-from .logger import logger
-from .data import Request, Response, parse_request
-from .mood_analyzer import analyze
-from .pattern_recognizer import answer_for_pattern
-from .text_processor import generate_answer
-from datetime import date
 import json
-import time
+from datetime import date
+
+from bot.data import Request, Response, parse_request
+from bot.logger import logger
+from bot.mood_analyzer import analyze
+from bot.pattern_recognizer import answer_for_pattern
+from bot.text_processor import generate_answer
 
 
 def handle_request(request: Request) -> Response:
@@ -13,22 +13,24 @@ def handle_request(request: Request) -> Response:
     Handles a request and generates an appropriate response.
 
     Args:
-        request: The request to handle.
+            request: The request to handle.
 
     Returns:
-        The response generated for the specified request.
+            The response generated for the specified request.
     """
 
     logger.debug('Handling request')
 
     mood, affection = analyze(request.text)
-
-    answer = answer_for_pattern(request)
-    if answer is None:
+    result = answer_for_pattern(request)
+    if result:
+        pattern, answer = result
+    else:
         # No pattern found, fall back to generative model
+        pattern = None
         answer = generate_answer(request, mood, affection)
 
-    return Response(answer, mood, affection)
+    return Response(answer, pattern, mood, affection)
 
 
 def run_demo():
@@ -36,20 +38,27 @@ def run_demo():
     Starts a command-line based demo request loop for debugging.
     """
     logger.info('Starting request loop')
+    previous_pattern = None
     while True:
         try:
+            text = input('User input: ')
             request = Request(
-                text=input('User input: '),
-                previous_text='Ich bin ein Baum',
+                text=text,
+                previous_pattern=previous_pattern,
                 mood=0.0,
                 affection=0.0,
                 bot_gender=0,
                 bot_name='Lara',
                 bot_birthdate=date(1995, 10, 5),
-                bot_favorite_color='grün'
+                bot_favorite_color='grün',
+                father_name='Georg',
+                father_age=49,
+                mother_name='Mara',
+                mother_age=47
             )
             response = handle_request(request)
             print('Response: ', response.text)
+            previous_pattern = response.pattern
         except KeyboardInterrupt:
             # Interrupt requested by user
             logger.info('Keyboard interrupt detected, aborting request loop')

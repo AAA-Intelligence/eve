@@ -1,6 +1,6 @@
+import logging
 from os import path
 from sys import stderr
-import logging
 
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 

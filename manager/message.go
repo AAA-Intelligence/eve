@@ -8,9 +8,12 @@ import (
 	"github.com/AAA-Intelligence/eve/manager/bots"
 )
 
+// Global bot pool that is used for all requests
 var botPool *bots.BotPool
 
-// takes incomming message requests, sends them to the bot instance and returns the answer
+// Takes incoming message requests, sends them to the bot instance and returns the bot's answer
+// All messages are stored in the database in the Message table.
+// If any error occurs the string "Ok" is returned
 func handleMessage(request MessageRequest) string {
 
 	bot, err := db.GetBot(request.Bot, request.User.ID)
@@ -19,14 +22,18 @@ func handleMessage(request MessageRequest) string {
 		return "Ok"
 	}
 	botAnswer := botPool.HandleRequest(bots.MessageData{
-		Text:          request.Message,
-		Mood:          bot.Mood,
-		Affection:     bot.Affection,
-		Gender:        int(bot.Gender),
-		Name:          bot.Name,
-		PreviousText:  "prev text", //TODO load and add
-		Birthdate:     time.Date(1995, 7, 15, 0, 0, 0, 0, time.UTC).Unix(),
-		FavoriteColor: "Blau",
+		Text:            request.Message,
+		Mood:            bot.Mood,
+		Affection:       bot.Affection,
+		Gender:          int(bot.Gender),
+		Name:            bot.Name,
+		PreviousPattern: nil,
+		Birthdate:       time.Date(1995, 7, 15, 0, 0, 0, 0, time.UTC).Unix(),
+		FavoriteColor:   "Blau",
+		FatherName:      "Günther",
+		FatherAge:       49,
+		MotherName:      "Berta",
+		MotherAge:       47,
 	})
 
 	// store sent messages

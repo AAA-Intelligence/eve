@@ -1,0 +1,3 @@
+Sein Name ist {r.father_name}.
+Er heißt {r.father_name}.
+Mein Vater heißt {r.father_name}.

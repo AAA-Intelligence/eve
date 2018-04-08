@@ -1,4 +1,4 @@
-from .data import Request
+from bot.data import Request
 
 
 def generate_answer(request: Request, mood: float, affection: float) -> str:

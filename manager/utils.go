@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"crypto/rand"
 	"encoding/base64"
+	"fmt"
 	"html/template"
 	"net/http"
+	"time"
 
 	"github.com/AAA-Intelligence/eve/db"
 )
@@ -47,4 +49,9 @@ func GenerateRandomBytes(n int) ([]byte, error) {
 func GenerateRandomString(s int) (string, error) {
 	b, err := GenerateRandomBytes(s)
 	return base64.RawURLEncoding.EncodeToString(b)[:s], err
+}
+
+// Formats the time struct to hh:mm (e.g. 19:45)
+func formatTime(time *time.Time) string {
+	return fmt.Sprintf("%d:%d", time.Hour(), time.Minute())
 }

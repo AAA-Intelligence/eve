@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -12,7 +13,8 @@ import (
 	lorem "github.com/drhodes/golorem"
 )
 
-//indexHandler serves HTML index page
+// indexHandler serves HTML index page
+// template file: templates/index.gohtml
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	// make sure request is really for index page
 	if len(r.URL.Path) > 1 {
@@ -21,6 +23,8 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	user := GetUserFromRequest(r)
 	bot := GetBotFromRequest(r)
+
+	// load all messages sent between user and bot
 	messages := &[]db.Message{}
 	if bot != nil {
 		if msgs, err := db.GetMessagesForBot(bot.ID); err == nil {
@@ -28,9 +32,11 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			log.Println(err)
 		}
-
 	}
-	tpl, err := template.ParseFiles("templates/index.gohtml")
+	tpl := template.New("index").Funcs(template.FuncMap{
+		"time": formatTime,
+	})
+	tpl, err := tpl.ParseFiles("templates/index.gohtml")
 	if err != nil {
 		http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
 		log.Println("error loading template:", err.Error())
@@ -42,7 +48,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("error getting bots for user:", err.Error())
 		return
 	}
-	err = saveExecute(w, tpl, struct {
+	err = saveExecute(w, tpl.Lookup("index.gohtml"), struct {
 		User      *db.User
 		Bots      *[]db.Bot
 		ActiveBot *db.Bot
@@ -60,7 +66,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//registerHandler serves HTML page for user registration
+// registerHandler serves HTML page for user registration
 func registerHandler(w http.ResponseWriter, r *http.Request) {
 	tpl, err := template.ParseFiles("templates/register.gohtml")
 	if err != nil {
@@ -76,24 +82,35 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// createBot creates a new bot that the user can talk to
+// the bot data is saved in the database with db.CreateBot(...)
 func createBot(w http.ResponseWriter, r *http.Request) {
+	user := GetUserFromRequest(r)
+	if user == nil {
+		http.Error(w, "unauthorized", http.StatusUnauthorized)
+		return
+	}
 	err := db.CreateBot(&db.Bot{
 		Name:   lorem.Word(3, 10),
 		Image:  "hässlich.png",
 		Gender: db.Female,
-		User:   GetUserFromRequest(r).ID,
+		User:   user.ID,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		fmt.Println("error creating bot:", err)
+		http.Error(w, "cannot create bot", http.StatusInternalServerError)
 		return
 	}
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
+// if the webserver is shut down, all bot instances are killed
+// and the connection to the database is closed
 func onShutdown() {
 	log.Println("shutting down...")
 	log.Println("killing bots...")
 	botPool.Close()
+	// wait until all bots finished their running tasks
 	botPool.Wait()
 	log.Println("closing database connection...")
 	err := db.Close()
@@ -135,21 +152,26 @@ func StartWebServer(host string, httpPort int) {
 }
 
 // GetBotFromRequest checks if there is a bot id in the request (HTTP GET e.g. ?bot=2)
-// If not the first bot for the user is returned
+// It also checks if the bot belongs to the authenticated user
+// If no bot id is provided in the request the first bot for the user is returned
 // If an error occures or there is no bot in the request or database nil is returned
 func GetBotFromRequest(r *http.Request) *db.Bot {
 	user := GetUserFromRequest(r)
 	if user == nil {
+		// user not authenticated
 		return nil
 	}
 	idString := r.URL.Query().Get("bot")
 	bots, err := db.GetBotsForUser(user.ID)
 	if err != nil || len(*bots) < 1 {
+		// user has no bots
 		return nil
 	}
 	if len(idString) < 1 {
+		// return first bot that belongs to user
 		return &(*bots)[0]
 	}
+	// check if the given bot belongs to the user
 	if id, err := strconv.Atoi(idString); err == nil {
 		for _, b := range *bots {
 			if b.ID == id {

@@ -4,6 +4,13 @@
         <title>EVE</title>
         <link rel="stylesheet" href="/static/style.css">
         <script type="text/javascript" src="/static/ws.js"></script>
+		<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="blur-svg">
+			<defs>
+				<filter id="blur-filter">
+					<feGaussianBlur stdDeviation="3"></feGaussianBlur>
+				</filter>
+			</defs>
+		</svg>
    </head>
    <body>
         <div class="content">
@@ -16,20 +23,21 @@
 				{{.User.Name}} (Logout)
 			</div>
 			<div id="newBot">
-				<form method="post" action="/createBot">
-                <input id="newBotButton" type="submit" value=""/>
+				<form method="post" action="">
+                <input id="newBotButton" onclick="showPopup()" value=""/>
 			</div>
-            </form></div>
+            </form>
+			</div>
 			
         {{if .ActiveBot}}
-            <ul class="bot-list">
+            <div class="bot-list"><ul>
             {{range $bot := .Bots}}
                 <li class="bot" id="{{if eq $.ActiveBot.ID $bot.ID}}bot-active{{end}}" botID="{{$bot.ID}}">
-                    <a href="/?bot={{$bot.ID}}">{{$bot.Name}}</a>
+                    <a href="/?bot={{$bot.ID}}"><img src="http://via.placeholder.com/150x150"> {{$bot.Name}}</a>
                 </li>
             {{end}}
         {{end}}
-            </ul>
+            </ul></div>
         </div>
         {{if .ActiveBot}}
         <div class="chat">
@@ -39,15 +47,30 @@
 			</div>
             <div id="log">
                 {{range $msg := .Messages}}
-                <p class="msg {{if eq $msg.Sender 1}}user{{else}}bot{{end}}">{{$msg.Content}}</p>
+                <p class="msg {{if eq $msg.Sender 1}}user{{else}}bot{{end}}">
+                    {{$msg.Content}}
+                        <span class="timestamp">{{time $msg.Timestamp}}</span>
+                </p>
                 {{end}}
             </div>
             <form id="form" autocomplete="off">
-                <textarea id="msg" maxlength="200" rows="3"></textarea>
-                <input type="submit" value="Send" id="send"/>
+                <textarea id="msg" maxlength="200"></textarea>
+                <input type="submit" value="" id="send"/>
             </form>
         </div>
 		</div>
+		
         {{end}}
+		
+		<div id="popup">
+		<h1>New chat.</h1>
+		<div id="hidePopupButton"><button onclick="hidePopup()">hide</button></div>
+		<div id="">
+				<form method="post" action="/createBot">
+                <input id="newBotButton" type="submit" value=""/>
+				</form>
+		</div>
+		</div>
+		
    </body>
 </html>

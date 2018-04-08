@@ -6,8 +6,9 @@ window.onload = function () {
     var log = document.getElementById("log");
     var form = document.getElementById("form");
     var sendBtn = document.getElementById("send");
-
+	
     msg.onkeypress = function (key) {
+        // send message on press enter
         if (key.keyCode === 13 && !key.shiftKey) {
             sendMsg()
             return false;
@@ -21,7 +22,9 @@ window.onload = function () {
 
     function toMsg(text, style) {
         var item = document.createElement("p");
-        item.innerHTML = "<p class=\"msg " + style + "\">" + text + "</p>";
+        var time = new Date()
+        var mytime = time.getHours()+":"+time.getMinutes();
+        item.innerHTML = "<p class=\"msg " + style + "\">" + text +"<span class=\"timestamp\">"+mytime+"</span>"+"</p>";
         return item
     }
     form.onsubmit = function () {
@@ -105,4 +108,52 @@ window.onload = function () {
         log.scrollTop = log.scrollHeight - log.clientHeight;
     }
     scrollChatToBottom();
+	
 };
+
+	function showPopup() {
+		var popup = document.getElementById("popup");
+		var contentAr = document.getElementsByClassName("content");
+		var content = contentAr[0];
+		
+		//Show popup
+		popup.style["visibility"] = "visible";
+		popup.style["display"] = "block";
+		
+		//Change background (disable interaction)
+		content.style["pointer-events"] = "none";
+		content.style["-webkit-touch-callout"] = "none";
+		content.style["-webkit-user-select"] = "none";
+		content.style["-khtml-user-select"] = "none";
+		content.style["-moz-user-select"] = "none";
+		content.style["-ms-user-select"] = "none";
+		content.style["user-select"] = "none";
+		//Change background (apply blur)
+		content.style["filter"] = "progid:DXImageTransform.Microsoft.Blur(PixelRadius='3')";
+		content.style["-webkit-filter"] = "url(#blur-filter)";
+		content.style["filter"] = "url(#blur-filter)";
+		content.style["-webkit-filter"] = "blur(3px)";
+		content.style["filter"] = "blur(3px)";
+	}
+	
+	function hidePopup() {
+		var popup = document.getElementById("popup");
+		var contentAr = document.getElementsByClassName("content");
+		var content = contentAr[0];
+		
+		//Hide popup
+		popup.style["visibility"] = "";
+		popup.style["display"] = "";
+		
+		//Change background (enable interaction)
+		content.style["pointer-events"] = "";
+		content.style["-webkit-touch-callout"] = "";
+		content.style["-webkit-user-select"] = "";
+		content.style["-khtml-user-select"] = "";
+		content.style["-moz-user-select"] = "";
+		content.style["-ms-user-select"] = "";
+		content.style["user-select"] = "";
+		//Change background (remove blur)
+		content.style["filter"] = "";
+		content.style["-webkit-filter"] = "";
+	}
