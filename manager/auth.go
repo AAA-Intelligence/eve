@@ -29,7 +29,7 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, "invalid parameters", http.StatusBadRequest)
-		log.Println("error:", err.Error())
+		log.Println("error parsing createUser form:", err.Error())
 		return
 	}
 	username := r.Form.Get("username")
@@ -44,8 +44,12 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 	}
 	err = db.CreateUser(username, password)
 	if err != nil {
-		http.Error(w, "cannot register user", http.StatusInternalServerError)
-		log.Println("error:", err.Error())
+		if strings.HasPrefix(err.Error(), "UNIQUE constraint failed:") {
+			http.Error(w, "username allready in use", http.StatusInternalServerError)
+		} else {
+			http.Error(w, "cannot register user:", http.StatusInternalServerError)
+			log.Println("error:", err.Error())
+		}
 		return
 	}
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
