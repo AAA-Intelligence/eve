@@ -246,7 +246,7 @@ var nameID = 0;
 	}
 	
 	function submitBotCreation() {
-		post("http://httpbin.org/post"/*"/createBot"*/, {nameID: nameID, picID: picID, sex: sex});
+		post("/createBot"/*"http://httpbin.org/post"*/, {nameID: nameID, picID: picID, sex: sex});
 	}
 	
 	function post(path, params, method) {
