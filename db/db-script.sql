@@ -1,39 +1,34 @@
-CREATE TABLE Bot
-(
-  BotID     INTEGER PRIMARY KEY AUTOINCREMENT ,
-  Name      TEXT    NOT NULL,
-  Image     TEXT    NOT NULL,
-  Gender    TEXT    NOT NULL,
-  User      INTEGER NOT NULL
-    CONSTRAINT Bot_User_UserID_fk
-    REFERENCES User,
-  Affection REAL    NOT NULL,
-  Mood      REAL    NOT NULL
+BEGIN TRANSACTION;
+CREATE TABLE IF NOT EXISTS `User` (
+	`UserID`	INTEGER,
+	`Name`	TEXT NOT NULL,
+	`PasswordHash`	TEXT NOT NULL,
+	`SessionKey`	TEXT,
+	PRIMARY KEY(`UserID`)
 );
-
-
-CREATE TABLE Message
-(
-  MessageID INTEGER PRIMARY KEY AUTOINCREMENT,
-  Bot       INTEGER  NOT NULL
-    CONSTRAINT Message_Bot_BotID_fk
-    REFERENCES Bot (BotID),
-  Sender    INTEGER  NOT NULL,
-  Timestamp DATETIME NOT NULL,
-  Content   TEXT     NOT NULL,
-  Rating    REAL     NOT NULL
+CREATE TABLE IF NOT EXISTS `Message` (
+	`MessageID`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`Bot`	INTEGER NOT NULL,
+	`Sender`	INTEGER NOT NULL,
+	`Timestamp`	DATETIME NOT NULL,
+	`Content`	TEXT NOT NULL,
+	`Rating`	REAL NOT NULL,
+	CONSTRAINT `Message_Bot_BotID_fk` FOREIGN KEY(`Bot`) REFERENCES `Bot`(`BotID`)
 );
-
-CREATE TABLE PredefinedAnswer
-(
-  PredefinedAnswerID INTEGER PRIMARY KEY AUTOINCREMENT,
-  Category           INTEGER NOT NULL,
-  Answer             TEXT    NOT NULL
+CREATE TABLE IF NOT EXISTS `Bot` (
+	`BotID`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`Name`	TEXT NOT NULL,
+	`Image`	TEXT NOT NULL,
+	`Gender`	INTEGER NOT NULL,
+	`User`	INTEGER NOT NULL,
+	`Affection`	REAL NOT NULL,
+	`Mood`	REAL NOT NULL,
+	CONSTRAINT `Bot_User_UserID_fk` FOREIGN KEY(`User`) REFERENCES `User`
 );
-
-CREATE TABLE User
-(
-  UserID       INTEGER PRIMARY KEY AUTOINCREMENT,
-  Name         TEXT NOT NULL,
-  PasswordHash TEXT NOT NULL
+CREATE UNIQUE INDEX IF NOT EXISTS `User_SessionKey_uindex` ON `User` (
+	`SessionKey`
 );
+CREATE UNIQUE INDEX IF NOT EXISTS `User_Name_uindex` ON `User` (
+	`Name`
+);
+COMMIT;

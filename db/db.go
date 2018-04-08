@@ -14,7 +14,7 @@ import (
 
 // The connection, which is used for all database requests
 // It is not accessable from outside the package to make sure all interaction with the database is made over the defined functions
-var dbConection struct {
+var dbConnection struct {
 	// Path is the path of the sqlite file
 	Path string
 
@@ -37,24 +37,27 @@ type User struct {
 // The given path is the location of the datbase file
 // If the function runs without errors, the database is ready for requests
 func Connect(path string) error {
-	dbConection.Path = path
+	dbConnection.Path = path
 	db, err := sql.Open("sqlite3", path)
 	if err != nil {
 		return err
 	}
-	dbConection.db = db
+	if _, err := db.Exec(DatabaseCreationScript); err != nil {
+		return err
+	}
+	dbConnection.db = db
 	return nil
 }
 
 // Close closes the connection to the database
 func Close() error {
 	// check if database is conntected
-	if dbConection.db == nil {
+	if dbConnection.db == nil {
 		return ErrConnectionClosed
 	}
 	// remove connection object to avoid requests to closed connection
-	defer func() { dbConection.db = nil }()
-	return dbConection.db.Close()
+	defer func() { dbConnection.db = nil }()
+	return dbConnection.db.Close()
 }
 
 // CreateUser adds a new user to the database
@@ -65,7 +68,7 @@ func CreateUser(userName, password string) error {
 	if err != nil {
 		return errors.New("cannot hash password: " + err.Error())
 	}
-	_, err = dbConection.db.Exec("INSERT INTO User(Name,PasswordHash) VALUES($1,$2)", userName, hash)
+	_, err = dbConnection.db.Exec("INSERT INTO User(Name,PasswordHash) VALUES($1,$2)", userName, hash)
 	return err
 }
 
@@ -77,7 +80,7 @@ func CheckCredentials(userName, password string) (*User, error) {
 	user := User{
 		Name: userName,
 	}
-	err := dbConection.db.QueryRow("SELECT UserID,PasswordHash FROM User WHERE Name=$1", user.Name).Scan(&user.ID, &hash)
+	err := dbConnection.db.QueryRow("SELECT UserID,PasswordHash FROM User WHERE Name=$1", user.Name).Scan(&user.ID, &hash)
 	if err == sql.ErrNoRows {
 		return nil, ErrUserNotExists
 	} else if err != nil {
@@ -96,7 +99,7 @@ func CheckCredentials(userName, password string) (*User, error) {
 // This session key authenticates the user in further requests
 // The function returns true if the storing was successfull
 func StoreSessionKey(user *User, key string) bool {
-	result, err := dbConection.db.Exec("UPDATE User SET SessionKey=$1 WHERE UserId = $2", key, user.ID)
+	result, err := dbConnection.db.Exec("UPDATE User SET SessionKey=$1 WHERE UserId = $2", key, user.ID)
 	if err != nil {
 		log.Println("cannot update session key for user ", user.ID, err)
 		return false
@@ -117,7 +120,7 @@ func StoreSessionKey(user *User, key string) bool {
 // An invalid key resolves in the return of a nil pointer
 func GetUserForSession(sessionKey string) *User {
 	var user User
-	err := dbConection.db.QueryRow("SELECT UserID,Name FROM User WHERE SessionKey=$1", sessionKey).Scan(&user.ID, &user.Name)
+	err := dbConnection.db.QueryRow("SELECT UserID,Name FROM User WHERE SessionKey=$1", sessionKey).Scan(&user.ID, &user.Name)
 	if err != nil {
 		if err != sql.ErrNoRows {
 			log.Println("cannot get user for sessionID:", err)
@@ -166,7 +169,7 @@ type Bot struct {
 // The following fields in the bot struct need to be filled: Name, Image, Gender, User, Affection and Mood
 // If the insertion was successful the generated bot id is saved in the given bot struct.
 func CreateBot(bot *Bot) error {
-	v, err := dbConection.db.Exec("INSERT INTO Bot(Name,Image,Gender,User,Affection,Mood) VALUES($1,$2,$3,$4,$5,$6)", bot.Name, bot.Image, bot.Gender, bot.User, bot.Affection, bot.Mood)
+	v, err := dbConnection.db.Exec("INSERT INTO Bot(Name,Image,Gender,User,Affection,Mood) VALUES($1,$2,$3,$4,$5,$6)", bot.Name, bot.Image, bot.Gender, bot.User, bot.Affection, bot.Mood)
 	if err != nil {
 		log.Println("error inserting new bot:", err)
 		return ErrInternalServerError
@@ -230,7 +233,7 @@ func StoreMessages(userID, botID int, msgs []Message) error {
 	}
 
 	// start a new database transaction
-	tx, err := dbConection.db.Begin()
+	tx, err := dbConnection.db.Begin()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -264,7 +267,7 @@ func StoreMessages(userID, botID int, msgs []Message) error {
 
 // GetMessagesForBot returns a list of all messages, that the user and bot sent each other
 func GetMessagesForBot(bot int) (*[]Message, error) {
-	rows, err := dbConection.db.Query(`
+	rows, err := dbConnection.db.Query(`
 		SELECT 	Timestamp,
 				Content,
 				Sender,
@@ -292,7 +295,7 @@ func GetMessagesForBot(bot int) (*[]Message, error) {
 
 // GetBotsForUser returns all bots which belong to the given user
 func GetBotsForUser(userID int) (*[]Bot, error) {
-	rows, err := dbConection.db.Query(`
+	rows, err := dbConnection.db.Query(`
 		SELECT 	BotID,
 				Name,
 				Image,
@@ -324,7 +327,7 @@ func GetBotsForUser(userID int) (*[]Bot, error) {
 func rowExists(query string, args ...interface{}) (bool, error) {
 	var exists bool
 	query = fmt.Sprintf("SELECT exists (%s)", query)
-	err := dbConection.db.QueryRow(query, args...).Scan(&exists)
+	err := dbConnection.db.QueryRow(query, args...).Scan(&exists)
 	if err != nil && err != sql.ErrNoRows {
 		return false, err
 	}
@@ -338,7 +341,7 @@ func GetBot(botID, userID int) (*Bot, error) {
 		ID:   botID,
 		User: userID,
 	}
-	err := dbConection.db.QueryRow(`
+	err := dbConnection.db.QueryRow(`
 		SELECT	b.Name,
 				b.Image,
 				b.Gender,
