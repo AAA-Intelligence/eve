@@ -226,6 +226,8 @@ var nameID = 0;
 		picID = id;
 		var imagebutton = document.getElementById("imageinput");
 		imagebutton.style["background-image"] = "url("+url+")";
+		hidePopup("imagepopup");
+		showPopup("popup");
 	}
 	
 	function fetchSex() {
