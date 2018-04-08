@@ -12,7 +12,7 @@ def analyze(text: str):
     # Estimate mood through the neural network
     analyzed_mood = analyze_input(text, Mode.MOODS)
     if analyzed_mood:
-        sign = -1 if Mode.MOODS == MoodCategory.M_NEG else 1
+        sign = -1 if analyzed_mood.category == MoodCategory.M_NEG else 1
         # calculate a value from the probability which could be fed to the neural network for text processing
         mood = fit_in_range(sign, analyzed_mood.probability)
     else:
@@ -22,7 +22,7 @@ def analyze(text: str):
     # Estimate the affection through the neural network
     analyzed_affection = analyze_input(text, Mode.AFFECTIONS)
     if analyzed_affection:
-        sign = -1 if Mode.AFFECTIONS == AffectionCategory.A_NEG else 1
+        sign = -1 if analyzed_affection.category == AffectionCategory.A_NEG else 1
         # calculate a value from the probability which could be fed to the neural network for text processing
         affection = fit_in_range(sign, analyzed_affection.probability)
     else:

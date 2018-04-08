@@ -36,8 +36,9 @@ def handle_request(request: Request) -> Response:
         # No pattern found, fall back to generative model
         pattern = None
         answer = generate_answer(request, mood, affection)
-
-    return Response(answer, pattern, mood, affection)
+    response = Response(answer, pattern, mood, affection)
+    logger.debug(response)
+    return response
 
 
 def run_demo():

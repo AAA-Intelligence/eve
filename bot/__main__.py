@@ -21,8 +21,6 @@ elif target == 'train-sentiments':
     train_model(Mode.AFFECTIONS)
     train_model(Mode.MOODS)
 
-    # logger.info('Running pattern recognizer demo')
-    # demo("%s" % argv[2])
 elif target == 'demo':
     from bot.request_handler import run_demo
 
