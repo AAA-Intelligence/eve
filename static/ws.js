@@ -112,6 +112,8 @@ window.onload = function () {
 };
 
 var sex = 0;
+var picID = 0;
+var nameID = 0;
 
 
 	function showPopup() {
@@ -173,21 +175,17 @@ var sex = 0;
 			if (error) 
 				console.log(error)
 			else 
-				name = result["Name"]
-				nameID = result["ID"]
+				gname = result["Name"]
+				gnameID = result["ID"]
 		})
 		
-		setNameOnCreation(name);
-		setHiddenValue("nameID", nameID);
+		setNameOnCreation(gname);
+		nameID = gnameID;
 	}
 	
 	function setNameOnCreation(newName) {
 		var namefield = document.getElementById("generatedName");
 		namefield.innerHTML = newName+"<button onclick='genName()'></button>";		
-	}
-	
-	function setHiddenValue(id, val) {
-		document.getElementById(id).value = val;
 	}
 	
 	function fetchSex() {
@@ -202,6 +200,33 @@ var sex = 0;
 	function onSexChange() {
 		fetchSex();
 		genName();
-		setHiddenValue("sex", sex);
 		//+ Change picture!
+	}
+	
+	function submitBotCreation() {
+		post("http://httpbin.org/post"/*/createBot*/, {nameID: nameID, picID: picID, sex: sex});
+	}
+	
+	function post(path, params, method) {
+		method = method || "post"; // Set method to post by default if not specified.
+		
+		// The rest of this code assumes you are not using a library.
+		// It can be made less wordy if you use one.
+		var form = document.createElement("form");
+		form.setAttribute("method", method);
+		form.setAttribute("action", path);
+		
+		for(var key in params) {
+			if(params.hasOwnProperty(key)) {
+				var hiddenField = document.createElement("input");
+				hiddenField.setAttribute("type", "hidden");
+				hiddenField.setAttribute("name", key);
+				hiddenField.setAttribute("value", params[key]);
+				
+				form.appendChild(hiddenField);
+			}
+		}
+		
+		document.body.appendChild(form);
+		form.submit();
 	}
