@@ -28,12 +28,12 @@ func handleMessage(request MessageRequest) string {
 		Gender:          int(bot.Gender),
 		Name:            bot.Name,
 		PreviousPattern: nil,
-		Birthdate:       time.Date(1995, 7, 15, 0, 0, 0, 0, time.UTC).Unix(),
-		FavoriteColor:   "Blau",
-		FatherName:      "Günther",
-		FatherAge:       49,
-		MotherName:      "Berta",
-		MotherAge:       47,
+		Birthdate:       bot.Birthdate.Unix(),
+		FavoriteColor:   bot.GetFavoriteColor(),
+		FatherName:      bot.GetFatherName(),
+		FatherAge:       bot.FatherAge,
+		MotherName:      bot.GetMotherName(),
+		MotherAge:       bot.MotherAge,
 	})
 
 	// store sent messages
@@ -42,6 +42,8 @@ func handleMessage(request MessageRequest) string {
 			Sender:    db.UserIsSender,
 			Content:   request.Message,
 			Timestamp: time.Now(),
+			Affection: botAnswer.Affection,
+			Mood:      botAnswer.Mood,
 		},
 		db.Message{
 			Sender:    db.BotIsSender,
