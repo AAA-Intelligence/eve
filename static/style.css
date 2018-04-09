@@ -386,6 +386,15 @@ form{
 	height: 50%;
 	left: 37.5%;
 	z-index: 1000;
+	
+	/*Disable text highlighting*/
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently
+						supported by Chrome and Opera */
 }
 
 #popup h1 {
@@ -407,6 +416,15 @@ form{
 	height: 50%;
 	left: 25%;
 	z-index: 1000;
+	
+	/*Disable text highlighting*/
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently
+						supported by Chrome and Opera */
 }
 
 #imagepopupcontainer {
@@ -424,6 +442,11 @@ form{
 	background-position: center;
 	background-size: 100%;
 	border: 0px;
+	cursor: pointer;
+}
+
+#imagepopupcontainer button:hover {
+	opacity: 0.5;
 }
 
 #hidePopupButton {
@@ -564,12 +587,16 @@ a.buttonSelected {
 	height: 150px;
 	color: white;
 	font-weight: bold;
-	background-color: #CCCCCC;
-	background-image: url('https://i.imgur.com/ru8D0SC.jpg');
+	background-color: white;
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: 100%;
 	border: 0px;
+	cursor: pointer;
+}
+
+#imageinput:hover {
+	opacity: 0.5;
 }
 
 #generatedName {

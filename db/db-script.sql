@@ -17,7 +17,25 @@ INSERT INTO 'Image' VALUES (1,1,'/static/botimages/image1.jpg'),
 (3,1,'/static/botimages/image3.png'),
 (4,0,'/static/botimages/image4.png'),
 (5,0,'/static/botimages/image5.png'),
-(6,0,'/static/botimages/image6.png');
+(6,0,'/static/botimages/image6.png'),
+(7,0,'/static/botimages/image7.png'),
+(8,0,'/static/botimages/image8.png'),
+(9,0,'/static/botimages/image9.png'),
+(10,0,'/static/botimages/image10.png'),
+(11,0,'/static/botimages/image11.png'),
+(12,0,'/static/botimages/image12.png'),
+(13,0,'/static/botimages/image13.png'),
+(14,0,'/static/botimages/image14.png'),
+(15,0,'/static/botimages/image15.png'),
+(16,1,'/static/botimages/image16.png'),
+(17,1,'/static/botimages/image17.png'),
+(18,1,'/static/botimages/image18.png'),
+(19,1,'/static/botimages/image19.png'),
+(20,1,'/static/botimages/image20.png'),
+(21,1,'/static/botimages/image21.png'),
+(22,1,'/static/botimages/image22.png'),
+(23,1,'/static/botimages/image23.png'),
+(24,1,'/static/botimages/image24.png');
 
 
 CREATE TABLE IF NOT EXISTS 'Name' (
