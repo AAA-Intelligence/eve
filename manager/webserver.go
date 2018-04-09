@@ -145,26 +145,31 @@ func getImages(res http.ResponseWriter, req *http.Request) {
 
 type Params struct {
     nameID  int
-    imageID int
+	imageID int
+	sex		int
 }
 var decoder = schema.NewDecoder()
 
 func createBot(res http.ResponseWriter, req *http.Request) {
 	err7 := req.ParseForm()
     if err7 != nil {
-        // Handle error
+		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error parsing params")
+		return
     }
 
     var params Params
 
-	
-
     // r.PostForm is a map of our POST form values
     err6 := decoder.Decode(&params, req.PostForm)
     if err6 != nil {
-        // Handle error
+		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error decoding params")
+		return
 	}
 	
+	log.Printf("%d\n",params.nameID)
+	log.Printf("%d\n",params.imageID)
 
 	name, err2 := db.GetName(params.nameID)
 	if err2 != nil {
