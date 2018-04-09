@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"math/rand"
+	"os"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -12,8 +14,9 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-// default databaseConnection to use
-var dbConection struct {
+// The connection, which is used for all database requests
+// It is not accessable from outside the package to make sure all interaction with the database is made over the defined functions
+var dbConnection struct {
 	// Path is the path of the sqlite file
 	Path string
 
@@ -21,7 +24,8 @@ var dbConection struct {
 	db *sql.DB
 }
 
-// User holds user data
+// User represents a user entry in the database
+// Every person that uses eve needs to have a user entry in the database, because it is used for authentication.
 type User struct {
 
 	// UserID in database
@@ -31,46 +35,58 @@ type User struct {
 	Name string
 }
 
-// Connect creates a connection to database
+// Connect creates a connection to a sqlite3 database
+// The given path is the location of the datbase file
+// If the function runs without errors, the database is ready for requests
 func Connect(path string) error {
-	dbConection.Path = path
+	dbConnection.Path = path
+	_, err := os.Stat(path)
+	dbExists := !os.IsNotExist(err)
 	db, err := sql.Open("sqlite3", path)
 	if err != nil {
 		return err
 	}
-	dbConection.db = db
+	if !dbExists {
+		if _, err := db.Exec(DatabaseCreationScript); err != nil {
+			return err
+		}
+	}
+	dbConnection.db = db
 	return nil
 }
 
-// Close closes a connection to database
+// Close closes the connection to the database
 func Close() error {
 	// check if database is conntected
-	if dbConection.db == nil {
+	if dbConnection.db == nil {
 		return ErrConnectionClosed
 	}
-	defer func() { dbConection.db = nil }()
-	return dbConection.db.Close()
+	// remove connection object to avoid requests to closed connection
+	defer func() { dbConnection.db = nil }()
+	return dbConnection.db.Close()
 }
 
-// CreateUser adds user to database
+// CreateUser adds a new user to the database
+// It creates a new entry in the table "User"
+// The password is hashed with bcrypt
 func CreateUser(userName, password string) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return errors.New("cannot hash password: " + err.Error())
 	}
-	_, err = dbConection.db.Exec("INSERT INTO User(Name,PasswordHash) VALUES($1,$2)", userName, hash)
+	_, err = dbConnection.db.Exec("INSERT INTO User(Name,PasswordHash) VALUES($1,$2)", userName, hash)
 	return err
 }
 
-// CheckCredentials checks if combination of userName and password is valid
-// User object data is returned if credentials are valid
+// CheckCredentials verifies if the combination of userName and password is valid.
+// The function checks if a user with the given name exists and compares the password with the one in the database.
+// The complete user data is returned if the credentials are valid.
 func CheckCredentials(userName, password string) (*User, error) {
 	var hash []byte
 	user := User{
 		Name: userName,
 	}
-	var sessionKey sql.NullString
-	err := dbConection.db.QueryRow("SELECT UserID,PasswordHash,SessionKey FROM User WHERE Name=$1", user.Name).Scan(&user.ID, &hash, &sessionKey)
+	err := dbConnection.db.QueryRow("SELECT UserID,PasswordHash FROM User WHERE Name=$1", user.Name).Scan(&user.ID, &hash)
 	if err == sql.ErrNoRows {
 		return nil, ErrUserNotExists
 	} else if err != nil {
@@ -85,9 +101,11 @@ func CheckCredentials(userName, password string) (*User, error) {
 	return &user, nil
 }
 
-//StoreSessionKey saves the key in the database for the given user and saves the key to the user struct
+// StoreSessionKey saves the session key in the database in the "User" table
+// This session key authenticates the user in further requests
+// The function returns true if the storing was successfull
 func StoreSessionKey(user *User, key string) bool {
-	result, err := dbConection.db.Exec("UPDATE User SET SessionKey=$1 WHERE UserId = $2", key, user.ID)
+	result, err := dbConnection.db.Exec("UPDATE User SET SessionKey=$1 WHERE UserId = $2", key, user.ID)
 	if err != nil {
 		log.Println("cannot update session key for user ", user.ID, err)
 		return false
@@ -103,10 +121,12 @@ func StoreSessionKey(user *User, key string) bool {
 	return true
 }
 
-//GetUserForSession gets the user associated with the given session key
+// GetUserForSession checks if the given sesssion key is associated with any user in the database.
+// If the key exists in the database the User, which the session belongs to, is returned.
+// An invalid key resolves in the return of a nil pointer
 func GetUserForSession(sessionKey string) *User {
 	var user User
-	err := dbConection.db.QueryRow("SELECT UserID,Name FROM User WHERE SessionKey=$1", sessionKey).Scan(&user.ID, &user.Name)
+	err := dbConnection.db.QueryRow("SELECT UserID,Name FROM User WHERE SessionKey=$1", sessionKey).Scan(&user.ID, &user.Name)
 	if err != nil {
 		if err != sql.ErrNoRows {
 			log.Println("cannot get user for sessionID:", err)
@@ -126,20 +146,53 @@ const (
 	Female = Gender(1)
 )
 
-// Bot represents database entry of a bot
+// Bot represents a bots entry in the database
+// A bot is only accessible for one user
+// The entry holds personal information about the bot but also information about the current mood and affection to the user.
 type Bot struct {
-	ID        int
-	Name      string
-	Image     string
-	Gender    Gender
-	User      int
+	// The bots unique id
+	ID int
+
+	// The bots name, which the user can see
+	Name string
+
+	// The path to the bots profile picture
+	Image string
+
+	Gender Gender
+
+	// The user the bot belongs to. Only this user can communicate with the bot
+	User int
+
+	// The bots current affection to the user
 	Affection float64
-	Mood      float64
+
+	// The bots current mood
+	Mood float64
+
+	Birthdate     time.Time
+	FavoriteColor int
+	FatherName    int
+	FatherAge     int
+	MotherName    int
+	MotherAge     int
 }
 
-// CreateBot creates a bot entry in the database and fills the empty values in the given bot struct
+// CreateBot creates a bot entry in the database
+// The following fields in the bot struct need to be filled: Name, Image, Gender, User, Affection and Mood
+// If the insertion was successful the generated bot id is saved in the given bot struct.
 func CreateBot(bot *Bot) error {
-	v, err := dbConection.db.Exec("INSERT INTO Bot(Name,Image,Gender,User,Affection,Mood) VALUES($1,$2,$3,$4,$5,$6)", bot.Name, bot.Image, bot.Gender, bot.User, bot.Affection, bot.Mood)
+	// random values
+	bot.FavoriteColor = randomColor()
+	bot.Birthdate = randomBirthDate(20, 30)
+	bot.FatherName = randomName(Male)
+	bot.FatherAge = rand.Intn(20) + 40
+	bot.MotherName = randomName(Female)
+	bot.MotherAge = bot.FatherAge + rand.Intn(10) - 5
+
+	v, err := dbConnection.db.Exec(`
+		INSERT INTO Bot(Name,Image,Gender,User,Affection,Mood,Birthdate,FavoriteColor,FatherName,FatherAge,MotherName,MotherAge) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
+		bot.Name, bot.Image, bot.Gender, bot.User, bot.Affection, bot.Mood, bot.Birthdate, bot.FavoriteColor, bot.FatherName, bot.FatherAge, bot.MotherName, bot.MotherAge)
 	if err != nil {
 		log.Println("error inserting new bot:", err)
 		return ErrInternalServerError
@@ -165,19 +218,36 @@ const (
 )
 
 // Message represents database entry of a message
+// A messsage is a text that was sent between the user and a bot
+// Since a bot can only communicate with one user a message is always associated with the bot
 type Message struct {
-	ID        int
-	Bot       int
-	Sender    MessageSender
+	// ID is a unique id
+	ID int
+
+	// The bot who sent the message or received it
+	Bot int
+
+	// The sender of the message
+	Sender MessageSender
+
+	// The point in time that the message was sent
 	Timestamp time.Time
-	Content   string
-	Rating    float64
+
+	// The text that was sent
+	Content string
+
+	// Affection value of the message
+	Affection float64
+
+	// Mood value of the message
+	Mood float64
 }
 
-// MessageMaxLength defines the maximum message length
+// MessageMaxLength defines the maximum message length that a user can send to a bot
 const MessageMaxLength = 200
 
-// StoreMessages saves message in database
+// StoreMessages stores messages in database
+// The messages need to be sent between the given bot and user
 func StoreMessages(userID, botID int, msgs []Message) error {
 	// check if bot belongs to user
 	exists, err := rowExists("SELECT * FROM Bot WHERE BotID=$1 AND User=$2", botID, userID)
@@ -188,15 +258,17 @@ func StoreMessages(userID, botID int, msgs []Message) error {
 		return ErrBotDoesNotBelongToUser
 	}
 
-	tx, err := dbConection.db.Begin()
+	// start a new database transaction
+	tx, err := dbConnection.db.Begin()
 	if err != nil {
 		log.Fatal(err)
 	}
 	stmt, err := tx.Prepare(`
-		INSERT INTO Message(Bot,Sender,Timestamp,Content,Rating)
-					 VALUES($1,$2,$3,$4,$5)`)
+		INSERT INTO Message(Bot,Sender,Timestamp,Content,Affection,Mood)
+					 VALUES($1,$2,$3,$4,$5,$6)`)
 	if err != nil {
 		tx.Rollback()
+		log.Println("cannot rollback:", err)
 		return ErrInternalServerError
 	}
 	defer stmt.Close()
@@ -205,7 +277,7 @@ func StoreMessages(userID, botID int, msgs []Message) error {
 			tx.Rollback()
 			return ErrMessageToLong
 		}
-		_, err := stmt.Exec(botID, m.Sender, m.Timestamp, m.Content, m.Rating)
+		_, err := stmt.Exec(botID, m.Sender, m.Timestamp, m.Content, m.Affection, m.Mood)
 		if err != nil {
 			tx.Rollback()
 			log.Println("cannot store message:", err)
@@ -222,11 +294,12 @@ func StoreMessages(userID, botID int, msgs []Message) error {
 
 // GetMessagesForBot returns a list of all messages, that the user and bot sent each other
 func GetMessagesForBot(bot int) (*[]Message, error) {
-	rows, err := dbConection.db.Query(`
+	rows, err := dbConnection.db.Query(`
 		SELECT 	Timestamp,
 				Content,
 				Sender,
-				Rating 
+				Affection,
+				Mood 
 		FROM Message 
 		WHERE Bot=$1`, bot)
 	if err != nil {
@@ -236,7 +309,7 @@ func GetMessagesForBot(bot int) (*[]Message, error) {
 	messages := []Message{}
 	var cursor Message
 	for rows.Next() {
-		if err := rows.Scan(&cursor.Timestamp, &cursor.Content, &cursor.Sender, &cursor.Rating); err == nil {
+		if err := rows.Scan(&cursor.Timestamp, &cursor.Content, &cursor.Sender, &cursor.Affection, &cursor.Mood); err == nil {
 			messages = append(messages, cursor)
 		} else {
 			log.Println(err)
@@ -250,7 +323,7 @@ func GetMessagesForBot(bot int) (*[]Message, error) {
 
 // GetBotsForUser returns all bots which belong to the given user
 func GetBotsForUser(userID int) (*[]Bot, error) {
-	rows, err := dbConection.db.Query(`
+	rows, err := dbConnection.db.Query(`
 		SELECT 	BotID,
 				Name,
 				Image,
@@ -278,45 +351,11 @@ func GetBotsForUser(userID int) (*[]Bot, error) {
 	return &bots, nil
 }
 
-//GetMessagesForUser returns alle messages the user has send with any bot
-func GetMessagesForUser(user *User) (*map[int][]Message, error) {
-	rows, err := dbConection.db.Query(`
-		SELECT	m.MessageID,
-				m.Sender,
-				m.Timestamp,
-				m.Content,
-				m.Rating,
-				b.BotID
-		FROM  Message m
-		INNER JOIN Bot b ON (b.BotID = m.Bot)
-		WHERE b.User = $1
-		ORDER BY b.BotID,m.Timestamp`, user.ID)
-	if err != nil {
-		log.Println("cannot get messages for user", user.ID, ":", err)
-		return nil, ErrInternalServerError
-	}
-	defer rows.Close()
-	var cursor Message
-	messages := make(map[int][]Message)
-	for rows.Next() {
-		if err = rows.Scan(&cursor.ID, &cursor.Sender, &cursor.Timestamp, &cursor.Content, &cursor.Rating, &cursor.Bot); err == nil {
-			messages[cursor.Bot] = append(messages[cursor.Bot], cursor)
-		} else {
-			log.Println(err)
-		}
-	}
-	if err := rows.Err(); err != nil {
-		log.Println(err)
-		return nil, ErrInternalServerError
-	}
-	return &messages, nil
-}
-
 // checks if the given query returns at least one row
 func rowExists(query string, args ...interface{}) (bool, error) {
 	var exists bool
 	query = fmt.Sprintf("SELECT exists (%s)", query)
-	err := dbConection.db.QueryRow(query, args...).Scan(&exists)
+	err := dbConnection.db.QueryRow(query, args...).Scan(&exists)
 	if err != nil && err != sql.ErrNoRows {
 		return false, err
 	}
@@ -324,20 +363,28 @@ func rowExists(query string, args ...interface{}) (bool, error) {
 }
 
 // GetBot returns bot entry from database if bot belongs to user
+// This funtion can be used to check if a bot belongs to the given user.
 func GetBot(botID, userID int) (*Bot, error) {
 	bot := Bot{
 		ID:   botID,
 		User: userID,
 	}
-	err := dbConection.db.QueryRow(`
+	err := dbConnection.db.QueryRow(`
 		SELECT	b.Name,
 				b.Image,
 				b.Gender,
 				b.Affection,
-				b.Mood
+				b.Mood,
+				b.Birthdate,
+				b.FavoriteColor,
+				b.FatherName,
+				b.FatherAge,
+				b.MotherName,
+				b.MotherAge
 		FROM	Bot b
 		WHERE	b.BotID = $1 AND b.User = $2`, bot.ID, bot.User).Scan(
-		&bot.Name, &bot.Image, &bot.Gender, &bot.Affection, &bot.Mood)
+		&bot.Name, &bot.Image, &bot.Gender, &bot.Affection, &bot.Mood, &bot.Birthdate,
+		&bot.FavoriteColor, &bot.FatherName, &bot.FatherAge, &bot.MotherName, &bot.MotherAge)
 	if err != nil {
 		return nil, err
 	}
@@ -348,7 +395,7 @@ func GetBot(botID, userID int) (*Bot, error) {
 type Name struct {
 	ID        	int
 	Name      	string
-	Sex     	int
+	Sex     	int‚
 }
 
 // GEtNames returns all bots which belong to the given user
@@ -436,4 +483,47 @@ func GetImage(id int) (*Image, error) {
 		return nil, err
 	}
 	return &image, nil
+// GetMotherName returns the name of the mother as string
+func (bot *Bot) GetMotherName() string {
+	var name string
+	err := dbConnection.db.QueryRow(`
+		SELECT	n.Text 
+		FROM Name n 
+		INNER JOIN Bot b ON (n.NameID = b.MotherName)
+		WHERE b.BotID = $1`, bot.ID).Scan(&name)
+	if err != nil {
+		log.Println("error getting mother name:", err)
+		return "Eva"
+	}
+	return name
+}
+
+// GetFatherName returns the name of the father as string
+func (bot *Bot) GetFatherName() string {
+	var name string
+	err := dbConnection.db.QueryRow(`
+		SELECT	n.Text 
+		FROM Name n 
+		INNER JOIN Bot b ON (n.NameID = b.FatherName)
+		WHERE b.BotID = $1`, bot.ID).Scan(&name)
+	if err != nil {
+		log.Println("error getting father name:", err)
+		return "Adam"
+	}
+	return name
+}
+
+// GetFavoriteColor returns the favorite color as string
+func (bot *Bot) GetFavoriteColor() string {
+	var name string
+	err := dbConnection.db.QueryRow(`
+		SELECT	c.Name 
+		FROM Color c 
+		INNER JOIN Bot b ON (c.ColorID = b.FavoriteColor)
+		WHERE b.BotID = $1`, bot.ID).Scan(&name)
+	if err != nil {
+		log.Println("error getting favorite color:", err)
+		return "weiß"
+	}
+	return name
 }

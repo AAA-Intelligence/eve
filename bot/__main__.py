@@ -17,13 +17,10 @@ if target == 'train-patterns':
 elif target == 'train-sentiments':
     from bot.trainer import train_model
 
-    logger.info('Running sentiment analysis training')
-    train_model(Mode.SENTIMENTS)
-elif target == 'console-demo':
-    from bot.pattern_recognizer import demo
+    logger.info('Running sentiments analysis through moods and affections analysis training')
+    train_model(Mode.AFFECTIONS)
+    train_model(Mode.MOODS)
 
-    logger.info('Running pattern recognizer demo')
-    demo("%s" % argv[2])
 elif target == 'demo':
     from bot.request_handler import run_demo
 

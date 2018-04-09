@@ -12,6 +12,7 @@ import (
 )
 
 // regex rule for user names. all names must match this pattern at registration
+// see https://regex101.com/r/WXXRUl/1 for testing and closer explanation
 const userNameRule = "^[a-zA-Z0-9]+([^-\\s]?[a-zA-Z0-9])*$"
 
 // HTTP handler for creating a user
@@ -28,7 +29,7 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, "invalid parameters", http.StatusBadRequest)
-		log.Println("error:", err.Error())
+		log.Println("error parsing createUser form:", err.Error())
 		return
 	}
 	username := r.Form.Get("username")
@@ -43,13 +44,18 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 	}
 	err = db.CreateUser(username, password)
 	if err != nil {
-		http.Error(w, "cannot register user", http.StatusInternalServerError)
-		log.Println("error:", err.Error())
+		if strings.HasPrefix(err.Error(), "UNIQUE constraint failed:") {
+			http.Error(w, "username allready in use", http.StatusInternalServerError)
+		} else {
+			http.Error(w, "cannot register user:", http.StatusInternalServerError)
+			log.Println("error:", err.Error())
+		}
 		return
 	}
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }
 
+// a key is simply a string
 type key string
 
 // UserContextKey is the key for the user data that is stored in the request context
@@ -60,6 +66,8 @@ const SessionKey = "eve-session"
 
 // middleware for handler, that authenticates the user
 // basic access authentication is used
+// also a session cookie is used, because basic auth does not work for sockets in safari.
+// the session key is stored in the User table in the database.
 // see: https://en.wikipedia.org/wiki/Basic_access_authentication
 func basicAuth(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -115,8 +123,8 @@ func basicAuth(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-// GetUserFromRequest gets the user stored in the request
-// if no user is stored, nil is returned
+// GetUserFromRequest extracts the user stored in the request context
+// If no user is stored, nil is returned
 func GetUserFromRequest(r *http.Request) *db.User {
 	user, ok := r.Context().Value(UserContextKey).(*db.User)
 	if !ok {
