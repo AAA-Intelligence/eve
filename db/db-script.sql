@@ -77,3 +77,9 @@ create unique index User_SessionKey_uindex
 	on User (SessionKey)
 ;
 
+create table Image
+(
+	ImageID INTEGER primary key autoincrement,
+	Path TEXT not null,
+)
+;

@@ -390,4 +390,24 @@ func GetName(id int) (*Name, error) {
 	}
 	return &name, nil
 }
+// Image represents database entry
+type Image struct {
+	ImageID        	int
+	Path      	string
+}
 
+
+// GetImage returns image object with given id
+func GetImage(id int) (*Image, error) {
+	
+	image := Image{}
+	err := dbConection.db.QueryRow(`
+		SELECT 	*
+		FROM Image 
+		WHERE ImageID = $1`,id).Scan(&image.ImageID, &image.Path)
+
+	if err != nil {
+		return nil, err
+	}
+	return &image, nil
+}

@@ -100,28 +100,42 @@ func getRandomName(res http.ResponseWriter, req *http.Request) {
 
 func createBot(res http.ResponseWriter, req *http.Request) {
 
-	// nameID := req.URL.Query().Get("nameID")
-	// nameID, err := strconv.Atoi(sex)
-	// if err != nil {
-	// 	http.Error(res, "invalid id", http.StatusBadRequest)
-	// 	return
-	// }
-	// name, err := db.GetName(nameID)
-	// if err != nil {
-	// 	http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
-	// 	log.Println("error loading name")
-	// 	return
-	// }
+	nameString := req.URL.Query().Get("nameID")
+	nameID, err1 := strconv.Atoi(nameString)
+	if err1 != nil {
+		http.Error(res, "invalid name id", http.StatusBadRequest)
+		return
+	}
+	name, err2 := db.GetName(nameID)
+	if err2 != nil {
+		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error loading name")
+		return
+	}
 
 
-	err := db.CreateBot(&db.Bot{
-		Name:   "Nina",
-		Image:  "hässlich.png",
+	imageString := req.URL.Query().Get("imageID")
+	imageID, err3 := strconv.Atoi(imageString)
+	if err3 != nil {
+		http.Error(res, "invalid image id", http.StatusBadRequest)
+		return
+	}
+	image, err4 := db.GetImage(imageID)
+	if err4 != nil {
+		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error loading image")
+		return
+	}
+
+
+	err5 := db.CreateBot(&db.Bot{
+		Name:   name.Name,
+		Image:  image.Path,
 		Gender: db.Female,
 		User:   GetUserFromRequest(req).ID,
 	})
-	if err != nil {
-		http.Error(res, err.Error(), http.StatusInternalServerError)
+	if err5 != nil {
+		http.Error(res, err5.Error(), http.StatusInternalServerError)
 		return
 	}
 	http.Redirect(res, req, "/", http.StatusSeeOther)
