@@ -1,7 +1,3 @@
-package db
-
-// DatabaseCreationScript is a script that creates the database
-const DatabaseCreationScript = `
 BEGIN TRANSACTION;
 CREATE TABLE IF NOT EXISTS 'User' (
 	'UserID'	INTEGER,
@@ -10,6 +6,7 @@ CREATE TABLE IF NOT EXISTS 'User' (
 	'SessionKey'	TEXT,
 	PRIMARY KEY('UserID')
 );
+INSERT INTO `User` VALUES (1,'dev','$2a$10$6eIE/yfJ5VCUd1xVs7mF0.0ONeFfnaScl3ohT0jMPZYOwVbqM.Zjy',NULL);
 
 CREATE TABLE IF NOT EXISTS 'Image' (
 	'ImageID' INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,6 +37,7 @@ INSERT INTO 'Image' VALUES (1,1,'/static/botimages/image1.jpg'),
 (22,1,'/static/botimages/image22.png'),
 (23,1,'/static/botimages/image23.png'),
 (24,1,'/static/botimages/image24.png');
+
 
 CREATE TABLE IF NOT EXISTS 'Name' (
 	'NameID'	INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -780,6 +778,6 @@ CREATE UNIQUE INDEX IF NOT EXISTS 'User_SessionKey_uindex' ON 'User' (
 CREATE UNIQUE INDEX IF NOT EXISTS 'User_Name_uindex' ON 'User' (
 	'Name'
 );
-COMMIT;`
+COMMIT;
 
 
