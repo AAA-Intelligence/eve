@@ -29,7 +29,7 @@ venv/*
 bot/models/
 *.pkl
 /bot/mood_analyzer/demo/models
-bot//chat-data/
+bot/chat-data/
 
 # database
 eve.sqlite

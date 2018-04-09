@@ -5,7 +5,7 @@ from bot.data import Request, Response, parse_request
 from bot.logger import logger
 from bot.mood_analyzer import analyze
 from bot.pattern_recognizer import answer_for_pattern
-from bot.text_processor import generate_answer
+from bot.text_processor.generator import generate_answer
 
 
 def handle_request(request: Request) -> Response:
@@ -28,7 +28,7 @@ def handle_request(request: Request) -> Response:
     else:
         # No pattern found, fall back to generative model
         pattern = None
-        answer = generate_answer(request, mood, affection)
+        answer = generate_answer(request)
 
     return Response(answer, pattern, mood, affection)
 
