@@ -104,12 +104,42 @@ func getRandomName(res http.ResponseWriter, req *http.Request) {
 
 
 func getRandomImage(res http.ResponseWriter, req *http.Request) {
+	sex := req.URL.Query().Get("sex")
+	sexID, err := strconv.Atoi(sex)
+	if err != nil {
+		http.Error(res, "invalid sex", http.StatusBadRequest)
+		return
+	}
+	images, err := db.GetImages(sexID)
+	if err != nil || len(*images) < 1 {
+		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error loading names")
+		return
+	}
 
+	res.Header().Set("Content-Type", "application/json")
+    res.WriteHeader(http.StatusCreated)
+    json.NewEncoder(res).Encode((*images)[rand.Intn(len(*images))])
 	
 }
 
 func getImages(res http.ResponseWriter, req *http.Request) {
+	sex := req.URL.Query().Get("sex")
+	sexID, err := strconv.Atoi(sex)
+	if err != nil {
+		http.Error(res, "invalid sex", http.StatusBadRequest)
+		return
+	}
+	images, err := db.GetImages(sexID)
+	if err != nil || len(*images) < 1 {
+		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error loading names")
+		return
+	}
 
+	res.Header().Set("Content-Type", "application/json")
+    res.WriteHeader(http.StatusCreated)
+    json.NewEncoder(res).Encode((*images))
 	
 }
 
@@ -183,6 +213,8 @@ func StartWebServer(host string, httpPort int) {
 	mux.HandleFunc("/", basicAuth(indexHandler))
 	mux.HandleFunc("/createBot", basicAuth(createBot))
 	mux.HandleFunc("/getRandomName", basicAuth(getRandomName))
+	mux.HandleFunc("/getRandomImage", basicAuth(getRandomImage))
+	mux.HandleFunc("/getImages", basicAuth(getImages))
 	mux.HandleFunc("/ws", basicAuth(webSocket))
 
 	// handle static files like css

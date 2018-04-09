@@ -439,17 +439,19 @@ func GetName(id int) (*Name, error) {
 }
 // Image represents database entry
 type Image struct {
-	ImageID        	int
+	ImageID     int
+	Gender 		int
 	Path      	string
 }
 
 
 // GetImage returns image object with given id
-func GetImages() (*[]Image, error) {
+func GetImages(gender int) (*[]Image, error) {
 	
 	rows, err := dbConnection.db.Query(`
 		SELECT 	*
-		FROM Image `)
+		FROM Image 
+		WHERE Gender =$1`,gender)
 	if err != nil {
 		return nil, err
 	}
@@ -457,7 +459,7 @@ func GetImages() (*[]Image, error) {
 	var images []Image
 	var cursor Image
 	for rows.Next() {
-		if err := rows.Scan(&cursor.ImageID, &cursor.Path); err == nil {
+		if err := rows.Scan(&cursor.ImageID, &cursor.Gender, &cursor.Path); err == nil {
 			images = append(images, cursor)
 		} else {
 			log.Println(err)
@@ -477,7 +479,7 @@ func GetImage(id int) (*Image, error) {
 	err := dbConnection.db.QueryRow(`
 		SELECT 	*
 		FROM Image 
-		WHERE ImageID = $1`,id).Scan(&image.ImageID, &image.Path)
+		WHERE ImageID = $1`,id).Scan(&image.ImageID,&image.Gender, &image.Path)
 
 	if err != nil {
 		return nil, err
