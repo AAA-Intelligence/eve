@@ -109,14 +109,13 @@ window.onload = function () {
     }
     scrollChatToBottom();
 	
-	//Initialize picture and name for bot creation
-	onSexChange();
 };
 
 var sex = 1;
 var picID = 0;
 var nameID = 0;
 
+var popupDidLoad = false;
 var imageListDidLoad = -1;
 
 
@@ -124,6 +123,13 @@ var imageListDidLoad = -1;
 		var popup = document.getElementById(id);
 		var contentAr = document.getElementsByClassName("content");
 		var content = contentAr[0];
+		
+		if (popupDidLoad == false) {
+			popupDidLoad = true;
+			//Initialize picture and name for bot creation
+			genName();
+			genImage();
+		}
 		
 		//Show popup
 		popup.style["visibility"] = "visible";
