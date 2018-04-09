@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"encoding/json"
 	"github.com/AAA-Intelligence/eve/manager/bots"
-
+	"github.com/gorilla/schema"
 	"github.com/AAA-Intelligence/eve/db"
 )
 
@@ -143,15 +143,30 @@ func getImages(res http.ResponseWriter, req *http.Request) {
 	
 }
 
-func createBot(res http.ResponseWriter, req *http.Request) {
+type Params struct {
+    nameID  int
+    imageID int
+}
+var decoder = schema.NewDecoder()
 
-	nameString := req.URL.Query().Get("nameID")
-	nameID, err1 := strconv.Atoi(nameString)
-	if err1 != nil {
-		http.Error(res, "invalid name id", http.StatusBadRequest)
-		return
+func createBot(res http.ResponseWriter, req *http.Request) {
+	err7 := req.ParseForm()
+    if err7 != nil {
+        // Handle error
+    }
+
+    var params Params
+
+	
+
+    // r.PostForm is a map of our POST form values
+    err6 := decoder.Decode(&params, req.PostForm)
+    if err6 != nil {
+        // Handle error
 	}
-	name, err2 := db.GetName(nameID)
+	
+
+	name, err2 := db.GetName(params.nameID)
 	if err2 != nil {
 		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
 		log.Println("error loading name")
@@ -159,13 +174,7 @@ func createBot(res http.ResponseWriter, req *http.Request) {
 	}
 
 
-	imageString := req.URL.Query().Get("imageID")
-	imageID, err3 := strconv.Atoi(imageString)
-	if err3 != nil {
-		http.Error(res, "invalid image id", http.StatusBadRequest)
-		return
-	}
-	image, err4 := db.GetImage(imageID)
+	image, err4 := db.GetImage(params.imageID)
 	if err4 != nil {
 		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
 		log.Println("error loading image")

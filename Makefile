@@ -23,5 +23,5 @@ clean:
 	go clean $(cmd)
 
 deps:
-	go get "github.com/gorilla/websocket" "golang.org/x/crypto/bcrypt" "github.com/mattn/go-sqlite3" "github.com/drhodes/golorem"
+	go get "github.com/gorilla/websocket" "golang.org/x/crypto/bcrypt" "github.com/mattn/go-sqlite3" "github.com/drhodes/golorem" "github.com/gorilla/schema"
 			
