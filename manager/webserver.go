@@ -98,6 +98,17 @@ func getRandomName(res http.ResponseWriter, req *http.Request) {
 	
 }
 
+
+func getRandomImage(res http.ResponseWriter, req *http.Request) {
+
+	
+}
+
+func getImages(res http.ResponseWriter, req *http.Request) {
+
+	
+}
+
 func createBot(res http.ResponseWriter, req *http.Request) {
 
 	nameString := req.URL.Query().Get("nameID")

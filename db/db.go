@@ -398,6 +398,32 @@ type Image struct {
 
 
 // GetImage returns image object with given id
+func GetImages() (*Image, error) {
+	
+	rows, err := dbConection.db.Query(`
+		SELECT 	*
+		FROM Image `)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var images []Image
+	var cursor Image
+	for rows.Next() {
+		if err := rows.Scan(&cursor.iamgeID, &cursor.Path); err == nil {
+			images = append(images, cursor)
+		} else {
+			log.Println(err)
+		}
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return &images, nil
+}
+
+
+// GetImage returns image object with given id
 func GetImage(id int) (*Image, error) {
 	
 	image := Image{}
