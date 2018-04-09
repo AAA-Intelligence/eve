@@ -1,15 +1,16 @@
 package manager
 
 import (
+	"encoding/json"
 	"html/template"
 	"log"
 	"math/rand"
 	"net/http"
 	"strconv"
-	"encoding/json"
+
+	"github.com/AAA-Intelligence/eve/db"
 	"github.com/AAA-Intelligence/eve/manager/bots"
 	"github.com/gorilla/schema"
-	"github.com/AAA-Intelligence/eve/db"
 )
 
 // indexHandler serves HTML index page
@@ -97,9 +98,9 @@ func getRandomName(res http.ResponseWriter, req *http.Request) {
 	}
 
 	res.Header().Set("Content-Type", "application/json")
-    res.WriteHeader(http.StatusCreated)
-    json.NewEncoder(res).Encode((*names)[rand.Intn(len(*names))])
-	
+	res.WriteHeader(http.StatusCreated)
+	json.NewEncoder(res).Encode((*names)[rand.Intn(len(*names))])
+
 }
 
 
@@ -118,9 +119,9 @@ func getRandomImage(res http.ResponseWriter, req *http.Request) {
 	}
 
 	res.Header().Set("Content-Type", "application/json")
-    res.WriteHeader(http.StatusCreated)
-    json.NewEncoder(res).Encode((*images)[rand.Intn(len(*images))])
-	
+	res.WriteHeader(http.StatusCreated)
+	json.NewEncoder(res).Encode((*images)[rand.Intn(len(*images))])
+
 }
 
 func getImages(res http.ResponseWriter, req *http.Request) {
@@ -138,58 +139,58 @@ func getImages(res http.ResponseWriter, req *http.Request) {
 	}
 
 	res.Header().Set("Content-Type", "application/json")
-    res.WriteHeader(http.StatusCreated)
-    json.NewEncoder(res).Encode((*images))
-	
+	res.WriteHeader(http.StatusCreated)
+	json.NewEncoder(res).Encode((*images))
+
 }
 
 type Params struct {
-    nameID  int
-    imageID int
+	Name  int       `schema:"nameID"`
+	Image int       `schema:"imageID"`
+	Sex   db.Gender `schema:"sex"`
 }
+
 var decoder = schema.NewDecoder()
 
 func createBot(res http.ResponseWriter, req *http.Request) {
-	err7 := req.ParseForm()
-    if err7 != nil {
-        // Handle error
-    }
-
-    var params Params
-
-	
-
-    // r.PostForm is a map of our POST form values
-    err6 := decoder.Decode(&params, req.PostForm)
-    if err6 != nil {
-        // Handle error
+	err := req.ParseForm()
+	if err != nil {
+		log.Println("error parsing form:", err)
+		http.Error(res, "invalid request", http.StatusBadRequest)
+		return
 	}
-	
 
-	name, err2 := db.GetName(params.nameID)
-	if err2 != nil {
+	var params Params
+
+	// r.PostForm is a map of our POST form values
+	err = decoder.Decode(&params, req.PostForm)
+	if err != nil {
+		log.Println("error decoding form:", err)
+		http.Error(res, "invalid request", http.StatusBadRequest)
+		return
+	}
+	name, err := db.GetName(params.Name)
+	if err != nil {
 		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
 		log.Println("error loading name")
 		return
 	}
 
-
-	image, err4 := db.GetImage(params.imageID)
-	if err4 != nil {
+	image, err := db.GetImage(params.Image)
+	if err != nil {
 		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
 		log.Println("error loading image")
 		return
 	}
 
-
-	err5 := db.CreateBot(&db.Bot{
+	err = db.CreateBot(&db.Bot{
 		Name:   name.Text,
 		Image:  image.Path,
-		Gender: db.Female,
+		Gender: params.Sex,
 		User:   GetUserFromRequest(req).ID,
 	})
-	if err5 != nil {
-		http.Error(res, err5.Error(), http.StatusInternalServerError)
+	if err != nil {
+		http.Error(res, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	http.Redirect(res, req, "/", http.StatusSeeOther)
