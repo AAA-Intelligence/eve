@@ -145,7 +145,7 @@ func getImages(res http.ResponseWriter, req *http.Request) {
 
 func createBot(res http.ResponseWriter, req *http.Request) {
 
-	nameString := req.URL.Query().Get("nameID")
+	nameString := req.Form.Query().Get("nameID")
 	nameID, err1 := strconv.Atoi(nameString)
 	if err1 != nil {
 		http.Error(res, "invalid name id", http.StatusBadRequest)
@@ -159,7 +159,7 @@ func createBot(res http.ResponseWriter, req *http.Request) {
 	}
 
 
-	imageString := req.URL.Query().Get("imageID")
+	imageString := req.Form.Query().Get("imageID")
 	imageID, err3 := strconv.Atoi(imageString)
 	if err3 != nil {
 		http.Error(res, "invalid image id", http.StatusBadRequest)
