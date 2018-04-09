@@ -6,11 +6,26 @@ CREATE TABLE IF NOT EXISTS 'User' (
 	'SessionKey'	TEXT,
 	PRIMARY KEY('UserID')
 );
+
+CREATE TABLE IF NOT EXISTS 'Image' (
+	'ImageID' INTEGER PRIMARY KEY AUTOINCREMENT,
+	'Gender' INTEGER NOT NULL,
+	'Path' TEXT NOT NULL
+);
+INSERT INTO 'Image' VALUES (1,1,'/static/images/test1.png'),
+(2,1,'/static/images/test2.png'),
+(3,1,'/static/images/test3.png'),
+(4,0,'/static/images/test4.png'),
+(5,0,'/static/images/test5.png'),
+(6,0,'/static/images/test5.png');
+
+
 CREATE TABLE IF NOT EXISTS 'Name' (
 	'NameID'	INTEGER PRIMARY KEY AUTOINCREMENT,
 	'Text'	TEXT NOT NULL,
 	'Gender'	INTEGER NOT NULL
 );
+
 INSERT INTO 'Name' VALUES (1,'Agnes',1),
  (2,'Agnieszka',1),
  (3,'Alexandra',1),
@@ -745,3 +760,5 @@ CREATE UNIQUE INDEX IF NOT EXISTS 'User_Name_uindex' ON 'User' (
 	'Name'
 );
 COMMIT;
+
+

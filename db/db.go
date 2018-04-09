@@ -391,8 +391,103 @@ func GetBot(botID, userID int) (*Bot, error) {
 	return &bot, nil
 }
 
+// Name represents database entry
+type Name struct {
+	ID        	int
+	Text      	string
+	Gender     	int
+}
+
+// GEtNames returns all bots which belong to the given user
+func GetNames(gender int) (*[]Name, error) {
+	rows, err := dbConnection.db.Query(`
+		SELECT 	*
+		FROM Name 
+		WHERE Gender = $1`,gender)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var names []Name
+	var cursor Name
+	for rows.Next() {
+		if err := rows.Scan(&cursor.ID, &cursor.Text, &cursor.Gender); err == nil {
+			names = append(names, cursor)
+		} else {
+			log.Println(err)
+		}
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return &names, nil
+}
+
+// GetName returns all bots which belong to the given user
+func GetName(id int) (*Name, error) {
+	
+	name := Name{}
+	err := dbConnection.db.QueryRow(`
+		SELECT 	*
+		FROM Name 
+		WHERE NameID = $1`,id).Scan(&name.ID, &name.Text, &name.Gender)
+
+	if err != nil {
+		return nil, err
+	}
+	return &name, nil
+}
+// Image represents database entry
+type Image struct {
+	ImageID     int
+	Gender 		int
+	Path      	string
+}
+
+
+// GetImage returns image object with given id
+func GetImages(gender int) (*[]Image, error) {
+	
+	rows, err := dbConnection.db.Query(`
+		SELECT 	*
+		FROM Image 
+		WHERE Gender =$1`,gender)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var images []Image
+	var cursor Image
+	for rows.Next() {
+		if err := rows.Scan(&cursor.ImageID, &cursor.Gender, &cursor.Path); err == nil {
+			images = append(images, cursor)
+		} else {
+			log.Println(err)
+		}
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return &images, nil
+}
+
+
+// GetImage returns image object with given id
+func GetImage(id int) (*Image, error) {
+	
+	image := Image{}
+	err := dbConnection.db.QueryRow(`
+		SELECT 	*
+		FROM Image 
+		WHERE ImageID = $1`,id).Scan(&image.ImageID,&image.Gender, &image.Path)
+
+	if err != nil {
+		return nil, err
+	}
+	return &image, nil
+}
 // GetMotherName returns the name of the mother as string
-func (bot *Bot) GetMotherName() string {
+func (bot *Bot) GetMotherName() (string) {
 	var name string
 	err := dbConnection.db.QueryRow(`
 		SELECT	n.Text 
