@@ -144,42 +144,48 @@ func getImages(res http.ResponseWriter, req *http.Request) {
 }
 
 type Params struct {
-    nameID  int
-	imageID int
-	sex		int
+    Name  string `schema:"nameID"`
+    Image string `schema:"imageID"`
 }
 var decoder = schema.NewDecoder()
 
 func createBot(res http.ResponseWriter, req *http.Request) {
 	err7 := req.ParseForm()
     if err7 != nil {
-		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
-		log.Println("error parsing params")
-		return
+        // Handle error
     }
 
     var params Params
 
+	
+
     // r.PostForm is a map of our POST form values
     err6 := decoder.Decode(&params, req.PostForm)
     if err6 != nil {
-		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
-		log.Println("error decoding params")
-		return
+        // Handle error
 	}
 	
-	log.Printf("%d\n",params.nameID)
-	log.Printf("%d\n",params.imageID)
+	log.Printf("%d\n",params.Name)
+	log.Printf("%d\n",params.Image)
 
-	name, err2 := db.GetName(params.nameID)
+	nameID, err1 := strconv.Atoi(params.Name)
+	if err1 != nil {
+		http.Error(res, "invalid name id", http.StatusBadRequest)
+		return
+	}
+	name, err2 := db.GetName(nameID)
 	if err2 != nil {
 		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
 		log.Println("error loading name")
 		return
 	}
 
-
-	image, err4 := db.GetImage(params.imageID)
+	imageID, err3 := strconv.Atoi(params.Image)
+	if err3 != nil {
+		http.Error(res, "invalid image id", http.StatusBadRequest)
+		return
+	}
+	image, err4 := db.GetImage(imageID)
 	if err4 != nil {
 		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
 		log.Println("error loading image")
