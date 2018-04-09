@@ -109,9 +109,11 @@ window.onload = function () {
     }
     scrollChatToBottom();
 	
+	//Initialize picture and name for bot creation
+	onSexChange();
 };
 
-var sex = 0;
+var sex = 1;
 var picID = 0;
 var nameID = 0;
 
@@ -169,52 +171,45 @@ var nameID = 0;
 		
 		var imagesarea = document.getElementById("imagepopupcontainer");
 		
-		/*demo = ["https://i.imgur.com/ru8D0SC.jpg", "https://i.imgur.com/WWQrYvd.jpg", "https://i.imgur.com/M7iNM4D.png"];*/
+		//Fetch JSON of all images
+		var xmlhttp = new XMLHttpRequest();
+		var url = `./getImages?sex=`+sex;
 		
-		fetchImagesJSON(sex, (error, result) => {
-			if (error) 
-				console.log(error)
-			else {
-			//TESTING: uncomment the following line and comment the if-statements
-			//result = JSON.parse('{"images":[{"id":"0","url":"https://i.imgur.com/ru8D0SC.jpg"},{"id":"1","url":"https://i.imgur.com/WWQrYvd.jpg"},{"id":"3","url":"https://i.imgur.com/M7iNM4D.png"}]}');
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 201) {
+				var result = JSON.parse(this.responseText);
+				
+				//TESTING: uncomment the following line and comment the if-statements
+				//result = JSON.parse('{"images":[{"id":"0","Path":"https://i.imgur.com/ru8D0SC.jpg"},{"id":"1","Path":"https://i.imgur.com/WWQrYvd.jpg"},{"id":"3","Path":"https://i.imgur.com/M7iNM4D.png"}]}');
+				
 				for(key in result.images) {
 					if(result.images.hasOwnProperty(key)) {
 						var item = document.createElement("button");
-						item.setAttribute('onclick','setImage('+result.images[key].id+', '+result.images[key].url+')');
-						item.style["background-image"] = "url("+result.images[key].url+")";
+						item.setAttribute('onclick','setImage('+result.images[key].ID+', '+result.images[key].Path+')');
+						item.style["background-image"] = "url("+result.images[key].Path+")";
 						imagesarea.appendChild(item);
 					}
 				}
+				
 			}
-		})
-		
-		
-
-	}
-	
-	function fetchNameJSON(sex, callback) {
-		fetch(`./getRandomName?sex=`+sex)
-		.then(response => response.json())
-		.then(json => callback(null, json.result))
-		.catch(error => callback(error, null))
-	}
-	
-	function fetchImagesJSON(sex, callback) {
-		fetch(`./getImages?sex=`+sex)
-		.then(response => response.json())
-		.then(json => callback(null, json.result))
-		.catch(error => callback(error, null))
+		};
+		xmlhttp.open("GET", url, true);
+		xmlhttp.send();
 	}
 	
 	function genName() {
-		fetchNameJSON(sex, (error, result) => {
-			if (error) 
-				console.log(error)
-			else {
-				setNameOnCreation(result.Name);
+		var xmlhttp = new XMLHttpRequest();
+		var url = `./getRandomName?sex=`+sex;
+		
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 201) {
+				var result = JSON.parse(this.responseText);
+				setNameOnCreation(result.Text);
 				nameID = result.ID;
 			}
-		})
+		};
+		xmlhttp.open("GET", url, true);
+		xmlhttp.send();
 	}
 	
 	function setNameOnCreation(newName) {
@@ -233,9 +228,9 @@ var nameID = 0;
 	function fetchSex() {
 		//Fetch selected sex
 		if (document.getElementById("switch_left").checked) {
-			sex = 0;
-		} else {
 			sex = 1;
+		} else {
+			sex = 0;
 		}
 	}
 	
@@ -246,7 +241,7 @@ var nameID = 0;
 	}
 	
 	function submitBotCreation() {
-		post("/createBot"/*"http://httpbin.org/post"*/, {nameID: nameID, picID: picID, sex: sex});
+		post(/*"/createBot"*/"http://httpbin.org/post", {nameID: nameID, picID: picID, sex: sex});
 	}
 	
 	function post(path, params, method) {
