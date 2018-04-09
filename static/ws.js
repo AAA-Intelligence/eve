@@ -227,7 +227,7 @@ var imageListDidLoad = -1;
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 201) {
 				var result = JSON.parse(this.responseText);
-				setImage(result.imageID, result.Path);
+				setImage(result.ImageID, result.Path);
 			}
 		};
 		xmlhttp.open("GET", url, true);
