@@ -2,7 +2,6 @@ from os import path
 from io import StringIO
 import os
 
-from opennmt.runner import Runner
 from opennmt.utils import data
 from opennmt.utils.misc import item_or_tuple
 
@@ -48,8 +47,19 @@ def generate_answer(request: Request) -> str:
 
     text = ' '.join(nltk.word_tokenize(request.text, language='german'))
 
-    runner = Runner(model, config)
-    estimator = runner._estimator
+    session_config = tf.ConfigProto(
+        allow_soft_placement=True,
+        log_device_placement=False
+    )
+    run_config = tf.estimator.RunConfig(
+        model_dir=config['model_dir'],
+        session_config=session_config)
+    session = tf.Session(config=session_config)
+    estimator = tf.estimator.Estimator(
+        model.model_fn(num_devices=1),
+        config=run_config,
+        params=config['params']
+    )
 
     batch_size = config['infer'].get('batch_size', 1)
 
@@ -72,6 +82,9 @@ def generate_answer(request: Request) -> str:
     # Get the content of the string buffer and close the buffer
     answer = stream.getvalue()
     stream.close()
+
+    # Close the tensorflow session
+    session.close()
 
     # Clean up output
     answer = answer.replace('<s>', '').replace('</s>', '').replace('\n', ' ')
