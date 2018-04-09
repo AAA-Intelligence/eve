@@ -745,10 +745,17 @@ CREATE UNIQUE INDEX IF NOT EXISTS 'User_Name_uindex' ON 'User' (
 	'Name'
 );
 
-create table Image
+CREATE TABLE IF NOT EXISTS 'Image' (
 (
 	ImageID INTEGER primary key autoincrement,
 	Path TEXT not null,
 )
 ;
+
+INSERT INTO 'Image' VALUES (1,'/static/images/test1.png'),
+(2,'/static/images/test2.png'),
+(3,'/static/images/test3.png'),
+(4,'/static/images/test4.png'),
+(5,'/static/images/test5.png'),
+(6,'/static/images/test5.png'),
 COMMIT;

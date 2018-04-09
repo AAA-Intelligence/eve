@@ -394,16 +394,16 @@ func GetBot(botID, userID int) (*Bot, error) {
 // Name represents database entry
 type Name struct {
 	ID        	int
-	Name      	string
-	Sex     	int‚
+	Text      	string
+	Gender     	int
 }
 
 // GEtNames returns all bots which belong to the given user
-func GetNames(sex int) (*[]Name, error) {
-	rows, err := dbConection.db.Query(`
+func GetNames(gender int) (*[]Name, error) {
+	rows, err := dbConnection.db.Query(`
 		SELECT 	*
 		FROM Name 
-		WHERE Sex = $1`,sex)
+		WHERE Gender = $1`,gender)
 	if err != nil {
 		return nil, err
 	}
@@ -411,7 +411,7 @@ func GetNames(sex int) (*[]Name, error) {
 	var names []Name
 	var cursor Name
 	for rows.Next() {
-		if err := rows.Scan(&cursor.ID, &cursor.Name, &cursor.Sex); err == nil {
+		if err := rows.Scan(&cursor.ID, &cursor.Text, &cursor.Gender); err == nil {
 			names = append(names, cursor)
 		} else {
 			log.Println(err)
@@ -427,10 +427,10 @@ func GetNames(sex int) (*[]Name, error) {
 func GetName(id int) (*Name, error) {
 	
 	name := Name{}
-	err := dbConection.db.QueryRow(`
+	err := dbConnection.db.QueryRow(`
 		SELECT 	*
 		FROM Name 
-		WHERE NameID = $1`,id).Scan(&name.ID, &name.Name, &name.Sex)
+		WHERE NameID = $1`,id).Scan(&name.ID, &name.Text, &name.Gender)
 
 	if err != nil {
 		return nil, err
@@ -445,9 +445,9 @@ type Image struct {
 
 
 // GetImage returns image object with given id
-func GetImages() (*Image, error) {
+func GetImages() (*[]Image, error) {
 	
-	rows, err := dbConection.db.Query(`
+	rows, err := dbConnection.db.Query(`
 		SELECT 	*
 		FROM Image `)
 	if err != nil {
@@ -457,7 +457,7 @@ func GetImages() (*Image, error) {
 	var images []Image
 	var cursor Image
 	for rows.Next() {
-		if err := rows.Scan(&cursor.iamgeID, &cursor.Path); err == nil {
+		if err := rows.Scan(&cursor.ImageID, &cursor.Path); err == nil {
 			images = append(images, cursor)
 		} else {
 			log.Println(err)
@@ -474,7 +474,7 @@ func GetImages() (*Image, error) {
 func GetImage(id int) (*Image, error) {
 	
 	image := Image{}
-	err := dbConection.db.QueryRow(`
+	err := dbConnection.db.QueryRow(`
 		SELECT 	*
 		FROM Image 
 		WHERE ImageID = $1`,id).Scan(&image.ImageID, &image.Path)
@@ -483,8 +483,9 @@ func GetImage(id int) (*Image, error) {
 		return nil, err
 	}
 	return &image, nil
+}
 // GetMotherName returns the name of the mother as string
-func (bot *Bot) GetMotherName() string {
+func (bot *Bot) GetMotherName() (string) {
 	var name string
 	err := dbConnection.db.QueryRow(`
 		SELECT	n.Text 

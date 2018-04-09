@@ -1,7 +1,6 @@
 package manager
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"math/rand"
@@ -145,7 +144,7 @@ func createBot(res http.ResponseWriter, req *http.Request) {
 
 
 	err5 := db.CreateBot(&db.Bot{
-		Name:   name.Name,
+		Name:   name.Text,
 		Image:  image.Path,
 		Gender: db.Female,
 		User:   GetUserFromRequest(req).ID,
