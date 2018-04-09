@@ -3,11 +3,34 @@ from io import StringIO
 import os
 
 from opennmt.runner import Runner
+from opennmt.utils import data
+from opennmt.utils.misc import item_or_tuple
+
 import tensorflow as tf
 import nltk
 
 from bot.data import Request
 from bot.text_processor.setup import config, model
+
+
+def input_fn_impl(text, model, batch_size, metadata):
+    model._initialize(metadata)
+
+    dataset = tf.data.Dataset.from_tensor_slices([text])
+    # Parallel inputs must be catched in a single tuple and not considered as multiple arguments.
+    process_fn = lambda *arg: model.source_inputter.process(item_or_tuple(arg))
+
+    dataset = dataset.map(
+        process_fn,
+        num_parallel_calls=1)
+    dataset = dataset.apply(data.batch_parallel_dataset(batch_size))
+
+    iterator = dataset.make_initializable_iterator()
+
+    # Add the initializer to a standard collection for it to be initialized.
+    tf.add_to_collection(tf.GraphKeys.TABLE_INITIALIZERS, iterator.initializer)
+
+    return iterator.get_next()
 
 
 def generate_answer(request: Request) -> str:
@@ -24,28 +47,33 @@ def generate_answer(request: Request) -> str:
     """
 
     text = ' '.join(nltk.word_tokenize(request.text, language='german'))
-    with open('theinput.txt', 'w', encoding='utf-8') as f:
-        f.write(text)
 
     runner = Runner(model, config)
     estimator = runner._estimator
 
     batch_size = config['infer'].get('batch_size', 1)
-    input_fn = model.input_fn(
-        tf.estimator.ModeKeys.PREDICT,
-        batch_size,
-        config['data'],
-        'theinput.txt',
-        prefetch_buffer_size=1
-    )
 
+    # Create an input function as datasource for tensorflow
+    def input_fn():
+        return input_fn_impl(
+            text,
+            model,
+            batch_size,
+            config['data']
+        )
+
+    # Create a string buffer as output stream
     stream = StringIO()
+
+    # Write all predictions into the output stream
     for prediction in estimator.predict(input_fn=input_fn):
         model.print_prediction(prediction, stream=stream)
 
+    # Get the content of the string buffer and close the buffer
     answer = stream.getvalue()
     stream.close()
 
+    # Clean up output
     answer = answer.replace('<s>', '').replace('</s>', '').replace('\n', ' ')
 
     return answer

@@ -2,12 +2,11 @@ from os import path, makedirs
 
 from opennmt.models import SequenceToSequence
 from opennmt.config import load_config, load_model
-import opennmt.config
 
 
 __dir = path.dirname(__file__)
 config_path = path.join(__dir, 'config.yml')
-model_file = path.join(__dir, 'nmt_small.py')
+model_file = path.join(__dir, 'models', 'nmt_small.py')
 
 config = load_config([config_path])
 
