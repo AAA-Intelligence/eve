@@ -1,4 +1,4 @@
-from typing import List, Tuple, Type, Dict, Set
+from typing import List, Tuple, Type, Set
 
 import nltk
 import numpy as np
@@ -6,9 +6,10 @@ from keras import Sequential
 from keras.layers import Dense, Dropout
 from nltk.stem.snowball import GermanStemmer
 
+from bot.affections import patterns_for_affection
 from bot.model_definitions import Category, Mode
+from bot.moods import patterns_for_mood
 from bot.patterns import patterns_for_category
-from bot.sentiments import patterns_for_sentiment
 
 
 def setup_bot(mode: Mode) -> Tuple[Sequential, np.ndarray, np.ndarray, List[str]]:
@@ -28,8 +29,10 @@ def read_training_data(mode: Mode) -> Tuple[Category, Set[str]]:
 
     if mode == Mode.PATTERNS:
         reader_func = patterns_for_category
-    elif mode == Mode.SENTIMENTS:
-        reader_func = patterns_for_sentiment
+    elif mode == Mode.AFFECTIONS:
+        reader_func = patterns_for_affection
+    elif mode == Mode.MOODS:
+        reader_func = patterns_for_mood
     else:
         raise ValueError('Unknown mode {}'.format(mode))
 
@@ -89,7 +92,7 @@ def setup_nn_model(train_x: np.ndarray, train_y: np.ndarray) -> Sequential:
     # Define neural network
 
     DENSITIY: int = 512
-    DROPOUT: float = 0.5
+    DROPOUT: float = 0.75
 
     model = Sequential()
 
