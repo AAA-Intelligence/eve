@@ -103,7 +103,6 @@ func getRandomName(res http.ResponseWriter, req *http.Request) {
 
 }
 
-
 func getRandomImage(res http.ResponseWriter, req *http.Request) {
 	sex := req.URL.Query().Get("sex")
 	sexID, err := strconv.Atoi(sex)
