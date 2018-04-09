@@ -55,3 +55,8 @@ func GenerateRandomString(s int) (string, error) {
 func formatTime(time *time.Time) string {
 	return fmt.Sprintf("%d:%d", time.Hour(), time.Minute())
 }
+
+// Returns the number of years that have passed since the given date
+func yearsSince(date *time.Time) int {
+	return int(time.Since(*date).Hours() / float64(24*356))
+}

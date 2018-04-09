@@ -90,7 +90,7 @@
 		{{if .ActiveBot}}
 		<div id="hidePopupButton"><button onclick="hidePopup('profilepopup')"></button></div><br />
 		<img id="profileimage" src="{{.ActiveBot.Image}}"/>
-		<br /><p id="profilename">{{.ActiveBot.Name}}</p>
+		<br /><p id="profilename">{{.ActiveBot.Name}}({{years .ActiveBot.Birthdate}})</p>
 		{{end}}
 		</div>
 		

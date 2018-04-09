@@ -324,14 +324,20 @@ func GetMessagesForBot(bot int) (*[]Message, error) {
 // GetBotsForUser returns all bots which belong to the given user
 func GetBotsForUser(userID int) (*[]Bot, error) {
 	rows, err := dbConnection.db.Query(`
-		SELECT 	BotID,
-				Name,
-				Image,
-				Gender,
-				Affection, 
-				Mood
-		FROM Bot 
-		WHERE User=$2`, userID)
+		SELECT	b.BotID,
+				b.Name,
+				b.Image,
+				b.Gender,
+				b.Affection,
+				b.Mood,
+				b.Birthdate,
+				b.FavoriteColor,
+				b.FatherName,
+				b.FatherAge,
+				b.MotherName,
+				b.MotherAge
+		FROM	Bot b
+		WHERE b.User=$2`, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -339,7 +345,8 @@ func GetBotsForUser(userID int) (*[]Bot, error) {
 	var bots []Bot
 	var cursor Bot
 	for rows.Next() {
-		if err := rows.Scan(&cursor.ID, &cursor.Name, &cursor.Image, &cursor.Gender, &cursor.Affection, &cursor.Mood); err == nil {
+		if err := rows.Scan(&cursor.ID, &cursor.Name, &cursor.Image, &cursor.Gender, &cursor.Affection, &cursor.Mood, &cursor.Birthdate,
+			&cursor.FavoriteColor, &cursor.FatherName, &cursor.FatherAge, &cursor.MotherName, &cursor.MotherAge); err == nil {
 			bots = append(bots, cursor)
 		} else {
 			log.Println(err)
@@ -393,9 +400,9 @@ func GetBot(botID, userID int) (*Bot, error) {
 
 // Name represents database entry
 type Name struct {
-	ID        	int
-	Text      	string
-	Gender     	int
+	ID     int
+	Text   string
+	Gender int
 }
 
 // GEtNames returns all bots which belong to the given user
@@ -403,7 +410,7 @@ func GetNames(gender int) (*[]Name, error) {
 	rows, err := dbConnection.db.Query(`
 		SELECT 	*
 		FROM Name 
-		WHERE Gender = $1`,gender)
+		WHERE Gender = $1`, gender)
 	if err != nil {
 		return nil, err
 	}
@@ -425,33 +432,33 @@ func GetNames(gender int) (*[]Name, error) {
 
 // GetName returns all bots which belong to the given user
 func GetName(id int) (*Name, error) {
-	
+
 	name := Name{}
 	err := dbConnection.db.QueryRow(`
 		SELECT 	*
 		FROM Name 
-		WHERE NameID = $1`,id).Scan(&name.ID, &name.Text, &name.Gender)
+		WHERE NameID = $1`, id).Scan(&name.ID, &name.Text, &name.Gender)
 
 	if err != nil {
 		return nil, err
 	}
 	return &name, nil
 }
+
 // Image represents database entry
 type Image struct {
-	ImageID     int
-	Gender 		int
-	Path      	string
+	ImageID int
+	Gender  int
+	Path    string
 }
-
 
 // GetImage returns image object with given id
 func GetImages(gender int) (*[]Image, error) {
-	
+
 	rows, err := dbConnection.db.Query(`
 		SELECT 	*
 		FROM Image 
-		WHERE Gender =$1`,gender)
+		WHERE Gender =$1`, gender)
 	if err != nil {
 		return nil, err
 	}
@@ -471,23 +478,23 @@ func GetImages(gender int) (*[]Image, error) {
 	return &images, nil
 }
 
-
 // GetImage returns image object with given id
 func GetImage(id int) (*Image, error) {
-	
+
 	image := Image{}
 	err := dbConnection.db.QueryRow(`
 		SELECT 	*
 		FROM Image 
-		WHERE ImageID = $1`,id).Scan(&image.ImageID,&image.Gender, &image.Path)
+		WHERE ImageID = $1`, id).Scan(&image.ImageID, &image.Gender, &image.Path)
 
 	if err != nil {
 		return nil, err
 	}
 	return &image, nil
 }
+
 // GetMotherName returns the name of the mother as string
-func (bot *Bot) GetMotherName() (string) {
+func (bot *Bot) GetMotherName() string {
 	var name string
 	err := dbConnection.db.QueryRow(`
 		SELECT	n.Text 
