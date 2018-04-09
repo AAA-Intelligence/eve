@@ -19,6 +19,11 @@ elif target == 'train-sentiments':
 
     logger.info('Running sentiment analysis training')
     train_model(Mode.SENTIMENTS)
+elif target == 'train-chat':
+    from bot.text_processor.train import train_and_evaluate
+
+    logger.info('Running chat training')
+    train_and_evaluate()
 elif target == 'console-demo':
     from bot.pattern_recognizer import demo
 
