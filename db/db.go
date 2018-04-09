@@ -329,14 +329,20 @@ func GetMessagesForBot(bot int) (*[]Message, error) {
 // GetBotsForUser returns all bots which belong to the given user
 func GetBotsForUser(userID int) (*[]Bot, error) {
 	rows, err := dbConnection.db.Query(`
-		SELECT 	BotID,
-				Name,
-				Image,
-				Gender,
-				Affection, 
-				Mood
-		FROM Bot 
-		WHERE User=$2`, userID)
+		SELECT	b.BotID,
+				b.Name,
+				b.Image,
+				b.Gender,
+				b.Affection,
+				b.Mood,
+				b.Birthdate,
+				b.FavoriteColor,
+				b.FatherName,
+				b.FatherAge,
+				b.MotherName,
+				b.MotherAge
+		FROM	Bot b
+		WHERE b.User=$2`, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -344,7 +350,8 @@ func GetBotsForUser(userID int) (*[]Bot, error) {
 	var bots []Bot
 	var cursor Bot
 	for rows.Next() {
-		if err := rows.Scan(&cursor.ID, &cursor.Name, &cursor.Image, &cursor.Gender, &cursor.Affection, &cursor.Mood); err == nil {
+		if err := rows.Scan(&cursor.ID, &cursor.Name, &cursor.Image, &cursor.Gender, &cursor.Affection, &cursor.Mood, &cursor.Birthdate,
+			&cursor.FavoriteColor, &cursor.FatherName, &cursor.FatherAge, &cursor.MotherName, &cursor.MotherAge); err == nil {
 			bots = append(bots, cursor)
 		} else {
 			log.Println(err)

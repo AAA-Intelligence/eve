@@ -2,6 +2,8 @@ package bots
 
 import (
 	"log"
+	"os/exec"
+	"strings"
 	"sync"
 )
 
@@ -17,22 +19,47 @@ type botTask struct {
 // For every incoming request a task is generated and executed by the next free instance.
 // The Number of bot instances can be resized to allow dynamic load balancing.
 type BotPool struct {
-	mu    sync.Mutex
-	size  int
-	tasks chan botTask
-	kill  chan struct{}
-	wg    sync.WaitGroup
+	mu     sync.Mutex
+	size   int
+	tasks  chan botTask
+	kill   chan struct{}
+	wg     sync.WaitGroup
+	python string
 }
 
 // NewBotPool creates a new pool with a given amount of bot instances
 // The task buffer size is 128. This means the pool can have up to 128 tasks in the que.
 func NewBotPool(size int) *BotPool {
 	pool := &BotPool{
-		tasks: make(chan botTask, 128),
-		kill:  make(chan struct{}),
+		tasks:  make(chan botTask, 128),
+		kill:   make(chan struct{}),
+		python: getPythonCommand(),
 	}
 	pool.Resize(size)
 	return pool
+}
+
+// getPythonCommand chooses the local python command (python or python3)
+func getPythonCommand() string {
+	version := execCommand("python", "--version")
+	if strings.HasPrefix(version, "Python 3.6") {
+		return "python"
+	}
+	version3 := execCommand("python3", "--version")
+	if strings.HasPrefix(version3, "Python 3.6") {
+		return "python3"
+	}
+	log.Panicln("Python 3.6 or higher required!")
+	return ""
+}
+
+func execCommand(name string, arg ...string) string {
+	cmd := exec.Command(name, arg...)
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return ""
+	}
+	return string(out)
 }
 
 // HandleRequest takes incoming requests and makes the task work off by the next free bot instance.
@@ -70,7 +97,7 @@ func (p *BotPool) Wait() {
 // worker starts a new bot instance that is running until it is killed by the pool it belongs to or an error occures.
 func (p *BotPool) worker() {
 	defer p.wg.Done()
-	bot, err := newBotInstance()
+	bot, err := newBotInstance(p.python)
 	// close bot if worker is killed
 	defer bot.Close()
 	if err != nil {

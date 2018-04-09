@@ -41,8 +41,8 @@
         {{if .ActiveBot}}
         <div class="chat">
             <div class="topBar2">
-			<img src="{{.ActiveBot.Image}}">
-            <div id="botname">Chatting with: <b>{{.ActiveBot.Name}}</b></div>
+			<img src="{{.ActiveBot.Image}}" onclick="showPopup('profilepopup')">
+            <div id="botname">Chatting with: <b style="cursor:pointer;" onclick="showPopup('profilepopup')">{{.ActiveBot.Name}}</b></div>
 			</div>
             <div id="log">
                 {{range $msg := .Messages}}
@@ -65,11 +65,10 @@
 		<div id="popup">
 		<!--<h1>New chat.</h1>-->
 		<div id="hidePopupButton"><button onclick="hidePopup('popup')"></button></div>
-		<div id="">
 				<br /><div class="newbotdesc">Click on the picture to change your partner.</div><br /><br />
 				<button id="imageinput" onclick="showChangeImagePopup()" value=""></button>
 				
-				<br /><p id="generatedName">Lara<button onclick="genName()"></button></p>
+				<br /><p id="generatedName">Name<button onclick="genName()"></button></p>
 				
 				<div class="switch-field"><input type="radio" id="switch_left" name="gender" value="f" onclick="onSexChange()" checked />
 				<label for="switch_left">Female</label>
@@ -78,15 +77,24 @@
 				
                 <br /><button class="button" onclick="submitBotCreation()">Let's go!</button>
 		</div>
-		</div>
 		
 		<!-- Bot image selection popup -->
 		<div id="imagepopup">
-		<div id="hidePopupButton"><button onclick="hidePopup('imagepopup'); showPopup('popup');"></button></div><br />
+		<div id="hidePopupButton"><button onclick="hidePopup('imagepopup'); showPopup('popup');" style="background-image: url('/static/back-128.png');"></button></div><br />
 				<div id="imagepopupcontainer">
 				<!-- Content added by JS -->
 				</div>
 		</div>
+		
+		<div id="profilepopup">
+		{{if .ActiveBot}}
+		<div id="hidePopupButton"><button onclick="hidePopup('profilepopup')"></button></div><br />
+		<img id="profileimage" src="{{.ActiveBot.Image}}"/>
+		<br /><p id="profilename">{{.ActiveBot.Name}}({{years .ActiveBot.Birthdate}})</p>
+		{{end}}
+		</div>
+		
+		<div id="invisibleDismissContainer"></div>
 		
    </body>
 </html>

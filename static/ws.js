@@ -124,7 +124,7 @@ var imageListDidLoad = -1;
 		var contentAr = document.getElementsByClassName("content");
 		var content = contentAr[0];
 		
-		if (popupDidLoad == false) {
+		if (popupDidLoad == false && id == 'popup') {
 			popupDidLoad = true;
 			//Initialize picture and name for bot creation
 			genName();
@@ -149,6 +149,11 @@ var imageListDidLoad = -1;
 		content.style["filter"] = "url(#blur-filter)";
 		content.style["-webkit-filter"] = "blur(3px)";
 		content.style["filter"] = "blur(3px)";
+		
+		//Click to dismiss
+		leave = document.getElementById("invisibleDismissContainer");
+		leave.style["visibility"] = "visible";
+		leave.setAttribute('onclick','hidePopup("'+id+'")');
 	}
 	
 	function hidePopup(id) {
@@ -171,6 +176,10 @@ var imageListDidLoad = -1;
 		//Change background (remove blur)
 		content.style["filter"] = "";
 		content.style["-webkit-filter"] = "";
+		
+		//Hide Click to dismiss
+		leave = document.getElementById("invisibleDismissContainer");
+		leave.style["visibility"] = "hidden";
 	}
 	
 	function showChangeImagePopup() {
