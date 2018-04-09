@@ -145,61 +145,52 @@ func getImages(res http.ResponseWriter, req *http.Request) {
 }
 
 type Params struct {
-	Name  string `schema:"nameID"`
-	Image string `schema:"imageID"`
+	Name  int       `schema:"nameID"`
+	Image int       `schema:"imageID"`
+	Sex   db.Gender `schema:"sex"`
 }
 
 var decoder = schema.NewDecoder()
 
 func createBot(res http.ResponseWriter, req *http.Request) {
-	err7 := req.ParseForm()
-	if err7 != nil {
-		// Handle error
+	err := req.ParseForm()
+	if err != nil {
+		log.Println("error parsing form:", err)
+		http.Error(res, "invalid request", http.StatusBadRequest)
+		return
 	}
 
 	var params Params
 
 	// r.PostForm is a map of our POST form values
-	err6 := decoder.Decode(&params, req.PostForm)
-	if err6 != nil {
-		// Handle error
-	}
-
-	log.Printf("%d\n", params.Name)
-	log.Printf("%d\n", params.Image)
-
-	nameID, err1 := strconv.Atoi(params.Name)
-	if err1 != nil {
-		http.Error(res, "invalid name id", http.StatusBadRequest)
+	err = decoder.Decode(&params, req.PostForm)
+	if err != nil {
+		log.Println("error decoding form:", err)
+		http.Error(res, "invalid request", http.StatusBadRequest)
 		return
 	}
-	name, err2 := db.GetName(nameID)
-	if err2 != nil {
+	name, err := db.GetName(params.Name)
+	if err != nil {
 		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
 		log.Println("error loading name")
 		return
 	}
 
-	imageID, err3 := strconv.Atoi(params.Image)
-	if err3 != nil {
-		http.Error(res, "invalid image id", http.StatusBadRequest)
-		return
-	}
-	image, err4 := db.GetImage(imageID)
-	if err4 != nil {
+	image, err := db.GetImage(params.Image)
+	if err != nil {
 		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
 		log.Println("error loading image")
 		return
 	}
 
-	err5 := db.CreateBot(&db.Bot{
+	err = db.CreateBot(&db.Bot{
 		Name:   name.Text,
 		Image:  image.Path,
-		Gender: db.Female,
+		Gender: params.Sex,
 		User:   GetUserFromRequest(req).ID,
 	})
-	if err5 != nil {
-		http.Error(res, err5.Error(), http.StatusInternalServerError)
+	if err != nil {
+		http.Error(res, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	http.Redirect(res, req, "/", http.StatusSeeOther)
