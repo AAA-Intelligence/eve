@@ -21,26 +21,32 @@
     background: rgba(100,100,100,0.4); 
 }
 
+body{
+	margin:0;
+}
+
 .content {
-	position: absolute;
-	height: 85%;
-	width: 86%;
-	margin: 4% 7% 6% 7%;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	/*margin: 4% 7% 6% 7%;*/
 	background-color: #F4F4F4;
 	padding: 0;
 	background-color: #F4F4F4;
 	box-shadow: 10px 10px 40px rgba(100, 100, 100, 0.4);
-	border-radius: 8px;
-	float: left;
+	/*border-radius: 8px;
+	float: left;*/
 	box-sizing: border-box;
 }
 
+/*
 @media only screen and (max-width: 1160px) {
 	.content {
 		width: 98%;
 		margin: 50px 0 80px 0;
 	}
 }
+*/
 
 .contentReg {
 	position: absolute;
@@ -60,7 +66,7 @@
 	height: 100%;
 	margin: 0 auto;
 	float: left;
-	border-radius: 0 8px 8px 0;
+	/*border-radius: 0 8px 8px 0;*/
 }
 
 .topBar {
@@ -73,7 +79,7 @@
 	overflow: hidden;
 	z-index: 500;
 	position: relative;
-	border-radius: 8px 0 0 0;
+	/*border-radius: 8px 0 0 0;*/
 	
 	/*Disable text highlighting*/
 	-webkit-touch-callout: none; /* iOS Safari */
@@ -94,7 +100,7 @@
 	overflow: hidden;
 	z-index: 500;
 	position: relative;
-	border-radius: 0 8px 0 0;
+	/*border-radius: 0 8px 0 0;*/
 	
 	/*Disable text highlighting*/
 	-webkit-touch-callout: none; /* iOS Safari */
@@ -291,7 +297,7 @@ p.user::after {
 	float: left;
 	width: 25%;
 	height: 98%;
-	border-radius: 8px 0 0 8px;
+	/*border-radius: 8px 0 0 8px;*/
 	white-space: nowrap;
 	overflow: hidden;
 	
