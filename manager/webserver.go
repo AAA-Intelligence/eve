@@ -1,16 +1,15 @@
 package manager
 
 import (
-	"fmt"
 	"html/template"
 	"log"
+	"math/rand"
 	"net/http"
 	"strconv"
-
+	"encoding/json"
 	"github.com/AAA-Intelligence/eve/manager/bots"
-
+	"github.com/gorilla/schema"
 	"github.com/AAA-Intelligence/eve/db"
-	lorem "github.com/drhodes/golorem"
 )
 
 // indexHandler serves HTML index page
@@ -82,26 +81,129 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// createBot creates a new bot that the user can talk to
-// the bot data is saved in the database with db.CreateBot(...)
-func createBot(w http.ResponseWriter, r *http.Request) {
-	user := GetUserFromRequest(r)
-	if user == nil {
-		http.Error(w, "unauthorized", http.StatusUnauthorized)
-		return
-	}
-	err := db.CreateBot(&db.Bot{
-		Name:   lorem.Word(3, 10),
-		Image:  "hässlich.png",
-		Gender: db.Female,
-		User:   user.ID,
-	})
+func getRandomName(res http.ResponseWriter, req *http.Request) {
+
+	sex := req.URL.Query().Get("sex")
+	sexID, err := strconv.Atoi(sex)
 	if err != nil {
-		fmt.Println("error creating bot:", err)
-		http.Error(w, "cannot create bot", http.StatusInternalServerError)
+		http.Error(res, "invalid sex", http.StatusBadRequest)
 		return
 	}
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	names, err := db.GetNames(sexID)
+	if err != nil || len(*names) < 1 {
+		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error loading names")
+		return
+	}
+
+	res.Header().Set("Content-Type", "application/json")
+    res.WriteHeader(http.StatusCreated)
+    json.NewEncoder(res).Encode((*names)[rand.Intn(len(*names))])
+	
+}
+
+
+func getRandomImage(res http.ResponseWriter, req *http.Request) {
+	sex := req.URL.Query().Get("sex")
+	sexID, err := strconv.Atoi(sex)
+	if err != nil {
+		http.Error(res, "invalid sex", http.StatusBadRequest)
+		return
+	}
+	images, err := db.GetImages(sexID)
+	if err != nil || len(*images) < 1 {
+		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error loading names")
+		return
+	}
+
+	res.Header().Set("Content-Type", "application/json")
+    res.WriteHeader(http.StatusCreated)
+    json.NewEncoder(res).Encode((*images)[rand.Intn(len(*images))])
+	
+}
+
+func getImages(res http.ResponseWriter, req *http.Request) {
+	sex := req.URL.Query().Get("sex")
+	sexID, err := strconv.Atoi(sex)
+	if err != nil {
+		http.Error(res, "invalid sex", http.StatusBadRequest)
+		return
+	}
+	images, err := db.GetImages(sexID)
+	if err != nil || len(*images) < 1 {
+		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error loading names")
+		return
+	}
+
+	res.Header().Set("Content-Type", "application/json")
+    res.WriteHeader(http.StatusCreated)
+    json.NewEncoder(res).Encode((*images))
+	
+}
+
+type Params struct {
+    Name  string `schema:"nameID"`
+    Image string `schema:"imageID"`
+}
+var decoder = schema.NewDecoder()
+
+func createBot(res http.ResponseWriter, req *http.Request) {
+	err7 := req.ParseForm()
+    if err7 != nil {
+        // Handle error
+    }
+
+    var params Params
+
+	
+
+    // r.PostForm is a map of our POST form values
+    err6 := decoder.Decode(&params, req.PostForm)
+    if err6 != nil {
+        // Handle error
+	}
+	
+	log.Printf("%d\n",params.Name)
+	log.Printf("%d\n",params.Image)
+
+	nameID, err1 := strconv.Atoi(params.Name)
+	if err1 != nil {
+		http.Error(res, "invalid name id", http.StatusBadRequest)
+		return
+	}
+	name, err2 := db.GetName(nameID)
+	if err2 != nil {
+		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error loading name")
+		return
+	}
+
+	imageID, err3 := strconv.Atoi(params.Image)
+	if err3 != nil {
+		http.Error(res, "invalid image id", http.StatusBadRequest)
+		return
+	}
+	image, err4 := db.GetImage(imageID)
+	if err4 != nil {
+		http.Error(res, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		log.Println("error loading image")
+		return
+	}
+
+
+	err5 := db.CreateBot(&db.Bot{
+		Name:   name.Text,
+		Image:  image.Path,
+		Gender: db.Female,
+		User:   GetUserFromRequest(req).ID,
+	})
+	if err5 != nil {
+		http.Error(res, err5.Error(), http.StatusInternalServerError)
+		return
+	}
+	http.Redirect(res, req, "/", http.StatusSeeOther)
 }
 
 // if the webserver is shut down, all bot instances are killed
@@ -130,6 +232,9 @@ func StartWebServer(host string, httpPort int) {
 
 	mux.HandleFunc("/", basicAuth(indexHandler))
 	mux.HandleFunc("/createBot", basicAuth(createBot))
+	mux.HandleFunc("/getRandomName", basicAuth(getRandomName))
+	mux.HandleFunc("/getRandomImage", basicAuth(getRandomImage))
+	mux.HandleFunc("/getImages", basicAuth(getImages))
 	mux.HandleFunc("/ws", basicAuth(webSocket))
 
 	// handle static files like css

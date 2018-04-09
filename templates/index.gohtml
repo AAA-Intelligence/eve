@@ -3,6 +3,7 @@
    <head>
         <title>EVE</title>
         <link rel="stylesheet" href="/static/style.css">
+		<link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
         <script type="text/javascript" src="/static/ws.js"></script>
 		<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="blur-svg">
 			<defs>
@@ -17,23 +18,21 @@
 		<div class="chat-list">
 			<div class="topBar">
 			<div id="title">
-				EVE - Datingbots
+				EVE - Datingassistance
 			</div>
 			<div id="username">
 				{{.User.Name}} (Logout)
 			</div>
 			<div id="newBot">
-				<form method="post" action="">
-                <input id="newBotButton" onclick="showPopup()" value=""/>
+                <button id="newBotButton" onclick="showPopup('popup')" value=""></button>
 			</div>
-            </form>
 			</div>
 			
         {{if .ActiveBot}}
             <div class="bot-list"><ul>
             {{range $bot := .Bots}}
                 <li class="bot" id="{{if eq $.ActiveBot.ID $bot.ID}}bot-active{{end}}" botID="{{$bot.ID}}">
-                    <a href="/?bot={{$bot.ID}}"><img src="http://via.placeholder.com/150x150"> {{$bot.Name}}</a>
+                    <a href="/?bot={{$bot.ID}}"><img src="{{$bot.Image}}"> {{$bot.Name}}</a>
                 </li>
             {{end}}
         {{end}}
@@ -42,8 +41,8 @@
         {{if .ActiveBot}}
         <div class="chat">
             <div class="topBar2">
-			<img src="http://via.placeholder.com/150x150">
-            <div id="botname">Bot: <b>{{.ActiveBot.Name}}</b></div>
+			<img src="{{.ActiveBot.Image}}">
+            <div id="botname">Chatting with: <b>{{.ActiveBot.Name}}</b></div>
 			</div>
             <div id="log">
                 {{range $msg := .Messages}}
@@ -62,14 +61,31 @@
 		
         {{end}}
 		
+		<!-- Bot creation popup -->
 		<div id="popup">
-		<h1>New chat.</h1>
-		<div id="hidePopupButton"><button onclick="hidePopup()">hide</button></div>
+		<!--<h1>New chat.</h1>-->
+		<div id="hidePopupButton"><button onclick="hidePopup('popup')"></button></div>
 		<div id="">
-				<form method="post" action="/createBot">
-                <input id="newBotButton" type="submit" value=""/>
-				</form>
+				<br /><div class="newbotdesc">Click on the picture to change your partner.</div><br /><br />
+				<button id="imageinput" onclick="showChangeImagePopup()" value=""></button>
+				
+				<br /><p id="generatedName">Lara<button onclick="genName()"></button></p>
+				
+				<div class="switch-field"><input type="radio" id="switch_left" name="gender" value="f" onclick="onSexChange()" checked />
+				<label for="switch_left">Female</label>
+				<input type="radio" id="switch_right" name="gender" value="m" onclick="onSexChange()" />
+				<label for="switch_right">Male</label></div><br />
+				
+                <br /><button class="button" onclick="submitBotCreation()">Let's go!</button>
 		</div>
+		</div>
+		
+		<!-- Bot image selection popup -->
+		<div id="imagepopup">
+		<div id="hidePopupButton"><button onclick="hidePopup('imagepopup'); showPopup('popup');"></button></div><br />
+				<div id="imagepopupcontainer">
+				<!-- Content added by JS -->
+				</div>
 		</div>
 		
    </body>

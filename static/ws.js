@@ -111,10 +111,25 @@ window.onload = function () {
 	
 };
 
-	function showPopup() {
-		var popup = document.getElementById("popup");
+var sex = 1;
+var picID = 0;
+var nameID = 0;
+
+var popupDidLoad = false;
+var imageListDidLoad = -1;
+
+
+	function showPopup(id) {
+		var popup = document.getElementById(id);
 		var contentAr = document.getElementsByClassName("content");
 		var content = contentAr[0];
+		
+		if (popupDidLoad == false) {
+			popupDidLoad = true;
+			//Initialize picture and name for bot creation
+			genName();
+			genImage();
+		}
 		
 		//Show popup
 		popup.style["visibility"] = "visible";
@@ -136,8 +151,8 @@ window.onload = function () {
 		content.style["filter"] = "blur(3px)";
 	}
 	
-	function hidePopup() {
-		var popup = document.getElementById("popup");
+	function hidePopup(id) {
+		var popup = document.getElementById(id);
 		var contentAr = document.getElementsByClassName("content");
 		var content = contentAr[0];
 		
@@ -156,4 +171,130 @@ window.onload = function () {
 		//Change background (remove blur)
 		content.style["filter"] = "";
 		content.style["-webkit-filter"] = "";
+	}
+	
+	function showChangeImagePopup() {
+		hidePopup('popup');
+		showPopup('imagepopup');
+		
+		
+		if (imageListDidLoad == -1 || imageListDidLoad != sex) {
+		var imagesarea = document.getElementById("imagepopupcontainer");
+		
+		imagesarea.innerHTML = "";
+		
+		//Fetch JSON of all images
+		var xmlhttp = new XMLHttpRequest();
+		var url = `./getImages?sex=`+sex;
+		
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 201) {
+				var result = JSON.parse(this.responseText);
+				
+				//TESTING: uncomment the following line and comment the if-statements
+				//result = JSON.parse('[{"ImageID":"0","Path":"https://i.imgur.com/ru8D0SC.jpg"},{"ImageID":"1","Path":"https://i.imgur.com/WWQrYvd.jpg"},{"ImageID":"3","Path":"https://i.imgur.com/M7iNM4D.png"}]');
+				
+				for(key in result) {
+					if(result.hasOwnProperty(key)) {
+						var item = document.createElement("button");
+						item.setAttribute('onclick','setImage('+result[key].ImageID+', "'+result[key].Path+'")');
+						item.style["background-image"] = "url("+result[key].Path+")";
+						imagesarea.appendChild(item);
+					}
+				}
+				
+			}
+		};
+		xmlhttp.open("GET", url, true);
+		xmlhttp.send();
+		imageListDidLoad = sex;
+		}
+	}
+	
+	function genName() {
+		var xmlhttp = new XMLHttpRequest();
+		var url = `./getRandomName?sex=`+sex;
+		
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 201) {
+				var result = JSON.parse(this.responseText);
+				setNameOnCreation(result.Text);
+				nameID = result.ID;
+			}
+		};
+		xmlhttp.open("GET", url, true);
+		xmlhttp.send();
+	}
+	
+	function genImage() {
+		var xmlhttp = new XMLHttpRequest();
+		var url = `./getRandomImage?sex=`+sex;
+		
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 201) {
+				var result = JSON.parse(this.responseText);
+				setImage(result.ImageID, result.Path);
+			}
+		};
+		xmlhttp.open("GET", url, true);
+		xmlhttp.send();
+	}
+	
+	function setNameOnCreation(newName) {
+		var namefield = document.getElementById("generatedName");
+		namefield.innerHTML = newName+"<button onclick='genName()'></button>";		
+	}
+	
+	function setImage(id, url) {
+		picID = id;
+		var imagebutton = document.getElementById("imageinput");
+		imagebutton.style["background-image"] = "url("+url+")";
+		hidePopup("imagepopup");
+		showPopup("popup");
+	}
+	
+	function fetchSex() {
+		//Fetch selected sex
+		if (document.getElementById("switch_left").checked) {
+			sex = 1;
+		} else {
+			sex = 0;
+		}
+	}
+	
+	function onSexChange() {
+		sexOld = sex;
+		fetchSex();
+		if (sexOld != sex) {
+		genName();
+		genImage();
+		}
+	}
+	
+	function submitBotCreation() {
+		post("/createBot"/*"http://httpbin.org/post"*/, {nameID: nameID, imageID: picID, sex: sex});
+	}
+	
+	function post(path, params, method) {
+		method = method || "post"; // Set method to post by default if not specified.
+		
+		// The rest of this code assumes you are not using a library.
+		// It can be made less wordy if you use one.
+		var form = document.createElement("form");
+		form.setAttribute("method", method);
+		form.setAttribute("action", path);
+		
+		for(var key in params) {
+			if(params.hasOwnProperty(key)) {
+				var hiddenField = document.createElement("input");
+				hiddenField.setAttribute("type", "hidden");
+				hiddenField.setAttribute("name", key);
+				hiddenField.setAttribute("value", params[key]);
+				
+				form.appendChild(hiddenField);
+			}
+		}
+		
+		document.body.appendChild(form);
+		form.submit();
 	}
