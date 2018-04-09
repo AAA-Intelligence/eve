@@ -16,12 +16,12 @@ CREATE TABLE IF NOT EXISTS 'Image' (
 	'Gender' INTEGER NOT NULL,
 	'Path' TEXT NOT NULL
 );
-INSERT INTO 'Image' VALUES (1,1,'/static/images/test1.png'),
-(2,1,'/static/images/test2.png'),
-(3,1,'/static/images/test3.png'),
-(4,0,'/static/images/test4.png'),
-(5,0,'/static/images/test5.png'),
-(6,0,'/static/images/test5.png');
+INSERT INTO 'Image' VALUES (1,1,'/static/botimages/image1.jpg'),
+(2,1,'/static/botimages/image2.jpg'),
+(3,1,'/static/botimages/image3.png'),
+(4,0,'/static/botimages/image4.png'),
+(5,0,'/static/botimages/image5.png'),
+(6,0,'/static/botimages/image6.png');
 
 CREATE TABLE IF NOT EXISTS 'Name' (
 	'NameID'	INTEGER PRIMARY KEY AUTOINCREMENT,

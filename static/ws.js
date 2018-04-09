@@ -117,6 +117,8 @@ var sex = 1;
 var picID = 0;
 var nameID = 0;
 
+var imageListDidLoad = -1;
+
 
 	function showPopup(id) {
 		var popup = document.getElementById(id);
@@ -169,7 +171,11 @@ var nameID = 0;
 		hidePopup('popup');
 		showPopup('imagepopup');
 		
+		
+		if (imageListDidLoad == -1 || imageListDidLoad != sex) {
 		var imagesarea = document.getElementById("imagepopupcontainer");
+		
+		imagesarea.innerHTML = "";
 		
 		//Fetch JSON of all images
 		var xmlhttp = new XMLHttpRequest();
@@ -180,13 +186,13 @@ var nameID = 0;
 				var result = JSON.parse(this.responseText);
 				
 				//TESTING: uncomment the following line and comment the if-statements
-				//result = JSON.parse('{"images":[{"id":"0","Path":"https://i.imgur.com/ru8D0SC.jpg"},{"id":"1","Path":"https://i.imgur.com/WWQrYvd.jpg"},{"id":"3","Path":"https://i.imgur.com/M7iNM4D.png"}]}');
+				//result = JSON.parse('[{"ImageID":"0","Path":"https://i.imgur.com/ru8D0SC.jpg"},{"ImageID":"1","Path":"https://i.imgur.com/WWQrYvd.jpg"},{"ImageID":"3","Path":"https://i.imgur.com/M7iNM4D.png"}]');
 				
-				for(key in result.images) {
-					if(result.images.hasOwnProperty(key)) {
+				for(key in result) {
+					if(result.hasOwnProperty(key)) {
 						var item = document.createElement("button");
-						item.setAttribute('onclick','setImage('+result.images[key].ID+', '+result.images[key].Path+')');
-						item.style["background-image"] = "url("+result.images[key].Path+")";
+						item.setAttribute('onclick','setImage('+result[key].ImageID+', "'+result[key].Path+'")');
+						item.style["background-image"] = "url("+result[key].Path+")";
 						imagesarea.appendChild(item);
 					}
 				}
@@ -195,6 +201,8 @@ var nameID = 0;
 		};
 		xmlhttp.open("GET", url, true);
 		xmlhttp.send();
+		imageListDidLoad = sex;
+		}
 	}
 	
 	function genName() {
@@ -206,6 +214,20 @@ var nameID = 0;
 				var result = JSON.parse(this.responseText);
 				setNameOnCreation(result.Text);
 				nameID = result.ID;
+			}
+		};
+		xmlhttp.open("GET", url, true);
+		xmlhttp.send();
+	}
+	
+	function genImage() {
+		var xmlhttp = new XMLHttpRequest();
+		var url = `./getRandomImage?sex=`+sex;
+		
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 201) {
+				var result = JSON.parse(this.responseText);
+				setImage(result.imageID, result.Path);
 			}
 		};
 		xmlhttp.open("GET", url, true);
@@ -235,13 +257,16 @@ var nameID = 0;
 	}
 	
 	function onSexChange() {
+		sexOld = sex;
 		fetchSex();
+		if (sexOld != sex) {
 		genName();
-		//TODO: + Change picture!
+		genImage();
+		}
 	}
 	
 	function submitBotCreation() {
-		post(/*"/createBot"*/"http://httpbin.org/post", {nameID: nameID, picID: picID, sex: sex});
+		post("/createBot"/*"http://httpbin.org/post"*/, {nameID: nameID, imageID: picID, sex: sex});
 	}
 	
 	function post(path, params, method) {
