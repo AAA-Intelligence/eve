@@ -83,7 +83,7 @@ func (b *botInstance) sendRequest(data MessageData) *BotAnswer {
 // creates new instance of python script that handles message requests
 // if no error occures the bot instance struct is returned
 func newBotInstance() (*botInstance, error) {
-	cmd := exec.Command("python3", "-m", "bot")
+	cmd := exec.Command("python", "-m", "bot")
 
 	writer, err := cmd.StdinPipe()
 	if err != nil {
