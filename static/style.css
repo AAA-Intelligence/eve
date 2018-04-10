@@ -792,10 +792,44 @@ a.buttonSelected {
 		width: 0%;
 		min-width: 0;
 		position: fixed;
-		transition: width 1s, min-width 0.5s;
+		transition: width 0.3s, min-width 0.3s;
 		transition-timing-function: cubic-bezier(0.23, 1.13, 1, 1);
 	}
 	.chat {
 		width: 100%;
+	}
+	
+	#popup {
+		position: fixed;
+		text-align: center;
+		background-color: #F4F4F4;
+		padding: 10px 0 0 0;
+		width: 100%;
+		height: 50%;
+		top: 0;
+		left: 0;
+		z-index: 1000;
+	}
+	#imagepopup {
+		position: fixed;
+		text-align: center;
+		background-color: #F4F4F4;
+		padding: 10px 0 0 0;
+		width: 100%;
+		height: 50%;
+		top: 0;
+		left: 0;
+		z-index: 1000;
+	}
+	#profilepopup {
+		position: fixed;
+		text-align: center;
+		background-color: #F4F4F4;
+		padding: 10px 0 0 0;
+		width: 100%;
+		height: 50%;
+		top: 0;
+		left: 0;
+		z-index: 1000;
 	}
 }
