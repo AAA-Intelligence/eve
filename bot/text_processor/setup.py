@@ -6,7 +6,7 @@ from opennmt.config import load_config, load_model
 
 __dir = path.dirname(__file__)
 config_path = path.join(__dir, 'config.yml')
-model_file = path.join(__dir, 'models', 'transformer.py')
+model_file = path.join(__dir, 'models', 'nmt_small.py')
 
 config = load_config([config_path])
 
