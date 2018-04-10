@@ -51,9 +51,12 @@ class Response(NamedTuple):
     pattern: Optional[PatternCategory]
     mood: float
     affection: float
+    mood_bot: float
+    affection_bot: float
 
-    def __str__(self):
+    """def __str__(self):
         return "%s; MOOD: %f, AFFECTION: %f" % (self.text, self.mood, self.affection)
+"""
 
 
 def parse_request(json_data: str):

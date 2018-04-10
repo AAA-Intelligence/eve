@@ -23,11 +23,9 @@ def handle_request(request: Request) -> Response:
 
     """
         mood, affection : value between -1 and 1 indicating a positive or negative sentiment
-        analyzed_* : PredictionResult containing:
-            - Mode: Affection or Mood
-            - Probability: A value > 0.5 indicating the certainty with which the neural network detected a specific category 
+       
     """
-    analyzed_mood, mood, analyzed_affection, affection = analyze(request.text)
+    mood_message, affection_message, mood_bot, affection_bot = analyze(request)
     # TODO is analyzed mood/affection (PredictionResult) necessary
     result = answer_for_pattern(request)
     if result:
@@ -35,8 +33,9 @@ def handle_request(request: Request) -> Response:
     else:
         # No pattern found, fall back to generative model
         pattern = None
-        answer = generate_answer(request, mood, affection)
-    response = Response(answer, pattern, mood, affection)
+        answer = generate_answer(request, mood_message, affection_message)
+    response = Response(answer, pattern, mood_message, affection_message,
+                        mood_bot, affection_bot)
     logger.debug(response)
     return response
 
@@ -103,6 +102,7 @@ def run_loop():
             request = parse_request(json_data)
             logger.info('Handling request: {}'.format(request))
             response = handle_request(request)
+            logger.debug(response.mood_bot, response.affection_bot)
             print(json.dumps(response._asdict()))
         except EOFError:
             # Stdin pipe has been closed by Go

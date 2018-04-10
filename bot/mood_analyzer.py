@@ -1,14 +1,29 @@
+from typing import Tuple
+
+from bot.data import Request
+from bot.logger import logger
 from bot.model_definitions import Mode, MoodCategory, AffectionCategory
 from bot.pattern_recognizer import analyze_input
 
 
 def fit_in_range(sign: int, probability: float) -> float:
-    # Fits probabilites between 0.5 and 1 into the range of [-1,1] depending on the result
+    """
+    Fits probabilities between 0.5 and 1 into the range of [-1,1] depending on the result
+
+    :param sign: sign is equivalent to mood or affection either positive or negative
+    :param probability: the probability with which the bot determined either mood or affection
+    :return: returns a value between -1 and 1 indicating a certain mood or affection
+    """
+
     return sign * (2 * probability - 1)
 
 
-def analyze(text: str):
+def analyze(request: Request) -> Tuple[float, float, float, float]:
     # TODO determine how which percentages influence mood and affection
+
+    # input message of the user passed by a request
+    text = request.text
+
     # Estimate mood through the neural network
     analyzed_mood = analyze_input(text, Mode.MOODS)
     if analyzed_mood:
@@ -19,6 +34,12 @@ def analyze(text: str):
         # return 0 if no certain affection was found
         mood = 0.0
 
+    mood_bot = request.mood
+
+    # TODO rethink e.g. function hyperbel like form towards 1
+    mood_bot += 0.1 * mood
+    if mood_bot > 1:
+        mood_bot = 1.0
     # Estimate the affection through the neural network
     analyzed_affection = analyze_input(text, Mode.AFFECTIONS)
     if analyzed_affection:
@@ -28,4 +49,12 @@ def analyze(text: str):
     else:
         # return 0 if no certain affection was found
         affection = 0.0
-    return (analyzed_mood, mood, analyzed_affection, affection)
+    affection_bot = request.affection
+    affection_bot += 0.1 * affection
+    if affection_bot > 1:
+        affection_bot = 1.0
+
+    logger.debug("MOOD: %f -> %f, AFFECTION: %f -> %f" % (
+        request.mood, mood_bot, request.affection, affection_bot))
+
+    return (mood, affection, mood_bot, affection_bot)
