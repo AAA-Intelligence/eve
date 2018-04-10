@@ -17,6 +17,7 @@
         <div class="content">
 		<div class="chat-list">
 			<div class="topBar">
+			<img class="sidebarbutton" src="static/side-100.png" onclick="hideSidebar()"/>
 			<div id="title">
 				EVE - Datingassistance
 			</div>
@@ -41,6 +42,7 @@
         {{if .ActiveBot}}
         <div class="chat">
             <div class="topBar2">
+			<img class="sidebarbutton" src="static/side-100.png" onclick="showSidebar()"/>
 			<img src="{{.ActiveBot.Image}}" onclick="showPopup('profilepopup')">
             <div id="botname">Chatting with: <b style="cursor:pointer;" onclick="showPopup('profilepopup')">{{.ActiveBot.Name}}</b></div>
 			</div>
@@ -90,7 +92,10 @@
 		{{if .ActiveBot}}
 		<div id="hidePopupButton"><button onclick="hidePopup('profilepopup')"></button></div><br />
 		<img id="profileimage" src="{{.ActiveBot.Image}}"/>
-		<br /><p id="profilename">{{.ActiveBot.Name}}({{years .ActiveBot.Birthdate}})</p>
+		<br /><p id="profilename">{{.ActiveBot.Name}}<img src="static/sex_{{.ActiveBot.Gender}}-24.png"/></p>
+		<table id="profiletable">
+		<tr><td>Age</td><td>{{years .ActiveBot.Birthdate}} years old</td></tr>
+		</table>
 		{{end}}
 		</div>
 		

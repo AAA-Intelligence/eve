@@ -39,14 +39,6 @@ body{
 	box-sizing: border-box;
 }
 
-/*
-@media only screen and (max-width: 1160px) {
-	.content {
-		width: 98%;
-		margin: 50px 0 80px 0;
-	}
-}
-*/
 
 .contentReg {
 	position: absolute;
@@ -124,6 +116,16 @@ body{
 	height: 42px;
 	cursor: pointer;
 	margin-right: 10px;
+}
+
+.topBar2 .sidebarbutton, .topBar .sidebarbutton {
+	visibility: hidden;
+	display: none;
+	width: 0;
+	height: 0;
+	padding: 0;
+	margin: 0;
+	border-radius: 0;
 }
 
 .topBarReg {
@@ -471,7 +473,7 @@ form{
 	padding: 10px 60px 10px 60px;
 	min-width: 300px;
 	width: calc(25% - 120px);
-	min-height: 300px;
+	min-height: 425px;
 	height: 40%;
 	left: 37.5%;
 	z-index: 1000;
@@ -486,6 +488,18 @@ form{
 						supported by Chrome and Opera */
 }
 
+#profilename {
+	display: block;
+	font: 400 35px 'Pacifico', Helvetica, sans-serif;
+	margin: 0px;
+}
+
+#profilename img {
+	margin-left: 10px;
+	width: 24px;
+	height: 24px;
+}
+
 #profileimage {
 	padding: 5px;
 	border-radius: 50%;
@@ -496,6 +510,16 @@ form{
 	background-position: center;
 	background-size: 100%;
 	border: 0px;
+}
+
+#profiletable {
+	width: 100%;
+}
+
+#profiletable td {
+	width: 50%;
+	color: #106A59; /* Second Color */
+	font-weight: bold;
 }
 
 #hidePopupButton {
@@ -648,7 +672,7 @@ a.buttonSelected {
 	opacity: 0.5;
 }
 
-#generatedName, #profilename {
+#generatedName {
 	display: block;
 	font: 400 35px 'Pacifico', Helvetica, sans-serif;
 	margin-top: 0px;
@@ -740,4 +764,37 @@ a.buttonSelected {
 	margin: 0;
 	visibility: hidden;
 	z-index: 505;
+}
+
+
+
+/* SMALL SCREENS */
+@media only screen and (max-width: 1080px) {
+	.topBar {
+		visibility: hidden;
+	}
+	.bot-list {
+		visibility: hidden;
+	}
+	.topBar2 .sidebarbutton, .topBar .sidebarbutton {
+		visibility: visible;
+		width: 30px;
+		height: 20px;
+		padding: 10px;
+		padding-right: 15px;
+		margin: 0;
+		display: block;
+		float: left;
+		cursor: pointer;
+	}
+	.chat-list {
+		width: 0%;
+		min-width: 0;
+		position: fixed;
+		transition: width 1s, min-width 1s;
+		transition-timing-function: cubic-bezier(0.23, 1.13, 1, 1);
+	}
+	.chat {
+		width: 100%;
+	}
 }

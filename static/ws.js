@@ -307,3 +307,37 @@ var imageListDidLoad = -1;
 		document.body.appendChild(form);
 		form.submit();
 	}
+	
+	function showSidebar() {
+		var leftWidthElementAr = document.getElementsByClassName("chat-list");
+		var leftWidthElement = leftWidthElementAr[0];
+		var leftBarAr = document.getElementsByClassName("topBar");
+		var leftBar = leftBarAr[0];
+		var leftListAr = document.getElementsByClassName("bot-list");
+		var leftList = leftListAr[0];
+		
+		leftWidthElement.style["width"] = "60%";
+		leftWidthElement.style["min-width"] = "325px";
+		leftWidthElement.style["z-index"] = "1000";
+		leftWidthElement.style["background-color"] = "white";
+		leftBar.style["visibility"] = "visible";
+		leftList.style["visibility"] = "visible";
+	}
+	
+	function hideSidebar() {
+		var leftWidthElementAr = document.getElementsByClassName("chat-list");
+		var leftWidthElement = leftWidthElementAr[0];
+		var leftBarAr = document.getElementsByClassName("topBar");
+		var leftBar = leftBarAr[0];
+		var leftListAr = document.getElementsByClassName("bot-list");
+		var leftList = leftListAr[0];
+		
+		leftWidthElement.style["width"] = "";
+		leftWidthElement.style["min-width"] = "";
+		setTimeout(function() {
+			leftWidthElement.style["z-index"] = "";
+			leftWidthElement.style["background-color"] = "";
+			leftBar.style["visibility"] = "";
+			leftList.style["visibility"] = "";
+		},500);
+	}
