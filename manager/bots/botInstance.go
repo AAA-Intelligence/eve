@@ -44,10 +44,12 @@ type MessageData struct {
 
 // BotAnswer is the answer returned by the bot instance
 type BotAnswer struct {
-	Text      string  `json:"text"`
-	Pattern   *int    `json:"pattern,omitempty"`
-	Mood      float64 `json:"mood"`
-	Affection float64 `json:"affection"`
+	Text         string  `json:"text"`
+	Pattern      *int    `json:"pattern,omitempty"`
+	Mood         float64 `json:"mood"`
+	Affection    float64 `json:"affection"`
+	BotMood      float64 `json:"mood_bot"`
+	BotAffection float64 `json:"affection_bot"`
 }
 
 // sends request to bot instance, waits for the response and returns it.

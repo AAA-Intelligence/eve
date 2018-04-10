@@ -8,6 +8,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"strconv"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -541,4 +542,25 @@ func (bot *Bot) GetFavoriteColor() string {
 		return "weiß"
 	}
 	return name
+}
+
+// UpdateContext updates the bots fields affection and mood in the database and saves the value in the struct
+func (bot *Bot) UpdateContext(affection, mood float64) error {
+	bot.Mood, bot.Affection = mood, affection
+	result, err := dbConnection.db.Exec(`
+		UPDATE Bot
+		SET	Affection = $1,
+			Mood = $2
+		WHERE BotID = $3`, bot.Affection, bot.Mood, bot.ID)
+	if err != nil {
+		return err
+	}
+	if rows, err := result.RowsAffected(); err == nil {
+		if rows < 1 {
+			return errors.New("not bot with id " + strconv.Itoa(bot.ID) + " found")
+		}
+	} else {
+		return err
+	}
+	return nil
 }

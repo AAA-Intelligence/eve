@@ -15,7 +15,6 @@ var botPool *bots.BotPool
 // All messages are stored in the database in the Message table.
 // If any error occurs the string "Ok" is returned
 func handleMessage(request MessageRequest) string {
-
 	bot, err := db.GetBot(request.Bot, request.User.ID)
 	if err != nil {
 		log.Println("error loading bot data from db:", err)
@@ -35,6 +34,9 @@ func handleMessage(request MessageRequest) string {
 		MotherName:      bot.GetMotherName(),
 		MotherAge:       bot.MotherAge,
 	})
+	if err = bot.UpdateContext(botAnswer.BotAffection, botAnswer.BotMood); err != nil {
+		log.Println("error updating bot:", err)
+	}
 
 	// store sent messages
 	err = db.StoreMessages(request.User.ID, bot.ID, []db.Message{
