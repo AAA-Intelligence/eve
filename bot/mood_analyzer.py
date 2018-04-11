@@ -69,7 +69,7 @@ def analyze(request: Request) -> Tuple[float, float, float, float]:
         affection_message = stretch_prob(affection_probability)
 
         # apply message to affection
-        affection_bot += sign * affection_message * IMPACT_FACTOR
+        affection_bot = affection_bot + sign * affection_message * IMPACT_FACTOR
         affection_bot = tanh(2 * affection_bot)
         if affection_bot > 1:
             affection_bot = 1.0

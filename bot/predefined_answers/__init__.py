@@ -33,10 +33,16 @@ def answers_for_category(category: PatternCategory, request: Request) -> List[
     if category in cache:
         return cache[category]
     if category.name == 'AFFECTION':
-        direction = "POS" if request.affection > 0 else "NEG"
+        if request.affection >= 0:
+            direction = "POS"
+        else:
+            direction = "NEG"
         p = Path(dir, 'A_%s.txt' % (direction))
     elif category.name == 'MOOD':
-        direction = "POS" if request.mood > 0 else "NEG"
+        if request.mood >= 0:
+            direction = "POS"
+        else:
+            direction = "NEG"
         logger.debug("DIRECTION: %s" % direction)
         p = Path(dir, 'M_%s.txt' % (direction))
     else:
