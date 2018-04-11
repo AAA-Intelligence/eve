@@ -4,6 +4,23 @@
 		sans-serif;
 }
 
+::-webkit-scrollbar {
+    width: 2px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: #eee;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #888;
+}
+::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(100,100,100,0.4); 
+}
+
 .content {
 	position: absolute;
 	height: 85%;
@@ -96,6 +113,7 @@
 	border-radius: 50%;
 	width: 42px;
 	height: 42px;
+	cursor: pointer;
 }
 
 .topBarReg {
@@ -213,6 +231,15 @@ p.user::after {
 	border-bottom-left-radius: 1em 0.5em;
 }
 
+.timestamp{
+	font-size: 11px;
+	text-align: right;
+	width:100%;
+	display: block;
+	padding: 5px 2px 2px 2px;
+	opacity: 0.7;
+}
+
 #title {
 	font-size: 15pt;
 	font-weight: bold;
@@ -239,6 +266,8 @@ p.user::after {
 }
 
 #newBotButton {
+	position: relative;
+	top: 5px;
 	display: block;
 	float: left;
 	width: 42px;
@@ -344,22 +373,120 @@ form{
 
 #popup {
 	position: fixed;
+	text-align: center;
 	background-color: #F4F4F4;
 	box-shadow: 10px 10px 40px rgba(100, 100, 100, 0.4);
 	border-radius: 8px;
 	visibility: hidden;
 	display:none;
-	margin-top: 15%;
-	padding: 20px;
-	width: 25%;
-	min-height: 400px;
-	height: 40%;
+	margin-top: 10%;
+	padding: 10px 60px 10px 60px;
+	min-width: 300px;
+	width: calc(25% - 120px);
+	min-height: 485px;
+	height: 50%;
 	left: 37.5%;
 	z-index: 1000;
+	
+	/*Disable text highlighting*/
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently
+						supported by Chrome and Opera */
 }
 
 #popup h1 {
 	color: #40CDB2; /* Third Color */
+}
+
+#imagepopup {
+	position: fixed;
+	text-align: center;
+	background-color: #F4F4F4;
+	box-shadow: 10px 10px 40px rgba(100, 100, 100, 0.4);
+	border-radius: 8px;
+	visibility: hidden;
+	display:none;
+	margin-top: 10%;
+	padding: 10px 60px 10px 60px;
+	min-width: 300px;
+	width: calc(50% - 120px);
+	height: 50%;
+	left: 25%;
+	z-index: 1000;
+	
+	/*Disable text highlighting*/
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently
+						supported by Chrome and Opera */
+}
+
+#imagepopupcontainer {
+	height: calc(100% - 45px);
+	overflow-y: scroll;
+}
+
+#imagepopupcontainer button {
+	margin: 5px;
+	border-radius: 50%;
+	width: 100px;
+	height: 100px;
+	background-color: #CCCCCC;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 100%;
+	border: 0px;
+	cursor: pointer;
+}
+
+#imagepopupcontainer button:hover {
+	opacity: 0.5;
+}
+
+#profilepopup {
+	position: fixed;
+	text-align: center;
+	background-color: #F4F4F4;
+	box-shadow: 10px 10px 40px rgba(100, 100, 100, 0.4);
+	border-radius: 8px;
+	visibility: hidden;
+	display:none;
+	margin-top: 10%;
+	padding: 10px 60px 10px 60px;
+	min-width: 300px;
+	width: calc(25% - 120px);
+	min-height: 300px;
+	height: 40%;
+	left: 37.5%;
+	z-index: 1000;
+	
+	/*Disable text highlighting*/
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently
+						supported by Chrome and Opera */
+}
+
+#profileimage {
+	padding: 5px;
+	border-radius: 50%;
+	width: 250px;
+	height: 250px;
+	background-color: white;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 100%;
+	border: 0px;
 }
 
 #hidePopupButton {
@@ -376,13 +503,14 @@ form{
 	margin-left: 10px;
 	border: 1px solid #40CDB2; /* Third Color */
 	background-color: #40CDB2; /* Third Color */
-	background-image: url('/static/cancel-128.png');
+	background-image: url('/static/cross-128.png');
 	background-repeat: no-repeat;
 	background-position: top 12px left 12px;
 	background-size: 18px;
 	border-radius: 50%;
 	cursor: pointer;
 	color: white;
+	box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.3);
 }
 
 #hidePopupButton:hover button {
@@ -391,7 +519,7 @@ form{
 
 
 
-/**************************************** Input at registration ****************************************/
+/**************************************** Input at registration & bot creation ****************************************/
 
 .inputcontainer input::-webkit-input-placeholder, .button, .buttonSelected {
 	transition: all 0.3s ease-in-out;
@@ -480,11 +608,127 @@ a.buttonSelected {
 	text-align: center;
 }
 
-.timestamp{
-	font-size: 11px;
-	text-align: right;
-	width:100%;
+.formheadermanual {
+	position: absolute;
+	padding-left: 10px;
+	color: #40CDB2; /* Third Color */
+	font-size: 13px;
+}
+
+.newbotdesc {
+	color: #40CDB2; /* Third Color */
+	font-size: 13px;
+}
+
+#imageinput {
+	padding: 5px;
+	border-radius: 50%;
+	width: 150px;
+	height: 150px;
+	color: white;
+	font-weight: bold;
+	background-color: white;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 100%;
+	border: 0px;
+	cursor: pointer;
+}
+
+#imageinput:hover {
+	opacity: 0.5;
+}
+
+#generatedName, #profilename {
 	display: block;
-	padding: 5px 2px 2px 2px;
-	opacity: 0.7;
+	font: 400 35px 'Pacifico', Helvetica, sans-serif;
+	margin-top: 0px;
+}
+
+#generatedName button {
+	width: 18px;
+	height: 18px;
+	margin-left: 10px;
+	border: 0px;
+	background-color: transparent;
+	background-image: url('/static/refresh-128.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 100%;
+	border-radius: 0%;
+	cursor: pointer;
+}
+
+#generatedName button:hover {
+	background-image: url('/static/refresh-128-h.png');
+}
+
+
+/* By thestizmedia */
+.switch-field {
+	overflow: hidden;
+	padding-left: calc(50% - 180px/2);
+}
+
+.switch-field input {
+	position: absolute !important;
+	clip: rect(0, 0, 0, 0);
+	height: 1px;
+	width: 1px;
+	border: 0;
+	overflow: hidden;
+}
+
+.switch-field label {
+	float: left;
+}
+
+.switch-field label {
+	display: inline-block;
+	width: 60px;
+	background-color: #e4e4e4;
+	color: rgba(0, 0, 0, 0.6);
+	font-size: 14px;
+	font-weight: normal;
+	text-align: center;
+	text-shadow: none;
+	padding: 6px 14px;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	-webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+	-webkit-transition: all 0.1s ease-in-out;
+	-moz-transition:    all 0.1s ease-in-out;
+	-ms-transition:     all 0.1s ease-in-out;
+	-o-transition:      all 0.1s ease-in-out;
+	transition:         all 0.1s ease-in-out;
+}
+
+.switch-field label:hover {
+	cursor: pointer;
+}
+
+.switch-field input:checked + label {
+	background-color: #40CDB2; /* Third Color */
+	color: white;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.switch-field label:first-of-type {
+	border-radius: 4px 0 0 4px;
+}
+
+.switch-field label:last-of-type {
+	border-radius: 0 4px 4px 0;
+}
+/* END By thestizmedia */
+
+#invisibleDismissContainer {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	visibility: hidden;
+	z-index: 505;
 }

@@ -53,5 +53,10 @@ func GenerateRandomString(s int) (string, error) {
 
 // Formats the time struct to hh:mm (e.g. 19:45)
 func formatTime(time *time.Time) string {
-	return fmt.Sprintf("%d:%d", time.Hour(), time.Minute())
+	return fmt.Sprintf("%d:%02d", time.Hour(), time.Minute())
+}
+
+// Returns the number of years that have passed since the given date
+func yearsSince(date *time.Time) int {
+	return int(time.Since(*date).Hours() / float64(24*356))
 }
