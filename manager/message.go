@@ -25,7 +25,7 @@ func handleMessage(request MessageRequest) string {
 		Text:            request.Message,
 		Mood:            bot.Mood,
 		Affection:       bot.Affection,
-		Gender:          int(bot.Gender),
+		Gender:          bot.Gender,
 		Name:            bot.Name,
 		PreviousPattern: nil,
 		Birthdate:       bot.Birthdate.Unix(),

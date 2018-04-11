@@ -410,7 +410,7 @@ type Name struct {
 	Gender int
 }
 
-// GEtNames returns all bots which belong to the given user
+// GetNames returns all bots which belong to the given user
 func GetNames(gender int) (*[]Name, error) {
 	rows, err := dbConnection.db.Query(`
 		SELECT 	*
@@ -437,7 +437,6 @@ func GetNames(gender int) (*[]Name, error) {
 
 // GetName returns all bots which belong to the given user
 func GetName(id int) (*Name, error) {
-
 	name := Name{}
 	err := dbConnection.db.QueryRow(`
 		SELECT 	*
@@ -457,9 +456,8 @@ type Image struct {
 	Path    string
 }
 
-// GetImage returns image object with given id
+// GetImages returns image object with given id
 func GetImages(gender int) (*[]Image, error) {
-
 	rows, err := dbConnection.db.Query(`
 		SELECT 	*
 		FROM Image 
@@ -485,7 +483,6 @@ func GetImages(gender int) (*[]Image, error) {
 
 // GetImage returns image object with given id
 func GetImage(id int) (*Image, error) {
-
 	image := Image{}
 	err := dbConnection.db.QueryRow(`
 		SELECT 	*
