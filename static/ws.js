@@ -91,7 +91,7 @@ window.onload = function () {
     if (window["WebSocket"]) {
         conn = new WebSocket("ws://" + document.location.host + "/ws");
         conn.onclose = function (evt) {
-            appendChat("<b>Connection closed.</b>", "user");
+            appendChat("Ich bin dann mal im Flugmodus... Bis demnächst!", "bot");
         };
         conn.onmessage = function (evt) {
             var messages = evt.data.split('\n');
