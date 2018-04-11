@@ -134,6 +134,12 @@ window.onload = function () {
 	
     scrollChatToBottom();
 	
+	window.addEventListener("resize", function(event) {
+		if (document.body.clientWidth > 1080) {
+			hideSidebar();
+		}
+	})
+	
 	}
 };
 
@@ -144,6 +150,7 @@ var nameID = 0;
 var noBotsAvail = false;
 var popupDidLoad = false;
 var imageListDidLoad = -1;
+var sidebarShowing = false;
 
 
 	function showPopup(id) {
@@ -366,23 +373,29 @@ var imageListDidLoad = -1;
 		leftWidthElement.style["background-color"] = "white";
 		leftBar.style["visibility"] = "visible";
 		leftList.style["visibility"] = "visible";
+		
+		sidebarShowing = true;
 	}
 	
 	function hideSidebar() {
-		var leftWidthElementAr = document.getElementsByClassName("chat-list");
-		var leftWidthElement = leftWidthElementAr[0];
-		var leftBarAr = document.getElementsByClassName("topBar");
-		var leftBar = leftBarAr[0];
-		var leftListAr = document.getElementsByClassName("bot-list");
-		var leftList = leftListAr[0];
-		
-		leftWidthElement.style["width"] = "";
-		leftWidthElement.style["min-width"] = "";
-		setTimeout(function() {
-			leftWidthElement.style["z-index"] = "";
-			leftWidthElement.style["background-color"] = "";
-			leftBar.style["visibility"] = "";
-			leftList.style["visibility"] = "";
-		},500);
+		if (sidebarShowing) {
+			var leftWidthElementAr = document.getElementsByClassName("chat-list");
+			var leftWidthElement = leftWidthElementAr[0];
+			var leftBarAr = document.getElementsByClassName("topBar");
+			var leftBar = leftBarAr[0];
+			var leftListAr = document.getElementsByClassName("bot-list");
+			var leftList = leftListAr[0];
+			
+			leftWidthElement.style["width"] = "";
+			leftWidthElement.style["min-width"] = "";
+			setTimeout(function() {
+				leftWidthElement.style["z-index"] = "";
+				leftWidthElement.style["background-color"] = "";
+				leftBar.style["visibility"] = "";
+				leftList.style["visibility"] = "";
+			},500);
+			
+			sidebarShowing = false;
+		}
 	}
 	
