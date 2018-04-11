@@ -91,8 +91,8 @@ def setup_traing_data(
 def setup_nn_model(train_x: np.ndarray, train_y: np.ndarray) -> Sequential:
     # Define neural network
 
-    DENSITIY: int = 512
-    DROPOUT: float = 0.25
+    DENSITIY: int = 32
+    DROPOUT: float = 0.2
 
     model = Sequential()
 
