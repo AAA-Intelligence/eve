@@ -7,6 +7,29 @@ window.onload = function () {
     var form = document.getElementById("form");
     var sendBtn = document.getElementById("send");
 	
+	var noBotsAvail = false;
+	
+	
+	
+	function checkNewUser() {
+		var botsAr = document.getElementsByClassName("bot");
+		var bots = botsAr[0];
+		
+		if (bots == null) {
+			showPopup('popup');
+			contentAr = document.getElementsByClassName("content");
+			contentEl = contentAr[0];
+			contentEl.innerHTML = "";
+			contentEl.style["background-image"] = "url('/static/bgpattern.png')";
+			contentEl.style["background-repeat"] = "repeat";
+			noBotsAvail = true;
+		}
+	}
+	
+	checkNewUser();
+	
+	if (noBotsAvail != true) {
+	
     msg.onkeypress = function (key) {
         // send message on press enter
         if (key.keyCode === 13 && !key.shiftKey) {
@@ -68,7 +91,8 @@ window.onload = function () {
     if (window["WebSocket"]) {
         conn = new WebSocket("ws://" + document.location.host + "/ws");
         conn.onclose = function (evt) {
-            appendChat("<b>Connection closed.</b>", "user");
+            appendChat("Ich bin dann mal im Flugmodus... Bis demnächst!", "bot");
+			showPopup("disconnectpopup");
         };
         conn.onmessage = function (evt) {
             var messages = evt.data.split('\n');
@@ -78,7 +102,7 @@ window.onload = function () {
             unlock();
         };
     } else {
-        appendChat("<b>Your browser does not support WebSockets.</b>", "bot");
+        appendChat("Dein Browser unterstützt scheinbar keine WebSockets...", "bot");
     }
 
     function escapeHtml(html) {
@@ -107,28 +131,53 @@ window.onload = function () {
         var doScroll = log.scrollTop > log.scrollHeight - log.clientHeight - 1;
         log.scrollTop = log.scrollHeight - log.clientHeight;
     }
+	
     scrollChatToBottom();
 	
+	window.addEventListener("resize", function(event) {
+		if (document.body.clientWidth > 1080) {
+			hideSidebar();
+		}
+	})
+	
+	}
 };
 
 var sex = 1;
 var picID = 0;
 var nameID = 0;
 
+var noBotsAvail = false;
 var popupDidLoad = false;
 var imageListDidLoad = -1;
+var sidebarShowing = false;
 
 
 	function showPopup(id) {
 		var popup = document.getElementById(id);
 		var contentAr = document.getElementsByClassName("content");
 		var content = contentAr[0];
+		var blurstrength = 3;
 		
 		if (popupDidLoad == false && id == 'popup') {
 			popupDidLoad = true;
 			//Initialize picture and name for bot creation
 			genName();
 			genImage();
+		}
+		
+		var hidebutton = document.getElementById('hidePopupButton');
+		var botsAr = document.getElementsByClassName("bot");
+		var bots = botsAr[0];
+		if (bots == null) noBotsAvail = true;
+		if (noBotsAvail == true && id == 'popup') {
+			hidebutton.style["visibility"] = "hidden";
+		} else {
+			hidebutton.style["visibility"] = "visible";
+		}
+		
+		if (id == 'disconnectpopup') {
+			blurstrength = 1.5;
 		}
 		
 		//Show popup
@@ -144,16 +193,18 @@ var imageListDidLoad = -1;
 		content.style["-ms-user-select"] = "none";
 		content.style["user-select"] = "none";
 		//Change background (apply blur)
-		content.style["filter"] = "progid:DXImageTransform.Microsoft.Blur(PixelRadius='3')";
+		content.style["filter"] = "progid:DXImageTransform.Microsoft.Blur(PixelRadius='"+blurstrength+"')";
 		content.style["-webkit-filter"] = "url(#blur-filter)";
 		content.style["filter"] = "url(#blur-filter)";
-		content.style["-webkit-filter"] = "blur(3px)";
-		content.style["filter"] = "blur(3px)";
+		content.style["-webkit-filter"] = "blur("+blurstrength+"px)";
+		content.style["filter"] = "blur("+blurstrength+"px)";
 		
-		//Click to dismiss
-		leave = document.getElementById("invisibleDismissContainer");
-		leave.style["visibility"] = "visible";
-		leave.setAttribute('onclick','hidePopup("'+id+'")');
+		//Click background to dismiss
+		if (noBotsAvail != true && id != 'disconnectpopup') {
+			leave = document.getElementById("invisibleDismissContainer");
+			leave.style["visibility"] = "visible";
+			leave.setAttribute('onclick','hidePopup("'+id+'")');
+		}
 	}
 	
 	function hidePopup(id) {
@@ -307,3 +358,44 @@ var imageListDidLoad = -1;
 		document.body.appendChild(form);
 		form.submit();
 	}
+	
+	function showSidebar() {
+		var leftWidthElementAr = document.getElementsByClassName("chat-list");
+		var leftWidthElement = leftWidthElementAr[0];
+		var leftBarAr = document.getElementsByClassName("topBar");
+		var leftBar = leftBarAr[0];
+		var leftListAr = document.getElementsByClassName("bot-list");
+		var leftList = leftListAr[0];
+		
+		leftWidthElement.style["width"] = "60%";
+		leftWidthElement.style["min-width"] = "325px";
+		leftWidthElement.style["z-index"] = "1000";
+		leftWidthElement.style["background-color"] = "white";
+		leftBar.style["visibility"] = "visible";
+		leftList.style["visibility"] = "visible";
+		
+		sidebarShowing = true;
+	}
+	
+	function hideSidebar() {
+		if (sidebarShowing) {
+			var leftWidthElementAr = document.getElementsByClassName("chat-list");
+			var leftWidthElement = leftWidthElementAr[0];
+			var leftBarAr = document.getElementsByClassName("topBar");
+			var leftBar = leftBarAr[0];
+			var leftListAr = document.getElementsByClassName("bot-list");
+			var leftList = leftListAr[0];
+			
+			leftWidthElement.style["width"] = "";
+			leftWidthElement.style["min-width"] = "";
+			setTimeout(function() {
+				leftWidthElement.style["z-index"] = "";
+				leftWidthElement.style["background-color"] = "";
+				leftBar.style["visibility"] = "";
+				leftList.style["visibility"] = "";
+			},500);
+			
+			sidebarShowing = false;
+		}
+	}
+	
