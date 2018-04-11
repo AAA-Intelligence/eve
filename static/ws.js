@@ -92,6 +92,7 @@ window.onload = function () {
         conn = new WebSocket("ws://" + document.location.host + "/ws");
         conn.onclose = function (evt) {
             appendChat("Ich bin dann mal im Flugmodus... Bis demnächst!", "bot");
+			showPopup("disconnectpopup");
         };
         conn.onmessage = function (evt) {
             var messages = evt.data.split('\n');
@@ -149,6 +150,7 @@ var imageListDidLoad = -1;
 		var popup = document.getElementById(id);
 		var contentAr = document.getElementsByClassName("content");
 		var content = contentAr[0];
+		var blurstrength = 3;
 		
 		if (popupDidLoad == false && id == 'popup') {
 			popupDidLoad = true;
@@ -167,6 +169,10 @@ var imageListDidLoad = -1;
 			hidebutton.style["visibility"] = "visible";
 		}
 		
+		if (id == 'disconnectpopup') {
+			blurstrength = 1.5;
+		}
+		
 		//Show popup
 		popup.style["visibility"] = "visible";
 		popup.style["display"] = "block";
@@ -180,14 +186,14 @@ var imageListDidLoad = -1;
 		content.style["-ms-user-select"] = "none";
 		content.style["user-select"] = "none";
 		//Change background (apply blur)
-		content.style["filter"] = "progid:DXImageTransform.Microsoft.Blur(PixelRadius='3')";
+		content.style["filter"] = "progid:DXImageTransform.Microsoft.Blur(PixelRadius='"+blurstrength+"')";
 		content.style["-webkit-filter"] = "url(#blur-filter)";
 		content.style["filter"] = "url(#blur-filter)";
-		content.style["-webkit-filter"] = "blur(3px)";
-		content.style["filter"] = "blur(3px)";
+		content.style["-webkit-filter"] = "blur("+blurstrength+"px)";
+		content.style["filter"] = "blur("+blurstrength+"px)";
 		
 		//Click background to dismiss
-		if (noBotsAvail != true) {
+		if (noBotsAvail != true && id != 'disconnectpopup') {
 			leave = document.getElementById("invisibleDismissContainer");
 			leave.style["visibility"] = "visible";
 			leave.setAttribute('onclick','hidePopup("'+id+'")');

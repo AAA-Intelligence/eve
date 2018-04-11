@@ -552,6 +552,37 @@ form{
 	background-color: #106A59; /* Second Color */
 }
 
+#disconnectpopup {
+	position: fixed;
+	text-align: center;
+	background-color: #F4F4F4;
+	box-shadow: 10px 10px 40px rgba(100, 100, 100, 0.4);
+	border-radius: 8px;
+	visibility: hidden;
+	display:none;
+	margin-top: 10%;
+	padding: 10px 60px 10px 60px;
+	min-width: 300px;
+	width: calc(25% - 120px);
+	min-height: 150px;
+	height: 10%;
+	left: 37.5%;
+	z-index: 1000;
+	
+	/*Disable text highlighting*/
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently
+						supported by Chrome and Opera */
+}
+
+#disconnectpopup a {
+	color: black;
+}
+
 
 
 /**************************************** Input at registration & bot creation ****************************************/
