@@ -34,8 +34,10 @@ def handle_request(request: Request) -> Response:
         # No pattern found, fall back to generative model
         pattern = None
         answer = generate_answer(request, mood_message, affection_message)
-    response = Response(answer, pattern, mood_message, affection_message,
-                        mood_bot, affection_bot)
+    response = Response(text=answer,
+                        pattern=pattern,
+                        mood=mood_bot,
+                        affection=affection_bot)
     logger.debug(response)
     return response
 
@@ -102,7 +104,6 @@ def run_loop():
             request = parse_request(json_data)
             logger.info('Handling request: {}'.format(request))
             response = handle_request(request)
-            logger.debug(response.mood_bot, response.affection_bot)
             print(json.dumps(response._asdict()))
         except EOFError:
             # Stdin pipe has been closed by Go

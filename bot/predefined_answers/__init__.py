@@ -37,7 +37,7 @@ def answers_for_category(category: PatternCategory, request: Request) -> List[
         p = Path(dir, 'A_%s.txt' % (direction))
     elif category.name == 'MOOD':
         direction = "POS" if request.mood > 0 else "NEG"
-        logger.debug("DIRECTION:", direction)
+        logger.debug("DIRECTION: %s" % direction)
         p = Path(dir, 'M_%s.txt' % (direction))
     else:
         p = Path(dir, category.name + '.txt')
