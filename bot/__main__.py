@@ -15,7 +15,8 @@ if target == 'train-patterns':
     logger.info('Running pattern training')
     train_model(Mode.PATTERNS)
 elif target == 'train-sentiments':
-    from bot.pattern_recognizer import demo
+    from bot.trainer import train_model
+
     logger.info(
         'Running sentiments analysis through moods and affections analysis training')
     train_model(Mode.AFFECTIONS)
