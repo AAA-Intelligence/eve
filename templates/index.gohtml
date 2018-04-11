@@ -54,7 +54,7 @@
             <div class="topBar2">
 			<img class="sidebarbutton" src="static/side-100.png" onclick="showSidebar()"/>
 			<img src="{{.ActiveBot.Image}}" onclick="showPopup('profilepopup')">
-            <div id="botname">Du chattest mit: <b style="cursor:pointer;" onclick="showPopup('profilepopup')">{{.ActiveBot.Name}}</b></div>
+            <div id="botname"><!--Du chattest mit: --><b style="cursor:pointer;" onclick="showPopup('profilepopup')">{{.ActiveBot.Name}}</b></div>
 			</div>
             <div id="log">
                 {{range $msg := .Messages}}

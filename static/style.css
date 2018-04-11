@@ -117,6 +117,7 @@ body{
 	height: 42px;
 	cursor: pointer;
 	margin-right: 10px;
+	margin-left: 10px;
 }
 
 .topBar2 .sidebarbutton, .topBar .sidebarbutton {
