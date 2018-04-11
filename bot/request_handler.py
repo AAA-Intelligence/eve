@@ -5,7 +5,7 @@ from bot.data import Request, Response, parse_request
 from bot.logger import logger
 from bot.mood_analyzer import analyze
 from bot.pattern_recognizer import answer_for_pattern
-from bot.text_processor import generate_answer
+from bot.text_processor.generator import generate_answer
 
 
 def handle_request(request: Request) -> Response:
@@ -64,7 +64,7 @@ def run_demo():
                 father_age=49,
                 mother_name='Agathe',
                 mother_age=47
-                )
+            )
             response = handle_request(request)
             print('Response: ', response.text)
             previous_pattern = response.pattern

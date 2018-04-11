@@ -16,8 +16,11 @@ fabric.properties
 *.exe~
 *.pyc
 *.log
+.DS_Store
 
 tflearn_logs/
+bot/models/
+bot/corpus/
 venv/*
 /eve
 
@@ -26,6 +29,7 @@ venv/*
 bot/models/
 *.pkl
 /bot/mood_analyzer/demo/models
+bot/chat-data/
 
 # database
 eve.sqlite
