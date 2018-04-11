@@ -36,6 +36,8 @@ class PatternCategory(IntEnum):
     ANY_AGE = auto()
     ANY_NAME = auto()
     ANY_BIRTHDAY = auto()
+    MOOD = auto()
+    AFFECTION = auto()
 
 
 Category = Union[MoodCategory, AffectionCategory, PatternCategory]
@@ -43,9 +45,9 @@ Category = Union[MoodCategory, AffectionCategory, PatternCategory]
 
 @unique
 class Mode(Enum):
-    MOODS = 'moods'
     PATTERNS = 'patterns'
     AFFECTIONS = 'affections'
+    MOODS = 'moods'
 
     @property
     def category_type(self) -> Type[Category]:

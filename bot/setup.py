@@ -12,7 +12,8 @@ from bot.moods import patterns_for_mood
 from bot.patterns import patterns_for_category
 
 
-def setup_bot(mode: Mode) -> Tuple[Sequential, np.ndarray, np.ndarray, List[str]]:
+def setup_bot(mode: Mode) -> Tuple[
+    Sequential, np.ndarray, np.ndarray, List[str]]:
     elements, words = read_training_data(mode)
     # Now that all stems have been collected, we can create an array suitable
     # for training our TensorFlow model.
@@ -54,7 +55,7 @@ def build_stems(
     category: Category,
     elements: List[Tuple[Category, Set[str]]],
     total_stems: Set[str]
-) -> Set[str]:
+    ) -> Set[str]:
     # Tokenize pattern into words
     words = nltk.word_tokenize(pattern)
     # Get stems for the pattern's words, as a set to avoid duplicates
@@ -73,7 +74,7 @@ def setup_traing_data(
     CategoryType: Type[Category],
     elements: List[Tuple[Category, Set[str]]],
     words: List[str]
-) -> Tuple[np.ndarray, np.ndarray]:
+    ) -> Tuple[np.ndarray, np.ndarray]:
     train_x = []
     train_y = []
     for category, stems in elements:

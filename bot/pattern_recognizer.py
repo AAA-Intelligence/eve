@@ -69,7 +69,7 @@ def analyze_input(text: str, mode: Mode) -> Optional[PredictionResult]:
 
     global ERROR_THRESHOLD
     if mode == Mode.MOODS or mode == mode.AFFECTIONS:
-        ERROR_THRESHOLD = 0.5
+        ERROR_THRESHOLD = 0.75
     else:
         ERROR_THRESHOLD = 0.9
 
