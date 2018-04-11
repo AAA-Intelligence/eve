@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"math/rand"
 	"os"
@@ -47,7 +48,11 @@ func Connect(path string) error {
 		return err
 	}
 	if !dbExists {
-		if _, err := db.Exec(DatabaseCreationScript); err != nil {
+		if data, err := ioutil.ReadFile("db-script.sql"); err == nil {
+			if _, err := db.Exec(string(data)); err != nil {
+				return err
+			}
+		} else {
 			return err
 		}
 	}

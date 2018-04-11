@@ -5,7 +5,7 @@ from bot.data import Request, Response, parse_request
 from bot.logger import logger
 from bot.mood_analyzer import analyze
 from bot.pattern_recognizer import answer_for_pattern
-from bot.text_processor import generate_answer
+from bot.text_processor.generator import generate_answer
 
 
 def handle_request(request: Request) -> Response:
@@ -25,7 +25,7 @@ def handle_request(request: Request) -> Response:
         mood, affection : value between -1 and 1 indicating a positive or negative sentiment
         analyzed_* : PredictionResult containing:
             - Mode: Affection or Mood
-            - Probability: A value > 0.5 indicating the certainty with which the neural network detected a specific category 
+            - Probability: A value > 0.5 indicating the certainty with which the neural network detected a specific category
     """
     analyzed_mood, mood, analyzed_affection, affection = analyze(request.text)
     # TODO is analyzed mood/affection (PredictionResult) necessary
@@ -35,7 +35,7 @@ def handle_request(request: Request) -> Response:
     else:
         # No pattern found, fall back to generative model
         pattern = None
-        answer = generate_answer(request, mood, affection)
+        answer = generate_answer(request)
     response = Response(answer, pattern, mood, affection)
     logger.debug(response)
     return response
@@ -63,7 +63,7 @@ def run_demo():
                 father_age=49,
                 mother_name='Agathe',
                 mother_age=47
-                )
+            )
             response = handle_request(request)
             print('Response: ', response.text)
             previous_pattern = response.pattern
