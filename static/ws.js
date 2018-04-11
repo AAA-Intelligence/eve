@@ -102,7 +102,7 @@ window.onload = function () {
             unlock();
         };
     } else {
-        appendChat("<b>Your browser does not support WebSockets.</b>", "bot");
+        appendChat("Dein Browser unterstützt scheinbar keine WebSockets...", "bot");
     }
 
     function escapeHtml(html) {
