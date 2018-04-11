@@ -7,6 +7,29 @@ window.onload = function () {
     var form = document.getElementById("form");
     var sendBtn = document.getElementById("send");
 	
+	var noBotsAvail = false;
+	
+	
+	
+	function checkNewUser() {
+		var botsAr = document.getElementsByClassName("bot");
+		var bots = botsAr[0];
+		
+		if (bots == null) {
+			showPopup('popup');
+			contentAr = document.getElementsByClassName("content");
+			contentEl = contentAr[0];
+			contentEl.innerHTML = "";
+			contentEl.style["background-image"] = "url('/static/bgpattern.png')";
+			contentEl.style["background-repeat"] = "repeat";
+			noBotsAvail = true;
+		}
+	}
+	
+	checkNewUser();
+	
+	if (noBotsAvail != true) {
+	
     msg.onkeypress = function (key) {
         // send message on press enter
         if (key.keyCode === 13 && !key.shiftKey) {
@@ -107,14 +130,17 @@ window.onload = function () {
         var doScroll = log.scrollTop > log.scrollHeight - log.clientHeight - 1;
         log.scrollTop = log.scrollHeight - log.clientHeight;
     }
+	
     scrollChatToBottom();
 	
+	}
 };
 
 var sex = 1;
 var picID = 0;
 var nameID = 0;
 
+var noBotsAvail = false;
 var popupDidLoad = false;
 var imageListDidLoad = -1;
 
@@ -129,6 +155,16 @@ var imageListDidLoad = -1;
 			//Initialize picture and name for bot creation
 			genName();
 			genImage();
+		}
+		
+		var hidebutton = document.getElementById('hidePopupButton');
+		var botsAr = document.getElementsByClassName("bot");
+		var bots = botsAr[0];
+		if (bots == null) noBotsAvail = true;
+		if (noBotsAvail == true && id == 'popup') {
+			hidebutton.style["visibility"] = "hidden";
+		} else {
+			hidebutton.style["visibility"] = "visible";
 		}
 		
 		//Show popup
@@ -150,10 +186,12 @@ var imageListDidLoad = -1;
 		content.style["-webkit-filter"] = "blur(3px)";
 		content.style["filter"] = "blur(3px)";
 		
-		//Click to dismiss
-		leave = document.getElementById("invisibleDismissContainer");
-		leave.style["visibility"] = "visible";
-		leave.setAttribute('onclick','hidePopup("'+id+'")');
+		//Click background to dismiss
+		if (noBotsAvail != true) {
+			leave = document.getElementById("invisibleDismissContainer");
+			leave.style["visibility"] = "visible";
+			leave.setAttribute('onclick','hidePopup("'+id+'")');
+		}
 	}
 	
 	function hidePopup(id) {
@@ -341,3 +379,4 @@ var imageListDidLoad = -1;
 			leftList.style["visibility"] = "";
 		},500);
 	}
+	

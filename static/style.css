@@ -152,6 +152,7 @@ body{
 
 #log {
 	padding: 5px;
+	margin-top: 60px;
 	flex-grow:1;
 	width: 100%;
 	border: 1px solid lightgray;
