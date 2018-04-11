@@ -33,7 +33,7 @@ def handle_request(request: Request) -> Response:
     else:
         # No pattern found, fall back to generative model
         pattern = None
-        answer = generate_answer(request, mood_message, affection_message)
+        answer = generate_answer(request)
     response = Response(text=answer,
                         pattern=pattern,
                         mood=mood_bot,
@@ -64,7 +64,7 @@ def run_demo():
                 father_age=49,
                 mother_name='Agathe',
                 mother_age=47
-            )
+                )
             response = handle_request(request)
             print('Response: ', response.text)
             previous_pattern = response.pattern
