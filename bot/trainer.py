@@ -6,7 +6,7 @@ import numpy as np
 from keras.models import Sequential, model_from_json
 
 from bot.model_definitions import Mode
-from bot.setup import setup_bot
+from bot.setup import setup_bot, batch_size
 from bot.training_data import TrainingData
 
 
@@ -38,7 +38,7 @@ def train_model(mode: Mode):
     model.compile(loss='categorical_crossentropy',
                   optimizer='adam', metrics=['accuracy'])
     # Train neural network
-    model.fit(train_x, train_y, batch_size=32, epochs=1000,
+    model.fit(train_x, train_y, batch_size=batch_size, epochs=1000,
               verbose=1, validation_split=0.1, shuffle=True)
 
     save_training(mode, model, train_x, train_y, words)

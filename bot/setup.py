@@ -11,6 +11,9 @@ from bot.model_definitions import Category, Mode
 from bot.moods import patterns_for_mood
 from bot.patterns import patterns_for_category
 
+# Amount of data samples that will be used for training per step
+batch_size = 32
+
 
 def setup_bot(mode: Mode) -> Tuple[Sequential, np.ndarray, np.ndarray, List[str]]:
     elements, words = read_training_data(mode)
@@ -91,16 +94,15 @@ def setup_traing_data(
 def setup_nn_model(train_x: np.ndarray, train_y: np.ndarray) -> Sequential:
     # Define neural network
 
-    DENSITIY: int = 32
-    DROPOUT: float = 0.2
+    droput_rate: float = 0.2
 
     model = Sequential()
 
     model.add(
-        Dense(DENSITIY, input_shape=(len(train_x[0]),), activation='relu'))
-    model.add(Dropout(DROPOUT))
-    model.add(Dense(DENSITIY // 2, activation='sigmoid'))
-    model.add(Dropout(DROPOUT))
+        Dense(batch_size, input_shape=(len(train_x[0]),), activation='relu'))
+    model.add(Dropout(droput_rate))
+    model.add(Dense(batch_size // 2, activation='sigmoid'))
+    model.add(Dropout(droput_rate))
     model.add(Dense(len(train_y[0]), activation='softmax'))
 
     return model
