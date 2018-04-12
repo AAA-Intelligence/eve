@@ -611,8 +611,6 @@ CREATE TABLE IF NOT EXISTS 'Message' (
 	'Sender'	INTEGER NOT NULL,
 	'Timestamp'	DATETIME NOT NULL,
 	'Content'	TEXT NOT NULL,
-	'Affection'	REAL NOT NULL,
-	'Mood'	REAL NOT NULL,
 	CONSTRAINT 'Message_Bot_BotID_fk' FOREIGN KEY('Bot') REFERENCES 'Bot'('BotID')
 );
 CREATE TABLE IF NOT EXISTS 'Color' (

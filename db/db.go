@@ -8,6 +8,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"strconv"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -240,12 +241,6 @@ type Message struct {
 
 	// The text that was sent
 	Content string
-
-	// Affection value of the message
-	Affection float64
-
-	// Mood value of the message
-	Mood float64
 }
 
 // MessageMaxLength defines the maximum message length that a user can send to a bot
@@ -269,8 +264,8 @@ func StoreMessages(userID, botID int, msgs []Message) error {
 		log.Fatal(err)
 	}
 	stmt, err := tx.Prepare(`
-		INSERT INTO Message(Bot,Sender,Timestamp,Content,Affection,Mood)
-					 VALUES($1,$2,$3,$4,$5,$6)`)
+		INSERT INTO Message(Bot,Sender,Timestamp,Content)
+					 VALUES($1,$2,$3,$4)`)
 	if err != nil {
 		tx.Rollback()
 		log.Println("cannot rollback:", err)
@@ -282,7 +277,7 @@ func StoreMessages(userID, botID int, msgs []Message) error {
 			tx.Rollback()
 			return ErrMessageToLong
 		}
-		_, err := stmt.Exec(botID, m.Sender, m.Timestamp, m.Content, m.Affection, m.Mood)
+		_, err := stmt.Exec(botID, m.Sender, m.Timestamp, m.Content)
 		if err != nil {
 			tx.Rollback()
 			log.Println("cannot store message:", err)
@@ -302,9 +297,7 @@ func GetMessagesForBot(bot int) (*[]Message, error) {
 	rows, err := dbConnection.db.Query(`
 		SELECT 	Timestamp,
 				Content,
-				Sender,
-				Affection,
-				Mood 
+				Sender
 		FROM Message 
 		WHERE Bot=$1`, bot)
 	if err != nil {
@@ -314,7 +307,7 @@ func GetMessagesForBot(bot int) (*[]Message, error) {
 	messages := []Message{}
 	var cursor Message
 	for rows.Next() {
-		if err := rows.Scan(&cursor.Timestamp, &cursor.Content, &cursor.Sender, &cursor.Affection, &cursor.Mood); err == nil {
+		if err := rows.Scan(&cursor.Timestamp, &cursor.Content, &cursor.Sender); err == nil {
 			messages = append(messages, cursor)
 		} else {
 			log.Println(err)
@@ -410,7 +403,7 @@ type Name struct {
 	Gender int
 }
 
-// GEtNames returns all bots which belong to the given user
+// GetNames returns all bots which belong to the given user
 func GetNames(gender int) (*[]Name, error) {
 	rows, err := dbConnection.db.Query(`
 		SELECT 	*
@@ -541,4 +534,25 @@ func (bot *Bot) GetFavoriteColor() string {
 		return "weiß"
 	}
 	return name
+}
+
+// UpdateContext updates the bots fields affection and mood in the database and saves the value in the struct
+func (bot *Bot) UpdateContext(affection, mood float64) error {
+	bot.Mood, bot.Affection = mood, affection
+	result, err := dbConnection.db.Exec(`
+		UPDATE Bot
+		SET	Affection = $1,
+			Mood = $2
+		WHERE BotID = $3`, bot.Affection, bot.Mood, bot.ID)
+	if err != nil {
+		return err
+	}
+	if rows, err := result.RowsAffected(); err == nil {
+		if rows < 1 {
+			return errors.New("not bot with id " + strconv.Itoa(bot.ID) + " found")
+		}
+	} else {
+		return err
+	}
+	return nil
 }
