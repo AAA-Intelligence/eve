@@ -94,7 +94,10 @@ def setup_traing_data(
 def setup_nn_model(train_x: np.ndarray, train_y: np.ndarray) -> Sequential:
     # Define neural network
 
-    dropout_rate: float = 0.2
+    # Probability that a neuron will be ignored
+    # http://papers.nips.cc/paper/4878-understanding-dropout.pdf suggests that
+    # 50% gives the best results
+    dropout_rate: float = 0.5
 
     model = Sequential()
 
