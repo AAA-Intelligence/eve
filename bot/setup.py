@@ -94,15 +94,15 @@ def setup_traing_data(
 def setup_nn_model(train_x: np.ndarray, train_y: np.ndarray) -> Sequential:
     # Define neural network
 
-    droput_rate: float = 0.2
+    dropout_rate: float = 0.2
 
     model = Sequential()
 
     model.add(
         Dense(batch_size, input_shape=(len(train_x[0]),), activation='relu'))
-    model.add(Dropout(droput_rate))
+    model.add(Dropout(dropout_rate))
     model.add(Dense(batch_size // 2, activation='sigmoid'))
-    model.add(Dropout(droput_rate))
+    model.add(Dropout(dropout_rate))
     model.add(Dense(len(train_y[0]), activation='softmax'))
 
     return model
