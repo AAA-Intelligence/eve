@@ -24,9 +24,9 @@ func handleMessage(request MessageRequest) string {
 		Text:            request.Message,
 		Mood:            bot.Mood,
 		Affection:       bot.Affection,
-		Gender:          int(bot.Gender),
+		Gender:          bot.Gender,
 		Name:            bot.Name,
-		PreviousPattern: nil,
+		PreviousPattern: bot.Pattern,
 		Birthdate:       bot.Birthdate.Unix(),
 		FavoriteColor:   bot.GetFavoriteColor(),
 		FatherName:      bot.GetFatherName(),
@@ -34,7 +34,7 @@ func handleMessage(request MessageRequest) string {
 		MotherName:      bot.GetMotherName(),
 		MotherAge:       bot.MotherAge,
 	})
-	if err = bot.UpdateContext(botAnswer.Affection, botAnswer.Mood); err != nil {
+	if err = bot.UpdateContext(botAnswer.Affection, botAnswer.Mood, botAnswer.Pattern); err != nil {
 		log.Println("error updating bot:", err)
 	}
 

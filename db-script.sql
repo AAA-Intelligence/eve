@@ -759,6 +759,7 @@ CREATE TABLE IF NOT EXISTS 'Bot' (
 	'User'	INTEGER NOT NULL,
 	'Affection'	REAL NOT NULL,
 	'Mood'	REAL NOT NULL,
+	'Pattern' INTEGER NULL,
 	'Birthdate' DATETIME NOT NULL,
 	'FavoriteColor' INTEGER NOT NULL,
 	'FatherName' INTEGER NOT NULL,
