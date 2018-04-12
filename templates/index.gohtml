@@ -27,7 +27,7 @@
         <div class="content">
 		<div class="chat-list">
 			<div class="topBar">
-			<img class="sidebarbutton" src="static/side-100.png" onclick="hideSidebar()"/>
+			<img class="sidebarbutton" src="static/assets/side-100.png" onclick="hideSidebar()"/>
 			<div id="title">
 				EVE - Datinghilfe
 			</div>
@@ -52,7 +52,7 @@
         {{if .ActiveBot}}
         <div class="chat">
             <div class="topBar2">
-			<img class="sidebarbutton" src="static/side-100.png" onclick="showSidebar()"/>
+			<img class="sidebarbutton" src="static/assets/side-100.png" onclick="showSidebar()"/>
 			<img src="{{.ActiveBot.Image}}" onclick="showPopup('profilepopup')">
             <div id="botname"><!--Du chattest mit: --><b style="cursor:pointer;" onclick="showPopup('profilepopup')">{{.ActiveBot.Name}}</b></div>
 			</div>
@@ -92,7 +92,7 @@
 		
 		<!-- Bot image selection popup -->
 		<div id="imagepopup">
-		<div id="hidePopupButton"><button onclick="hidePopup('imagepopup'); showPopup('popup');" style="background-image: url('/static/back-128.png');"></button></div><br />
+		<div id="hidePopupButton"><button onclick="hidePopup('imagepopup'); showPopup('popup');" style="background-image: url('/static/assets/back-128.png');"></button></div><br />
 				<div id="imagepopupcontainer">
 				<!-- Content added by JS -->
 				</div>
@@ -102,7 +102,7 @@
 		{{if .ActiveBot}}
 		<div id="hidePopupButton"><button onclick="hidePopup('profilepopup')"></button></div><br />
 		<img id="profileimage" src="{{.ActiveBot.Image}}"/>
-		<br /><p id="profilename">{{.ActiveBot.Name}}<img src="static/sex_{{.ActiveBot.Gender}}-24.png"/></p>
+		<br /><p id="profilename">{{.ActiveBot.Name}}<img src="static/assets/sex_{{.ActiveBot.Gender}}-24.png"/></p>
 		<table id="profiletable">
 		<tr><td>Alter</td><td>{{years .ActiveBot.Birthdate}} Jahre alt</td></tr>
 		</table>
