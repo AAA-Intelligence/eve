@@ -20,7 +20,7 @@ window.onload = function () {
 			contentAr = document.getElementsByClassName("content");
 			contentEl = contentAr[0];
 			contentEl.innerHTML = "";
-			contentEl.style["background-image"] = "url('/static/bgpattern.png')";
+			contentEl.style["background-image"] = "url('/static/assets/bgpattern.png')";
 			contentEl.style["background-repeat"] = "repeat";
 			noBotsAvail = true;
 		}

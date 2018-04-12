@@ -161,7 +161,7 @@ body{
 	overflow-y: auto;
 	box-sizing: border-box;
 	/* Simon mag keinen Schatten: box-shadow: 0 15px 15px -15px inset; */
-	background-image: url('/static/bgpattern.png');
+	background-image: url('/static/assets/bgpattern.png');
 	background-repeat: repeat;
 }
 
@@ -184,7 +184,7 @@ body{
 	margin-right: 10px;
 	border: 1px solid #40CDB2; /* Third Color */
 	background-color: #40CDB2; /* Third Color */
-	background-image: url('/static/send-128.png');
+	background-image: url('/static/assets/send-128.png');
 	background-repeat: no-repeat;
 	background-position: top 12px left 14px;
 	background-size: 18px;
@@ -288,7 +288,7 @@ p.user::after {
 	margin-left: 10px;
 	border: 1px solid #40CDB2; /* Third Color */
 	background-color: #40CDB2; /* Third Color */
-	background-image: url('/static/new-128.png');
+	background-image: url('/static/assets/new-128.png');
 	background-repeat: no-repeat;
 	background-position: top 12px left 12px;
 	background-size: 18px;
@@ -539,7 +539,7 @@ form{
 	margin-left: 10px;
 	border: 1px solid #40CDB2; /* Third Color */
 	background-color: #40CDB2; /* Third Color */
-	background-image: url('/static/cross-128.png');
+	background-image: url('/static/assets/cross-128.png');
 	background-repeat: no-repeat;
 	background-position: top 12px left 12px;
 	background-size: 18px;
@@ -718,7 +718,7 @@ a.buttonSelected {
 	margin-left: 10px;
 	border: 0px;
 	background-color: transparent;
-	background-image: url('/static/refresh-128.png');
+	background-image: url('/static/assets/refresh-128.png');
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: 100%;
@@ -727,7 +727,7 @@ a.buttonSelected {
 }
 
 #generatedName button:hover {
-	background-image: url('/static/refresh-128-h.png');
+	background-image: url('/static/assets/refresh-128-h.png');
 }
 
 
