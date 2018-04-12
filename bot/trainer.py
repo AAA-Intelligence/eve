@@ -6,7 +6,7 @@ import numpy as np
 from keras.models import Sequential, model_from_json
 
 from bot.model_definitions import Mode
-from bot.setup import setup_bot, batch_size
+from bot.setup import setup_bot
 from bot.training_data import TrainingData
 
 
