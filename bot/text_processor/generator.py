@@ -46,7 +46,7 @@ def generate_answer(request: Request) -> str:
     """
 
     text = ' '.join(nltk.word_tokenize(
-        request.text, language='german')).lower()
+        request.text, language='german')).casefold()
 
     session_config = tf.ConfigProto(
         allow_soft_placement=True,
