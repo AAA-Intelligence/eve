@@ -100,7 +100,8 @@
 		
 		<div id="profilepopup">
 		{{if .ActiveBot}}
-		<div id="hidePopupButton"><button onclick="hidePopup('profilepopup')"></button></div><br />
+		<div id="hidePopupButton"><button onclick="hidePopup('profilepopup')"></button></div>
+		<div id="deleteBotButton"><button onclick="hidePopup('profilepopup'); showPopup('confirmDeletionPopup');"></button></div><br />
 		<img id="profileimage" src="{{.ActiveBot.Image}}"/>
 		<br /><p id="profilename">{{.ActiveBot.Name}}<img src="static/assets/sex_{{.ActiveBot.Gender}}-24.png"/></p>
 		<table id="profiletable">
@@ -112,6 +113,13 @@
 		<div id="disconnectpopup">
 		<h1>Verbindung verloren. 😭</h1>
 		<h2><a href="/">Klicke, um es erneut zu versuchen.</a></h2>
+		</div>
+		
+		<div id="confirmDeletionPopup">
+		<div id="hidePopupButton"><button onclick="hidePopup('confirmDeletionPopup')"></button></div>
+		<h1>Löschen</h1>
+		<p>Bist du dir sicher, dass du diesen Kontakt inklusive des kompletten Chatverlaufs löschen möchtest?<br /><b>Dies kann nicht rückgängig gemacht werden!</b></p>
+		<a class="buttonWarning" href="deleteBot?ID={{.ActiveBot.ID}}">Ja, ich bin mir sicher.</a>
 		</div>
 		
 		<div id="invisibleDismissContainer"></div>
