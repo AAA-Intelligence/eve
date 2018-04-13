@@ -27,7 +27,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	// load all messages sent between user and bot
 	messages := &[]db.Message{}
 	if bot != nil {
-		if msgs, err := db.GetMessagesForBot(bot.ID); err == nil {
+		if msgs, err := bot.GetMessages(); err == nil {
 			messages = msgs
 		} else {
 			log.Println(err)
@@ -43,7 +43,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("error loading template:", err.Error())
 		return
 	}
-	bots, err := db.GetBotsForUser(user.ID)
+	bots, err := user.GetBots()
 	if err != nil {
 		http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
 		log.Println("error getting bots for user:", err.Error())
@@ -144,7 +144,8 @@ func getImages(res http.ResponseWriter, req *http.Request) {
 
 }
 
-type Params struct {
+// CreateBotForm is the data needed to create a bot via http request
+type CreateBotForm struct {
 	Name  int       `schema:"nameID"`
 	Image int       `schema:"imageID"`
 	Sex   db.Gender `schema:"sex"`
@@ -160,7 +161,7 @@ func createBot(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	var params Params
+	var params CreateBotForm
 
 	// r.PostForm is a map of our POST form values
 	err = decoder.Decode(&params, req.PostForm)
@@ -183,17 +184,42 @@ func createBot(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = db.CreateBot(&db.Bot{
+	bot := db.Bot{
 		Name:   name.Text,
 		Image:  image.Path,
 		Gender: params.Sex,
 		User:   GetUserFromRequest(req).ID,
-	})
-	if err != nil {
+	}
+	if err := bot.Create(); err != nil {
 		http.Error(res, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	http.Redirect(res, req, "/", http.StatusSeeOther)
+}
+
+func deleteBot(w http.ResponseWriter, r *http.Request) {
+	botString := r.URL.Query().Get("bot")
+	if len(botString) < 1 {
+		http.Error(w, "no bot provided", http.StatusBadRequest)
+		return
+	}
+	var botID int
+	if id, err := strconv.Atoi(botString); err != nil {
+		http.Error(w, "bot id is not a number", http.StatusBadRequest)
+		return
+	} else {
+		botID = id
+	}
+	user := GetUserFromRequest(r)
+	bot, err := user.GetBot(botID)
+	if err != nil {
+		http.Error(w, "bot not found", http.StatusNotFound)
+		return
+	}
+	if err := bot.Delete(); err != nil {
+		http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+	}
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 // if the webserver is shut down, all bot instances are killed
@@ -222,6 +248,7 @@ func StartWebServer(host string, httpPort int) {
 
 	mux.HandleFunc("/", basicAuth(indexHandler))
 	mux.HandleFunc("/createBot", basicAuth(createBot))
+	mux.HandleFunc("/deleteBot", basicAuth(deleteBot))
 	mux.HandleFunc("/getRandomName", basicAuth(getRandomName))
 	mux.HandleFunc("/getRandomImage", basicAuth(getRandomImage))
 	mux.HandleFunc("/getImages", basicAuth(getImages))
@@ -257,7 +284,7 @@ func GetBotFromRequest(r *http.Request) *db.Bot {
 		return nil
 	}
 	idString := r.URL.Query().Get("bot")
-	bots, err := db.GetBotsForUser(user.ID)
+	bots, err := user.GetBots()
 	if err != nil || len(*bots) < 1 {
 		// user has no bots
 		return nil
