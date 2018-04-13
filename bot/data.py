@@ -9,15 +9,12 @@ from bot.model_definitions import PatternCategory
 class Gender(Enum):
     MALE = 0
     FEMALE = 1
-    APACHE = 0
 
     def __str__(self):
         if self == Gender.MALE:
             return 'männlich'
         elif self == Gender.FEMALE:
             return 'weiblich'
-        else:
-            return 'apache'
 
 
 class Request(NamedTuple):
@@ -70,4 +67,4 @@ def parse_request(json_data: str):
         data["father_age"],
         data["mother_name"],
         data["mother_age"],
-        )
+    )
