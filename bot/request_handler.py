@@ -1,7 +1,7 @@
 import json
 from datetime import date
 
-from bot.data import Request, Response, parse_request
+from bot.data import Gender, Request, Response, parse_request
 from bot.logger import logger
 from bot.mood_analyzer import analyze
 from bot.pattern_recognizer import answer_for_pattern
@@ -23,7 +23,7 @@ def handle_request(request: Request) -> Response:
 
     """
         mood, affection : value between -1 and 1 indicating a positive or negative sentiment
-       
+
     """
     mood_message, affection_message, mood_bot, affection_bot = analyze(request)
     # TODO is analyzed mood/affection (PredictionResult) necessary
@@ -56,7 +56,7 @@ def run_demo():
                 previous_pattern=previous_pattern,
                 mood=0.0,
                 affection=0.0,
-                bot_gender=0,
+                bot_gender=Gender.FEMALE,
                 bot_name='Lana',
                 bot_birthdate=date(1995, 10, 5),
                 bot_favorite_color='grün',
@@ -64,7 +64,7 @@ def run_demo():
                 father_age=49,
                 mother_name='Agathe',
                 mother_age=47
-                )
+            )
             response = handle_request(request)
             print('Response: ', response.text)
             previous_pattern = response.pattern
