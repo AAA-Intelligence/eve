@@ -84,7 +84,7 @@ func (b *Bot) Create() error {
 // Delete removes bot from database
 func (b *Bot) Delete() error {
 	result, err := dbConnection.db.Exec(`
-		DELETE Bot
+		DELETE FROM Bot
 		WHERE BotID = $1`, b.ID)
 	if err != nil {
 		return err

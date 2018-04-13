@@ -217,7 +217,9 @@ func deleteBot(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err := bot.Delete(); err != nil {
+		log.Println("error deleting bot:", err)
 		http.Error(w, db.ErrInternalServerError.Error(), http.StatusInternalServerError)
+		return
 	}
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
