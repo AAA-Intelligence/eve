@@ -8,6 +8,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"strconv"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -175,6 +176,9 @@ type Bot struct {
 	// The bots current mood
 	Mood float64
 
+	// Pattern is the recognized pattern id in the last message
+	Pattern *int
+
 	Birthdate     time.Time
 	FavoriteColor int
 	FatherName    int
@@ -196,8 +200,8 @@ func CreateBot(bot *Bot) error {
 	bot.MotherAge = bot.FatherAge + rand.Intn(10) - 5
 
 	v, err := dbConnection.db.Exec(`
-		INSERT INTO Bot(Name,Image,Gender,User,Affection,Mood,Birthdate,FavoriteColor,FatherName,FatherAge,MotherName,MotherAge) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
-		bot.Name, bot.Image, bot.Gender, bot.User, bot.Affection, bot.Mood, bot.Birthdate, bot.FavoriteColor, bot.FatherName, bot.FatherAge, bot.MotherName, bot.MotherAge)
+		INSERT INTO Bot(Name,Image,Gender,User,Affection,Mood,Pattern,Birthdate,FavoriteColor,FatherName,FatherAge,MotherName,MotherAge) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
+		bot.Name, bot.Image, bot.Gender, bot.User, bot.Affection, bot.Mood, bot.Pattern, bot.Birthdate, bot.FavoriteColor, bot.FatherName, bot.FatherAge, bot.MotherName, bot.MotherAge)
 	if err != nil {
 		log.Println("error inserting new bot:", err)
 		return ErrInternalServerError
@@ -240,12 +244,6 @@ type Message struct {
 
 	// The text that was sent
 	Content string
-
-	// Affection value of the message
-	Affection float64
-
-	// Mood value of the message
-	Mood float64
 }
 
 // MessageMaxLength defines the maximum message length that a user can send to a bot
@@ -269,8 +267,8 @@ func StoreMessages(userID, botID int, msgs []Message) error {
 		log.Fatal(err)
 	}
 	stmt, err := tx.Prepare(`
-		INSERT INTO Message(Bot,Sender,Timestamp,Content,Affection,Mood)
-					 VALUES($1,$2,$3,$4,$5,$6)`)
+		INSERT INTO Message(Bot,Sender,Timestamp,Content)
+					 VALUES($1,$2,$3,$4)`)
 	if err != nil {
 		tx.Rollback()
 		log.Println("cannot rollback:", err)
@@ -282,7 +280,7 @@ func StoreMessages(userID, botID int, msgs []Message) error {
 			tx.Rollback()
 			return ErrMessageToLong
 		}
-		_, err := stmt.Exec(botID, m.Sender, m.Timestamp, m.Content, m.Affection, m.Mood)
+		_, err := stmt.Exec(botID, m.Sender, m.Timestamp, m.Content)
 		if err != nil {
 			tx.Rollback()
 			log.Println("cannot store message:", err)
@@ -302,9 +300,7 @@ func GetMessagesForBot(bot int) (*[]Message, error) {
 	rows, err := dbConnection.db.Query(`
 		SELECT 	Timestamp,
 				Content,
-				Sender,
-				Affection,
-				Mood 
+				Sender
 		FROM Message 
 		WHERE Bot=$1`, bot)
 	if err != nil {
@@ -314,7 +310,7 @@ func GetMessagesForBot(bot int) (*[]Message, error) {
 	messages := []Message{}
 	var cursor Message
 	for rows.Next() {
-		if err := rows.Scan(&cursor.Timestamp, &cursor.Content, &cursor.Sender, &cursor.Affection, &cursor.Mood); err == nil {
+		if err := rows.Scan(&cursor.Timestamp, &cursor.Content, &cursor.Sender); err == nil {
 			messages = append(messages, cursor)
 		} else {
 			log.Println(err)
@@ -335,6 +331,7 @@ func GetBotsForUser(userID int) (*[]Bot, error) {
 				b.Gender,
 				b.Affection,
 				b.Mood,
+				b.Pattern,
 				b.Birthdate,
 				b.FavoriteColor,
 				b.FatherName,
@@ -350,7 +347,7 @@ func GetBotsForUser(userID int) (*[]Bot, error) {
 	var bots []Bot
 	var cursor Bot
 	for rows.Next() {
-		if err := rows.Scan(&cursor.ID, &cursor.Name, &cursor.Image, &cursor.Gender, &cursor.Affection, &cursor.Mood, &cursor.Birthdate,
+		if err := rows.Scan(&cursor.ID, &cursor.Name, &cursor.Image, &cursor.Gender, &cursor.Affection, &cursor.Mood, &cursor.Pattern, &cursor.Birthdate,
 			&cursor.FavoriteColor, &cursor.FatherName, &cursor.FatherAge, &cursor.MotherName, &cursor.MotherAge); err == nil {
 			bots = append(bots, cursor)
 		} else {
@@ -387,6 +384,7 @@ func GetBot(botID, userID int) (*Bot, error) {
 				b.Gender,
 				b.Affection,
 				b.Mood,
+				b.Pattern,
 				b.Birthdate,
 				b.FavoriteColor,
 				b.FatherName,
@@ -395,7 +393,7 @@ func GetBot(botID, userID int) (*Bot, error) {
 				b.MotherAge
 		FROM	Bot b
 		WHERE	b.BotID = $1 AND b.User = $2`, bot.ID, bot.User).Scan(
-		&bot.Name, &bot.Image, &bot.Gender, &bot.Affection, &bot.Mood, &bot.Birthdate,
+		&bot.Name, &bot.Image, &bot.Gender, &bot.Affection, &bot.Mood, &bot.Pattern, &bot.Birthdate,
 		&bot.FavoriteColor, &bot.FatherName, &bot.FatherAge, &bot.MotherName, &bot.MotherAge)
 	if err != nil {
 		return nil, err
@@ -410,10 +408,12 @@ type Name struct {
 	Gender int
 }
 
-// GEtNames returns all bots which belong to the given user
+// GetNames returns all bots which belong to the given user
 func GetNames(gender int) (*[]Name, error) {
 	rows, err := dbConnection.db.Query(`
-		SELECT 	*
+		SELECT 	NameID,
+				Text,
+				Gender
 		FROM Name 
 		WHERE Gender = $1`, gender)
 	if err != nil {
@@ -437,12 +437,14 @@ func GetNames(gender int) (*[]Name, error) {
 
 // GetName returns all bots which belong to the given user
 func GetName(id int) (*Name, error) {
-
-	name := Name{}
+	name := Name{
+		ID: id,
+	}
 	err := dbConnection.db.QueryRow(`
-		SELECT 	*
+		SELECT 	Text,
+				Gender
 		FROM Name 
-		WHERE NameID = $1`, id).Scan(&name.ID, &name.Text, &name.Gender)
+		WHERE NameID = $1`, name.ID).Scan(&name.Text, &name.Gender)
 
 	if err != nil {
 		return nil, err
@@ -453,15 +455,16 @@ func GetName(id int) (*Name, error) {
 // Image represents database entry
 type Image struct {
 	ImageID int
-	Gender  int
+	Gender  Gender
 	Path    string
 }
 
-// GetImage returns image object with given id
+// GetImages returns image object with given id
 func GetImages(gender int) (*[]Image, error) {
-
 	rows, err := dbConnection.db.Query(`
-		SELECT 	*
+		SELECT 	ImageID,
+				Gender,
+				Path
 		FROM Image 
 		WHERE Gender =$1`, gender)
 	if err != nil {
@@ -485,12 +488,14 @@ func GetImages(gender int) (*[]Image, error) {
 
 // GetImage returns image object with given id
 func GetImage(id int) (*Image, error) {
-
-	image := Image{}
+	image := Image{
+		ImageID: id,
+	}
 	err := dbConnection.db.QueryRow(`
-		SELECT 	*
+		SELECT 	Gender,
+				Path
 		FROM Image 
-		WHERE ImageID = $1`, id).Scan(&image.ImageID, &image.Gender, &image.Path)
+		WHERE ImageID = $1`, image.ImageID).Scan(&image.Gender, &image.Path)
 
 	if err != nil {
 		return nil, err
@@ -541,4 +546,27 @@ func (bot *Bot) GetFavoriteColor() string {
 		return "weiß"
 	}
 	return name
+}
+
+// UpdateContext updates the bots fields affection and mood in the database and saves the value in the struct
+func (bot *Bot) UpdateContext(affection, mood float64, pattern *int) error {
+	bot.Mood, bot.Affection = mood, affection
+	bot.Pattern = pattern
+	result, err := dbConnection.db.Exec(`
+		UPDATE Bot
+		SET	Affection = $1,
+			Mood = $2,
+			Pattern = $3
+		WHERE BotID = $4`, bot.Affection, bot.Mood, bot.Pattern, bot.ID)
+	if err != nil {
+		return err
+	}
+	if rows, err := result.RowsAffected(); err == nil {
+		if rows < 1 {
+			return errors.New("not bot with id " + strconv.Itoa(bot.ID) + " found")
+		}
+	} else {
+		return err
+	}
+	return nil
 }

@@ -20,7 +20,7 @@ def get_static_answer(category: PatternCategory, request: Request) -> str:
 
     # TODO: Determine how to pass values for formatting, like botname or gender
 
-    answers = answers_for_category(category)
+    answers = answers_for_category(category,request)
     answer = random.choice(answers)
 
     return answer.format(r=request)

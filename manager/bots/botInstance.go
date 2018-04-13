@@ -8,6 +8,8 @@ import (
 	"log"
 	"os/exec"
 	"time"
+
+	"github.com/AAA-Intelligence/eve/db"
 )
 
 // A instance of the bot python script
@@ -28,18 +30,18 @@ type botInstance struct {
 
 // MessageData is used so send all needed information to the bot instance
 type MessageData struct {
-	Text            string  `json:"text"`
-	PreviousPattern *int    `json:"previous_pattern,omitempty"`
-	Mood            float64 `json:"mood"`
-	Affection       float64 `json:"affection"`
-	Gender          int     `json:"bot_gender"` // 0 for male, 1 for female
-	Name            string  `json:"bot_name"`
-	Birthdate       int64   `json:"bot_birthdate"` // Unix timestamp
-	FavoriteColor   string  `json:"bot_favorite_color"`
-	FatherName      string  `json:"father_name"`
-	FatherAge       int     `json:"father_age"`
-	MotherName      string  `json:"mother_name"`
-	MotherAge       int     `json:"mother_age"`
+	Text            string    `json:"text"`
+	PreviousPattern *int      `json:"previous_pattern,omitempty"`
+	Mood            float64   `json:"mood"`
+	Affection       float64   `json:"affection"`
+	Gender          db.Gender `json:"bot_gender"`
+	Name            string    `json:"bot_name"`
+	Birthdate       int64     `json:"bot_birthdate"` // Unix timestamp
+	FavoriteColor   string    `json:"bot_favorite_color"`
+	FatherName      string    `json:"father_name"`
+	FatherAge       int       `json:"father_age"`
+	MotherName      string    `json:"mother_name"`
+	MotherAge       int       `json:"mother_age"`
 }
 
 // BotAnswer is the answer returned by the bot instance
@@ -66,6 +68,7 @@ func (b *botInstance) sendRequest(data MessageData) *BotAnswer {
 		log.Println("error reading from pipe:", err)
 		return errorBotAnswer(data.Mood, data.Affection)
 	}
+	log.Println("Raw response:", string(response))
 	msg := &BotAnswer{}
 	err = json.Unmarshal(response, msg)
 	if err != nil {
