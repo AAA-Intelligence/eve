@@ -229,6 +229,7 @@ p.user {
 	max-width: 75%;
 	clear: both;
 	position: relative;
+	word-break: break-all;
 	
 	/**Disabled, as it somehow destroys the speechbubble-effect (cuts ::after)...
 	text-overflow: ellipsis;
