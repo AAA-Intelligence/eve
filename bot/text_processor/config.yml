@@ -1,4 +1,6 @@
 # Defaults based on the opennmt-defaults.yml config
+# of the OpenNMT-tf repository (MIT License):
+# https://github.com/OpenNMT/OpenNMT-tf
 
 params:
   optimizer: GradientDescentOptimizer
