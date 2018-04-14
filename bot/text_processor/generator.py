@@ -11,6 +11,38 @@ import nltk
 from bot.data import Request
 from bot.text_processor.setup import config, model
 
+# Punctuation that appears before a word
+punct_before = ['(', '<', '„', ':']
+# Punctuation that appears after a word
+punct_after = [')', '<', '“', ',', '.', '!', '?']
+
+def clean_output(text):
+    """
+    Cleans up generated text for user output.
+
+    Arguments:
+        text: The text to clean up.
+
+    Returns:
+        The cleaned text.
+    """
+    text = (text
+        .replace('<s>', '') # Remove OpenNMT-specific markup
+        .replace('</s>', '')
+        .replace('``', '„') # Replace quoation marks with German ones
+        .replace("''", '“')
+        .replace('\n', ' ') # Replace newlines with spaces
+        .replace('  ', ' ') # Replace all double spaces with single space
+        )
+
+    # Remove unnecessary whitespace before / after punctuation
+    for p in punct_before:
+        text = text.replace(p + ' ', p)
+    for p in punct_after:
+        text = text.replace(' ' + p, p)
+
+    return text
+
 
 def input_fn_impl(text, model, batch_size, metadata):
     model._initialize(metadata)
@@ -86,6 +118,6 @@ def generate_answer(request: Request) -> str:
     session.close()
 
     # Clean up output
-    answer = answer.replace('<s>', '').replace('</s>', '').replace('\n', ' ')
+    answer = clean_output(answer)
 
     return answer
