@@ -38,8 +38,10 @@ def train_model(mode: Mode):
     model.compile(loss='categorical_crossentropy',
                   optimizer='adam', metrics=['accuracy'])
     # Train neural network
+    # validation_split is set to 0 because our dataset for pattern recognition
+    # is too small to compensate for not using data during training
     model.fit(train_x, train_y, batch_size=32, epochs=100,
-              verbose=1, validation_split=0.1, shuffle=True)
+              verbose=1, validation_split=0, shuffle=True)
 
     save_training(mode, model, train_x, train_y, words)
 
