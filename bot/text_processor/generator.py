@@ -38,8 +38,6 @@ def generate_answer(request: Request) -> str:
 
     Arguments:
         request: The request to generate an answer for.
-        mood: The mood returned by the mood analyzer.
-        affection: The affection returned by the affection analyzer.
 
     Returns:
         The generated answer.

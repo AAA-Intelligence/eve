@@ -9,7 +9,7 @@ def load_config(config_path: str):
     """
     Loads an OpenNMT config file
 
-    Args:
+    Arguments:
         config_path: The path to the config file
 
     Returns:

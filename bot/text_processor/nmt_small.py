@@ -1,4 +1,6 @@
-"""Defines a small unidirectional LSTM encoder-decoder model."""
+# Defines a small unidirectional LSTM encoder-decoder model.
+# Taken from the OpenNMT-tf repository (MIT License):
+# https://github.com/OpenNMT/OpenNMT-tf
 
 import tensorflow as tf
 import opennmt as onmt
