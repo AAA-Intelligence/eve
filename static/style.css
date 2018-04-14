@@ -554,7 +554,35 @@ form{
 	background-color: #106A59; /* Second Color */
 }
 
-#disconnectpopup {
+#deleteBotButton {
+	position: absolute;
+	left: 5px;
+	top: 5px;
+}
+
+#deleteBotButton button {
+	display: block;
+	float: left;
+	width: 42px;
+	height: 42px;
+	margin-left: 10px;
+	border: 1px solid #E53935; /* Warning Color */
+	background-color: #E53935; /* Warning Color */
+	background-image: url('/static/assets/delete-128.png');
+	background-repeat: no-repeat;
+	background-position: top 12px left 12px;
+	background-size: 18px;
+	border-radius: 50%;
+	cursor: pointer;
+	color: white;
+	box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.3);
+}
+
+#deleteBotButton:hover button {
+	background-color: #B71C1C; /* Warning Color Hover */
+}
+
+#disconnectpopup, #confirmDeletionPopup {
 	position: fixed;
 	text-align: center;
 	background-color: #F4F4F4;
@@ -585,6 +613,11 @@ form{
 	color: black;
 }
 
+#confirmDeletionPopup {
+	min-height: 300px;
+	height: 15%;
+}
+
 
 
 /**************************************** Input at registration & bot creation ****************************************/
@@ -609,16 +642,25 @@ form{
 	transform: translateY(-3px);
 	box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.2);
 }
-a.button {
+a.button, a.buttonWarning {
 	color: white;
 }
 
-.buttonSelected:hover {
+.buttonWarning {
+	background-color: #E53935; /* Warning Color */
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	margin: 4px 2px;
+	cursor: pointer;
+}
+.buttonWarning:hover {
 	transform: translateY(-3px);
 	box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.2);
-}
-a.buttonSelected {
-	color: white;
 }
 
 .inputcontainer input{
@@ -866,7 +908,7 @@ a.buttonSelected {
 		left: 0;
 		z-index: 1000;
 	}
-	#disconnectpopup {
+	#disconnectpopup, #confirmDeletionPopup {
 		position: fixed;
 		text-align: center;
 		background-color: #F4F4F4;
