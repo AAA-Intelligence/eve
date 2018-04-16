@@ -119,7 +119,9 @@
 		<div id="hidePopupButton"><button onclick="hidePopup('confirmDeletionPopup')"></button></div>
 		<h1>Löschen</h1>
 		<p>Bist du dir sicher, dass du diesen Kontakt inklusive des kompletten Chatverlaufs löschen möchtest?<br /><b>Dies kann nicht rückgängig gemacht werden!</b></p>
-		<a class="buttonWarning" href="deleteBot?bot={{.ActiveBot.ID}}">Ja, ich bin mir sicher.</a>
+		{{if .ActiveBot}}
+			<a class="buttonWarning" href="deleteBot?bot={{.ActiveBot.ID}}">Ja, ich bin mir sicher.</a>
+		{{end}}
 		</div>
 		
 		<div id="invisibleDismissContainer"></div>
