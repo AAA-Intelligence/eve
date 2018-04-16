@@ -20,7 +20,7 @@ window.onload = function () {
 			contentAr = document.getElementsByClassName("content");
 			contentEl = contentAr[0];
 			contentEl.innerHTML = "";
-			contentEl.style["background-image"] = "url('/static/bgpattern.png')";
+			contentEl.style["background-image"] = "url('/static/assets/bgpattern.png')";
 			contentEl.style["background-repeat"] = "repeat";
 			noBotsAvail = true;
 		}
@@ -46,7 +46,10 @@ window.onload = function () {
     function toMsg(text, style) {
         var item = document.createElement("p");
         var time = new Date()
-        var mytime = time.getHours()+":"+time.getMinutes();
+        var timeMinutes = time.getMinutes();
+        var timeMinutesString = timeMinutes+"";
+        if (timeMinutes < 10) timeMinutesString = "0"+timeMinutesString;
+        var mytime = time.getHours()+":"+timeMinutesString;
         item.innerHTML = "<p class=\"msg " + style + "\">" + text +"<span class=\"timestamp\">"+mytime+"</span>"+"</p>";
         return item
     }
@@ -149,7 +152,7 @@ var nameID = 0;
 
 var noBotsAvail = false;
 var popupDidLoad = false;
-var imageListDidLoad = -1;
+var imageListDidLoad = -1; //-1 = did not load yet, 0 = male, 1 = female
 var sidebarShowing = false;
 
 
@@ -238,7 +241,7 @@ var sidebarShowing = false;
 		showPopup('imagepopup');
 		
 		
-		if (imageListDidLoad == -1 || imageListDidLoad != sex) {
+		if (imageListDidLoad != sex) {
 		var imagesarea = document.getElementById("imagepopupcontainer");
 		
 		imagesarea.innerHTML = "";
@@ -254,11 +257,18 @@ var sidebarShowing = false;
 				//TESTING: uncomment the following line and comment the if-statements
 				//result = JSON.parse('[{"ImageID":"0","Path":"https://i.imgur.com/ru8D0SC.jpg"},{"ImageID":"1","Path":"https://i.imgur.com/WWQrYvd.jpg"},{"ImageID":"3","Path":"https://i.imgur.com/M7iNM4D.png"}]');
 				
-				for(key in result) {
-					if(result.hasOwnProperty(key)) {
+				//Randomize the images order
+				var list = [];
+				for (var i = 0; i <= result.length; i++) {
+					list.push(i);
+				}
+				list = shuffle(list);
+				
+				for(key in list) {
+					if(result.hasOwnProperty(list[key])) {
 						var item = document.createElement("button");
-						item.setAttribute('onclick','setImage('+result[key].ImageID+', "'+result[key].Path+'")');
-						item.style["background-image"] = "url("+result[key].Path+")";
+						item.setAttribute('onclick','setImage('+result[list[key]].ImageID+', "'+result[list[key]].Path+'")');
+						item.style["background-image"] = "url("+result[list[key]].Path+")";
 						imagesarea.appendChild(item);
 					}
 				}
@@ -397,5 +407,22 @@ var sidebarShowing = false;
 			
 			sidebarShowing = false;
 		}
+	}
+	
+	function shuffle(array) {
+		var currentIndex = array.length, temporaryValue, randomIndex;
+		// While there remain elements to shuffle...
+		while (0 !== currentIndex) {
+
+			// Pick a remaining element...
+			randomIndex = Math.floor(Math.random() * currentIndex);
+			currentIndex -= 1;
+
+			// And swap it with the current element.
+			temporaryValue = array[currentIndex];
+			array[currentIndex] = array[randomIndex];
+			array[randomIndex] = temporaryValue;
+		}
+		return array;
 	}
 	

@@ -112,7 +112,7 @@ func basicAuth(next http.HandlerFunc) http.HandlerFunc {
 				Expires: time.Now().Add(365 * 24 * time.Hour),
 				Path:    "/",
 			})
-			db.StoreSessionKey(user, sessionKey)
+			user.StoreSessionKey(sessionKey)
 		} else {
 			log.Println("cannot generate session key:", err)
 		}

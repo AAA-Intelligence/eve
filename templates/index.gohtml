@@ -27,7 +27,7 @@
         <div class="content">
 		<div class="chat-list">
 			<div class="topBar">
-			<img class="sidebarbutton" src="static/side-100.png" onclick="hideSidebar()"/>
+			<img class="sidebarbutton" src="static/assets/side-100.png" onclick="hideSidebar()"/>
 			<div id="title">
 				EVE - Datinghilfe
 			</div>
@@ -52,7 +52,7 @@
         {{if .ActiveBot}}
         <div class="chat">
             <div class="topBar2">
-			<img class="sidebarbutton" src="static/side-100.png" onclick="showSidebar()"/>
+			<img class="sidebarbutton" src="static/assets/side-100.png" onclick="showSidebar()"/>
 			<img src="{{.ActiveBot.Image}}" onclick="showPopup('profilepopup')">
             <div id="botname"><!--Du chattest mit: --><b style="cursor:pointer;" onclick="showPopup('profilepopup')">{{.ActiveBot.Name}}</b></div>
 			</div>
@@ -92,7 +92,7 @@
 		
 		<!-- Bot image selection popup -->
 		<div id="imagepopup">
-		<div id="hidePopupButton"><button onclick="hidePopup('imagepopup'); showPopup('popup');" style="background-image: url('/static/back-128.png');"></button></div><br />
+		<div id="hidePopupButton"><button onclick="hidePopup('imagepopup'); showPopup('popup');" style="background-image: url('/static/assets/back-128.png');"></button></div><br />
 				<div id="imagepopupcontainer">
 				<!-- Content added by JS -->
 				</div>
@@ -100,9 +100,10 @@
 		
 		<div id="profilepopup">
 		{{if .ActiveBot}}
-		<div id="hidePopupButton"><button onclick="hidePopup('profilepopup')"></button></div><br />
+		<div id="hidePopupButton"><button onclick="hidePopup('profilepopup')"></button></div>
+		<div id="deleteBotButton"><button onclick="hidePopup('profilepopup'); showPopup('confirmDeletionPopup');"></button></div><br />
 		<img id="profileimage" src="{{.ActiveBot.Image}}"/>
-		<br /><p id="profilename">{{.ActiveBot.Name}}<img src="static/sex_{{.ActiveBot.Gender}}-24.png"/></p>
+		<br /><p id="profilename">{{.ActiveBot.Name}}<img src="static/assets/sex_{{.ActiveBot.Gender}}-24.png"/></p>
 		<table id="profiletable">
 		<tr><td>Alter</td><td>{{years .ActiveBot.Birthdate}} Jahre alt</td></tr>
 		</table>
@@ -111,7 +112,16 @@
 		
 		<div id="disconnectpopup">
 		<h1>Verbindung verloren. 😭</h1>
-		<h2><a href="/">Klicke, um es erneut zu versuchen.</a></h2>
+		<h2><a class="button" href="/">Klicke, um es erneut zu versuchen.</a></h2>
+		</div>
+		
+		<div id="confirmDeletionPopup">
+		<div id="hidePopupButton"><button onclick="hidePopup('confirmDeletionPopup')"></button></div>
+		<h1>Löschen</h1>
+		<p>Bist du dir sicher, dass du diesen Kontakt inklusive des kompletten Chatverlaufs löschen möchtest?<br /><b>Dies kann nicht rückgängig gemacht werden!</b></p>
+		{{if .ActiveBot}}
+			<a class="buttonWarning" href="deleteBot?bot={{.ActiveBot.ID}}">Ja, ich bin mir sicher.</a>
+		{{end}}
 		</div>
 		
 		<div id="invisibleDismissContainer"></div>

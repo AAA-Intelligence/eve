@@ -2,6 +2,8 @@ package main
 
 import (
 	"log"
+	"math/rand"
+	"time"
 
 	"github.com/AAA-Intelligence/eve/db"
 	"github.com/AAA-Intelligence/eve/manager"
@@ -19,5 +21,8 @@ func main() {
 		log.Fatalln("error connecting to database: ", err)
 		return
 	}
+	// set seed for random generations
+	rand.Seed(time.Now().Unix())
+
 	manager.StartWebServer(config.Host, config.HTTP)
 }

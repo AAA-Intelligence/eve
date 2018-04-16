@@ -161,7 +161,7 @@ body{
 	overflow-y: auto;
 	box-sizing: border-box;
 	/* Simon mag keinen Schatten: box-shadow: 0 15px 15px -15px inset; */
-	background-image: url('/static/bgpattern.png');
+	background-image: url('/static/assets/bgpattern.png');
 	background-repeat: repeat;
 }
 
@@ -184,7 +184,7 @@ body{
 	margin-right: 10px;
 	border: 1px solid #40CDB2; /* Third Color */
 	background-color: #40CDB2; /* Third Color */
-	background-image: url('/static/send-128.png');
+	background-image: url('/static/assets/send-128.png');
 	background-repeat: no-repeat;
 	background-position: top 12px left 14px;
 	background-size: 18px;
@@ -229,6 +229,7 @@ p.user {
 	max-width: 75%;
 	clear: both;
 	position: relative;
+	word-break: break-all;
 	
 	/**Disabled, as it somehow destroys the speechbubble-effect (cuts ::after)...
 	text-overflow: ellipsis;
@@ -288,7 +289,7 @@ p.user::after {
 	margin-left: 10px;
 	border: 1px solid #40CDB2; /* Third Color */
 	background-color: #40CDB2; /* Third Color */
-	background-image: url('/static/new-128.png');
+	background-image: url('/static/assets/new-128.png');
 	background-repeat: no-repeat;
 	background-position: top 12px left 12px;
 	background-size: 18px;
@@ -539,7 +540,7 @@ form{
 	margin-left: 10px;
 	border: 1px solid #40CDB2; /* Third Color */
 	background-color: #40CDB2; /* Third Color */
-	background-image: url('/static/cross-128.png');
+	background-image: url('/static/assets/cross-128.png');
 	background-repeat: no-repeat;
 	background-position: top 12px left 12px;
 	background-size: 18px;
@@ -553,7 +554,35 @@ form{
 	background-color: #106A59; /* Second Color */
 }
 
-#disconnectpopup {
+#deleteBotButton {
+	position: absolute;
+	left: 5px;
+	top: 5px;
+}
+
+#deleteBotButton button {
+	display: block;
+	float: left;
+	width: 42px;
+	height: 42px;
+	margin-left: 10px;
+	border: 1px solid #E53935; /* Warning Color */
+	background-color: #E53935; /* Warning Color */
+	background-image: url('/static/assets/delete-128.png');
+	background-repeat: no-repeat;
+	background-position: top 12px left 12px;
+	background-size: 18px;
+	border-radius: 50%;
+	cursor: pointer;
+	color: white;
+	box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.3);
+}
+
+#deleteBotButton:hover button {
+	background-color: #B71C1C; /* Warning Color Hover */
+}
+
+#disconnectpopup, #confirmDeletionPopup {
 	position: fixed;
 	text-align: center;
 	background-color: #F4F4F4;
@@ -580,8 +609,9 @@ form{
 						supported by Chrome and Opera */
 }
 
-#disconnectpopup a {
-	color: black;
+#confirmDeletionPopup {
+	min-height: 300px;
+	height: 15%;
 }
 
 
@@ -608,16 +638,25 @@ form{
 	transform: translateY(-3px);
 	box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.2);
 }
-a.button {
+a.button, a.buttonWarning {
 	color: white;
 }
 
-.buttonSelected:hover {
+.buttonWarning {
+	background-color: #E53935; /* Warning Color */
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	margin: 4px 2px;
+	cursor: pointer;
+}
+.buttonWarning:hover {
 	transform: translateY(-3px);
 	box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.2);
-}
-a.buttonSelected {
-	color: white;
 }
 
 .inputcontainer input{
@@ -718,7 +757,7 @@ a.buttonSelected {
 	margin-left: 10px;
 	border: 0px;
 	background-color: transparent;
-	background-image: url('/static/refresh-128.png');
+	background-image: url('/static/assets/refresh-128.png');
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: 100%;
@@ -727,7 +766,7 @@ a.buttonSelected {
 }
 
 #generatedName button:hover {
-	background-image: url('/static/refresh-128-h.png');
+	background-image: url('/static/assets/refresh-128-h.png');
 }
 
 
@@ -865,7 +904,7 @@ a.buttonSelected {
 		left: 0;
 		z-index: 1000;
 	}
-	#disconnectpopup {
+	#disconnectpopup, #confirmDeletionPopup {
 		position: fixed;
 		text-align: center;
 		background-color: #F4F4F4;

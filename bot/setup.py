@@ -92,16 +92,26 @@ def setup_traing_data(
 def setup_nn_model(train_x: np.ndarray, train_y: np.ndarray) -> Sequential:
     # Define neural network
 
-    DENSITIY: int = 512
-    DROPOUT: float = 0.25
+    # Amount of words in our vocabulary / bag of words
+    num_words: int = len(train_x[0])
+    # Amount of defined classes
+    num_classes: int = len(train_y[0])
+
+    # The amount of neurons to work with
+    # https://stackoverflow.com/a/44748370
+    # Most bag-of-words training examples use 512 here
+    units: int = 512
+
+    # Probability that a neuron will be ignored while processing input
+    # http://papers.nips.cc/paper/4878-understanding-dropout.pdf suggests that
+    # 50% gives the best results
+    dropout_rate: float = 0.5
 
     model = Sequential()
 
     model.add(
-        Dense(DENSITIY, input_shape=(len(train_x[0]),), activation='relu'))
-    model.add(Dropout(DROPOUT))
-    model.add(Dense(DENSITIY // 2, activation='sigmoid'))
-    model.add(Dropout(DROPOUT))
-    model.add(Dense(len(train_y[0]), activation='softmax'))
+        Dense(units, input_shape=(num_words,), activation='relu'))
+    model.add(Dropout(dropout_rate))
+    model.add(Dense(num_classes, activation='softmax'))
 
     return model
