@@ -256,6 +256,8 @@ func StartWebServer(host string, httpPort int) {
 	mux.HandleFunc("/getImages", basicAuth(getImages))
 	mux.HandleFunc("/ws", basicAuth(webSocket))
 
+	mux.HandleFunc("/messageApi", basicAuth(httpMessageInterface))
+
 	// handle static files like css
 	fs := http.FileServer(http.Dir("static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
