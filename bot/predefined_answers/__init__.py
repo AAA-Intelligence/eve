@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import Dict, List
 
 from bot.data import Request
-from bot.logger import logger
 from bot.model_definitions import PatternCategory
 
 # Cache for category answers
@@ -30,23 +29,14 @@ def answers_for_category(category: PatternCategory, request: Request) -> List[
         An array containing all answers defined for the given category.
     """
 
+    direction = ""
     if category in cache:
         return cache[category]
-    if category.name == 'AFFECTION':
-        if request.affection >= 0:
-            direction = "POS"
-        else:
-            direction = "NEG"
-        p = Path(dir, 'A_%s.txt' % (direction))
-    elif category.name == 'MOOD':
-        if request.mood >= 0:
-            direction = "POS"
-        else:
-            direction = "NEG"
-        logger.debug("DIRECTION: %s" % direction)
-        p = Path(dir, 'M_%s.txt' % (direction))
-    else:
-        p = Path(dir, category.name + '.txt')
+    if category.name in 'MOOD PICKUP_LINES':
+        direction = "_POS" if request.mood >= 0 else  "_NEG"
+    elif category.name in 'AFFECTION':  #DATES':
+        direction = "_POS" if request.affection >= 0 else "_NEG"
+    p = Path(dir, '%s%s.txt' % (category.name, direction))
 
     if not p.is_file():
         raise FileNotFoundError(
