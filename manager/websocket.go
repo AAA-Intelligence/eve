@@ -34,7 +34,7 @@ func webSocket(w http.ResponseWriter, r *http.Request) {
 		var request MessageRequest
 		err := c.ReadJSON(&request)
 		if err != nil {
-			if !websocket.IsCloseError(err, websocket.CloseGoingAway) {
+			if !websocket.IsCloseError(err, websocket.CloseAbnormalClosure) {
 				log.Println("error reading:", err)
 			}
 			break
