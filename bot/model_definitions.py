@@ -38,6 +38,14 @@ class PatternCategory(IntEnum):
     ANY_BIRTHDAY = auto()
     MOOD = auto()
     AFFECTION = auto()
+    BOT_RELIGION = auto()
+    WEATHER = auto()
+    COMPLIMENTS = auto()
+    PICKUP_LINES = auto()
+    """
+    DATE = auto()
+    BOT_HOBBIES = auto()
+    """
 
 
 Category = Union[MoodCategory, AffectionCategory, PatternCategory]
