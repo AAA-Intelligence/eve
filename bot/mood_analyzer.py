@@ -78,7 +78,7 @@ def analyze(request: Request) -> Tuple[float, float, float, float]:
         # return 0 if no certain affection was found
         affection_message = 0.0
 
-    logger.debug("MOOD: %f -> %f, AFFECTION: %f -> %f" % (
+    """logger.debug("MOOD: %f -> %f, AFFECTION: %f -> %f" % (
         request.mood, mood_bot, request.affection, affection_bot))
-
+"""
     return (mood_message, affection_message, mood_bot, affection_bot)
