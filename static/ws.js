@@ -46,7 +46,10 @@ window.onload = function () {
     function toMsg(text, style) {
         var item = document.createElement("p");
         var time = new Date()
-        var mytime = time.getHours()+":"+time.getMinutes();
+        var timeMinutes = time.getMinutes();
+        var timeMinutesString = timeMinutes+"";
+        if (timeMinutes < 10) timeMinutesString = "0"+timeMinutesString;
+        var mytime = time.getHours()+":"+timeMinutesString;
         item.innerHTML = "<p class=\"msg " + style + "\">" + text +"<span class=\"timestamp\">"+mytime+"</span>"+"</p>";
         return item
     }
