@@ -802,6 +802,7 @@ CREATE TABLE IF NOT EXISTS 'Bot' (
 	'FatherAge' INTEGER NOT NULL,
 	'MotherName' INTEGER NOT NULL,
 	'MotherAge' INTEGER NOT NULL,
+	'CreationDate' DATETIME NOT NULL,
 	CONSTRAINT 'Bot_User_UserID_fk' FOREIGN KEY('User') REFERENCES 'User',
 	CONSTRAINT 'Bot_FavoriteColor_ColorID_fk' FOREIGN KEY('FavoriteColor') REFERENCES 'Color',
 	CONSTRAINT 'Bot_FatherName_NameID_fk' FOREIGN KEY('FatherName') REFERENCES 'Name',

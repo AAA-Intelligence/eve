@@ -20,6 +20,14 @@ func handleMessage(request MessageRequest) string {
 		log.Println("error loading bot data from db:", err)
 		return "Ok"
 	}
+
+	err = bot.StoreMessages(request.User, []db.Message{
+		db.Message{
+			Sender:    db.UserIsSender,
+			Content:   request.Message,
+			Timestamp: time.Now(),
+		},
+	})
 	botAnswer := botPool.HandleRequest(bots.MessageData{
 		Text:            request.Message,
 		Mood:            bot.Mood,
@@ -40,11 +48,6 @@ func handleMessage(request MessageRequest) string {
 
 	// store sent messages
 	err = bot.StoreMessages(request.User, []db.Message{
-		db.Message{
-			Sender:    db.UserIsSender,
-			Content:   request.Message,
-			Timestamp: time.Now(),
-		},
 		db.Message{
 			Sender:    db.BotIsSender,
 			Content:   botAnswer.Text,

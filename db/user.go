@@ -93,9 +93,11 @@ func (u *User) GetBots() (*[]Bot, error) {
 				b.FatherName,
 				b.FatherAge,
 				b.MotherName,
-				b.MotherAge
+				b.MotherAge,
+				b.CreationDate
 		FROM	Bot b
-		WHERE b.User=$2`, u.ID)
+		WHERE b.User=$2
+		ORDER BY (SELECT IFNULL(MAX(Timestamp),b.CreationDate) FROM Message WHERE Bot = b.BotID) DESC`, u.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +106,7 @@ func (u *User) GetBots() (*[]Bot, error) {
 	var cursor Bot
 	for rows.Next() {
 		if err := rows.Scan(&cursor.ID, &cursor.Name, &cursor.Image, &cursor.Gender, &cursor.Affection, &cursor.Mood, &cursor.Pattern, &cursor.Birthdate,
-			&cursor.FavoriteColor, &cursor.FatherName, &cursor.FatherAge, &cursor.MotherName, &cursor.MotherAge); err == nil {
+			&cursor.FavoriteColor, &cursor.FatherName, &cursor.FatherAge, &cursor.MotherName, &cursor.MotherAge, &cursor.CreationDate); err == nil {
 			bots = append(bots, cursor)
 		} else {
 			log.Println(err)
@@ -135,11 +137,12 @@ func (u *User) GetBot(botID int) (*Bot, error) {
 				b.FatherName,
 				b.FatherAge,
 				b.MotherName,
-				b.MotherAge
+				b.MotherAge,
+				b.CreationDate
 		FROM	Bot b
 		WHERE	b.BotID = $1 AND b.User = $2`, bot.ID, bot.User).Scan(
 		&bot.Name, &bot.Image, &bot.Gender, &bot.Affection, &bot.Mood, &bot.Pattern, &bot.Birthdate,
-		&bot.FavoriteColor, &bot.FatherName, &bot.FatherAge, &bot.MotherName, &bot.MotherAge)
+		&bot.FavoriteColor, &bot.FatherName, &bot.FatherAge, &bot.MotherName, &bot.MotherAge, &bot.CreationDate)
 	if err != nil {
 		return nil, err
 	}

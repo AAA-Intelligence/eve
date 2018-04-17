@@ -68,7 +68,7 @@ func (b *botInstance) sendRequest(data MessageData) *BotAnswer {
 		log.Println("error reading from pipe:", err)
 		return errorBotAnswer(data.Mood, data.Affection)
 	}
-	log.Println("Raw response:", string(response))
+	//log.Println("Raw response:", string(response))
 	msg := &BotAnswer{}
 	err = json.Unmarshal(response, msg)
 	if err != nil {
