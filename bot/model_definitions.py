@@ -42,10 +42,8 @@ class PatternCategory(IntEnum):
     WEATHER = auto()
     COMPLIMENTS = auto()
     PICKUP_LINES = auto()
-    """
-    DATE = auto()
     BOT_HOBBIES = auto()
-    """
+    DATE = auto()
 
 
 Category = Union[MoodCategory, AffectionCategory, PatternCategory]
