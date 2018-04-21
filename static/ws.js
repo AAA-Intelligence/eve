@@ -94,8 +94,10 @@ window.onload = function () {
     if (window["WebSocket"]) {
         conn = new WebSocket("ws://" + document.location.host + "/ws");
         conn.onclose = function (evt) {
-            appendChat("Ich bin dann mal im Flugmodus... Bis demnächst!", "bot");
-			showPopup("disconnectpopup");
+			setTimeout(function(){ 
+					appendChat("Ich bin dann mal im Flugmodus... Bis demnächst!", "bot");
+					showPopup("disconnectpopup");
+			}, 500); //Show delayed due to strange behavior on some browsers (Issue #115)
         };
         conn.onmessage = function (evt) {
             var messages = evt.data.split('\n');
