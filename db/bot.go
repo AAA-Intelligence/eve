@@ -46,11 +46,23 @@ type Bot struct {
 	Pattern *int
 
 	Birthdate     time.Time
+
+	// FavoriteColor is the primary key of the bots favorite color
 	FavoriteColor int
+	
+	// FatherName is the primary key of the bots fathers name
 	FatherName    int
+
+	// FatherAge is the bots fathers age in years
 	FatherAge     int
+
+	// MotherName is the primary key of the bots mothers name
 	MotherName    int
+
+	// MotherAge is the bots mothers age in years
 	MotherAge     int
+	
+	// CreationDate is the point in time when the bot was created by a user
 	CreationDate  time.Time
 }
 
