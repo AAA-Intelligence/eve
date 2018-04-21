@@ -23,7 +23,7 @@ def stretch_prob(probability: float) -> float:
 
 def analyze(request: Request) -> Tuple[float, float]:
     """
-    R
+
 
     :param request: The request passed by the web server to the bot instance.
                     It contains all the necessary information to determine a new bot mood/affection.
@@ -75,8 +75,8 @@ def analyze(request: Request) -> Tuple[float, float]:
 
         # apply message to affection
         affection_bot = affection_bot + sign * affection_message * IMPACT_FACTOR
-        affection_bot = tanh(2 * affection_bot)
         if affection_bot > 1:
             affection_bot = 1.0
+        affection_bot = tanh(2 * affection_bot)
 
     return (mood_bot, affection_bot)
