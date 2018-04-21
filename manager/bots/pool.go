@@ -80,7 +80,6 @@ func (p *BotPool) HandleRequest(data MessageData) BotAnswer {
 		}
 		answer = a
 	}
-
 	return answer
 }
 

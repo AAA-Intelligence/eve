@@ -31,7 +31,7 @@ type botInstance struct {
 // MessageData is used so send all needed information to the bot instance
 type MessageData struct {
 	Text            string    `json:"text"`
-	PreviousPattern *int      `json:"previous_pattern,omitempty"`
+	PreviousPattern *int      `json:"previous_pattern,omitempty"` // can be null
 	Mood            float64   `json:"mood"`
 	Affection       float64   `json:"affection"`
 	Gender          db.Gender `json:"bot_gender"`
@@ -47,7 +47,7 @@ type MessageData struct {
 // BotAnswer is the answer returned by the bot instance
 type BotAnswer struct {
 	Text      string  `json:"text"`
-	Pattern   *int    `json:"pattern,omitempty"`
+	Pattern   *int    `json:"pattern,omitempty"` // can be null
 	Mood      float64 `json:"mood"`
 	Affection float64 `json:"affection"`
 }

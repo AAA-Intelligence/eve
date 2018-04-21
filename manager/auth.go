@@ -116,6 +116,7 @@ func basicAuth(next http.HandlerFunc) http.HandlerFunc {
 		} else {
 			log.Println("cannot generate session key:", err)
 		}
+		// store user in request context to make is accessible for further processing
 		r = r.WithContext(context.WithValue(r.Context(), UserContextKey, user))
 
 		w.Header().Del("WWW-Authenticate")

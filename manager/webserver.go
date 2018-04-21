@@ -6,6 +6,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"runtime"
 	"strconv"
 
 	"github.com/AAA-Intelligence/eve/db"
@@ -194,7 +195,8 @@ func createBot(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(res, req, "/", http.StatusSeeOther)
+	// redirect to created bot
+	http.Redirect(res, req, "/?bot="+strconv.Itoa(bot.ID), http.StatusSeeOther)
 }
 
 func deleteBot(w http.ResponseWriter, r *http.Request) {
@@ -270,7 +272,8 @@ func StartWebServer(host string, httpPort int) {
 
 	log.Println("Starting web server")
 	server.RegisterOnShutdown(onShutdown)
-	botPool = bots.NewBotPool(4)
+	// start as many bot instances as cpu has cores
+	botPool = bots.NewBotPool(runtime.NumCPU())
 	err := server.ListenAndServe()
 	if err != nil {
 		log.Println(err)
