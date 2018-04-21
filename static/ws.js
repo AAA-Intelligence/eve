@@ -185,6 +185,13 @@ var sidebarShowing = false;
 			blurstrength = 1.5;
 		}
 		
+		if (id == 'profilepopup') { //Load HQ image for profile
+			var profileimageel = document.getElementById('profileimage');
+			profileimageurl = profileimageel.src;
+			profileimageurl = getHQImageURL(profileimageurl);
+			profileimageel.src = profileimageurl;
+		}
+		
 		//Show popup
 		popup.style["visibility"] = "visible";
 		popup.style["display"] = "block";
@@ -320,7 +327,8 @@ var sidebarShowing = false;
 	function setImage(id, url) {
 		picID = id;
 		var imagebutton = document.getElementById("imageinput");
-		imagebutton.style["background-image"] = "url("+url+")";
+		hqurl = getHQImageURL(url);
+		imagebutton.style["background-image"] = "url("+hqurl+")";
 		hidePopup("imagepopup");
 		showPopup("popup");
 	}
@@ -426,5 +434,12 @@ var sidebarShowing = false;
 			array[randomIndex] = temporaryValue;
 		}
 		return array;
+	}
+	
+	function getHQImageURL(url) {
+		urlsplit = url.split("/");
+		urlsplit[urlsplit.length-1] = "hq_"+urlsplit[urlsplit.length-1];
+		newurl = urlsplit.join("/");
+		return newurl;
 	}
 	
