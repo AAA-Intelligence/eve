@@ -156,6 +156,7 @@ var noBotsAvail = false;
 var popupDidLoad = false;
 var imageListDidLoad = -1; //-1 = did not load yet, 0 = male, 1 = female
 var sidebarShowing = false;
+var didLoadHQ = false;
 
 
 	function showPopup(id) {
@@ -185,11 +186,12 @@ var sidebarShowing = false;
 			blurstrength = 1.5;
 		}
 		
-		if (id == 'profilepopup') { //Load HQ image for profile
+		if (id == 'profilepopup' && !didLoadHQ) { //Load HQ image for profile
 			var profileimageel = document.getElementById('profileimage');
 			profileimageurl = profileimageel.src;
 			profileimageurl = getHQImageURL(profileimageurl);
 			profileimageel.src = profileimageurl;
+			didLoadHQ = true;
 		}
 		
 		//Show popup
