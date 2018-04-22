@@ -63,7 +63,7 @@ def run_demo():
                 father_age=49,
                 mother_name='Agathe',
                 mother_age=47
-                )
+            )
             response = handle_request(request)
             print('Response: ', response.text)
             previous_pattern = response.pattern

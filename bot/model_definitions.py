@@ -4,7 +4,6 @@ from typing import Union, Type
 
 @unique
 class AffectionCategory(IntEnum):
-    # TODO separate sentiment and mood
     # A_*: Describes the affection data
     A_NEG = 0
     A_POS = 1

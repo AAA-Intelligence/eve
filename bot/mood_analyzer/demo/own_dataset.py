@@ -16,69 +16,69 @@ allLabels = []
 
 
 def readFile(fileName, allWords):
-	file = codecs.open(fileName, encoding='utf-8')
+    file = codecs.open(fileName, encoding='utf-8')
 
-	for line in file:
-		line = line.lower().encode('utf-8')
-		words = line.split()
-		for word in words:
-			word = word.translate(None, string.punctuation)
-			if word != '':
-				allWords.append(word)
+    for line in file:
+        line = line.lower().encode('utf-8')
+        words = line.split()
+        for word in words:
+            word = word.translate(None, string.punctuation)
+            if word != '':
+                allWords.append(word)
 
-	file.close()
+    file.close()
 
 
 def readFileToConvertWordsToIntegers(dictionary, fileName, allDocuments,
-									 allLabels, label):
-	file = codecs.open(fileName, encoding='utf-8')
-	document = []
-	for line in file:
-		line = line.lower().encode('utf-8')
-		words = line.split()
-		for word in words:
-			word = word.translate(None, string.punctuation)
-			if word in dictionary:
-				index = dictionary[word]
-			else:
-				index = 0  # dictionary['UNK']
-			document.append(index)
-		allDocuments.append(document)
-		allLabels.append(label)
+                                     allLabels, label):
+    file = codecs.open(fileName, encoding='utf-8')
+    document = []
+    for line in file:
+        line = line.lower().encode('utf-8')
+        words = line.split()
+        for word in words:
+            word = word.translate(None, string.punctuation)
+            if word in dictionary:
+                index = dictionary[word]
+            else:
+                index = 0  # dictionary['UNK']
+            document.append(index)
+        allDocuments.append(document)
+        allLabels.append(label)
 
-	file.close()
+    file.close()
 
 
 vocabulary_size = 10000
 
 
 def build_dataset(words):
-	count = [['UNK', -1]]
-	count.extend(collections.Counter(words).most_common(vocabulary_size - 1))
-	dictionary = dict()
-	for word, _ in count:
-		dictionary[word] = len(dictionary)
-	data = list()
-	unk_count = 0
-	for word in words:
-		if word in dictionary:
-			index = dictionary[word]
-		else:
-			index = 0  # dictionary['UNK']
-			unk_count = unk_count + 1
-		data.append(index)
-	count[0][1] = unk_count
-	reverse_dictionary = dict(zip(dictionary.values(), dictionary.keys()))
-	return dictionary, reverse_dictionary
+    count = [['UNK', -1]]
+    count.extend(collections.Counter(words).most_common(vocabulary_size - 1))
+    dictionary = dict()
+    for word, _ in count:
+        dictionary[word] = len(dictionary)
+    data = list()
+    unk_count = 0
+    for word in words:
+        if word in dictionary:
+            index = dictionary[word]
+        else:
+            index = 0  # dictionary['UNK']
+            unk_count = unk_count + 1
+        data.append(index)
+    count[0][1] = unk_count
+    reverse_dictionary = dict(zip(dictionary.values(), dictionary.keys()))
+    return dictionary, reverse_dictionary
 
 
 fileList = glob.glob("train/neg/*.txt")
 for file in fileList:
-	readFile(file, allWords)
+    readFile(file, allWords)
 
 fileList = glob.glob("train/pos/*.txt")
 for file in fileList:
-	readFile(file, allWords)
+    readFile(file, allWords)
 
 print(len(allWords))
 
@@ -89,13 +89,13 @@ print(len(dictionary))
 
 # fileList = glob.glob("/Users/inanc/Desktop/aclImdb/train/neg/*.txt")
 for file in fileList:
-	readFileToConvertWordsToIntegers(dictionary, file, allDocuments, allLabels,
-									 0)
+    readFileToConvertWordsToIntegers(dictionary, file, allDocuments, allLabels,
+                                     0)
 
 # fileList = glob.glob("/Users/inanc/Desktop/aclImdb/train/pos/*.txt")
 for file in fileList:
-	readFileToConvertWordsToIntegers(dictionary, file, allDocuments, allLabels,
-									 1)
+    readFileToConvertWordsToIntegers(dictionary, file, allDocuments, allLabels,
+                                     1)
 
 print(len(allDocuments))
 print(len(allLabels))
@@ -131,11 +131,11 @@ net = tflearn.embedding(net, input_dim=vocabulary_size, output_dim=128)
 net = tflearn.lstm(net, 128, dropout=0.8)
 net = tflearn.fully_connected(net, 2, activation='softmax')
 net = tflearn.regression(net, optimizer='adam', learning_rate=0.001,
-						 loss='categorical_crossentropy')
+                         loss='categorical_crossentropy')
 
 # Training
 model = tflearn.DNN(net, tensorboard_verbose=0)
 model.fit(trainX, trainY, validation_set=(testX, testY), show_metric=True,
-		  batch_size=32)
+          batch_size=32)
 predictions = model.predict(trainX)
 print(predictions)

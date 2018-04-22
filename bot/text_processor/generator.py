@@ -16,6 +16,7 @@ punct_before = ['(', '<', '„', ':']
 # Punctuation that appears after a word
 punct_after = [')', '<', '“', ',', '.', '!', '?']
 
+
 def clean_output(text):
     """
     Cleans up generated text for user output.
@@ -27,13 +28,13 @@ def clean_output(text):
         The cleaned text.
     """
     text = (text
-        .replace('<s>', '') # Remove OpenNMT-specific markup
-        .replace('</s>', '')
-        .replace('``', '„') # Replace quoation marks with German ones
-        .replace("''", '“')
-        .replace('\n', ' ') # Replace newlines with spaces
-        .replace('  ', ' ') # Replace all double spaces with single space
-        )
+            .replace('<s>', '')  # Remove OpenNMT-specific markup
+            .replace('</s>', '')
+            .replace('``', '„')  # Replace quoation marks with German ones
+            .replace("''", '“')
+            .replace('\n', ' ')  # Replace newlines with spaces
+            .replace('  ', ' ')  # Replace all double spaces with single space
+            )
 
     # Remove unnecessary whitespace before / after punctuation
     for p in punct_before:

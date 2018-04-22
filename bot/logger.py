@@ -14,7 +14,7 @@ file_handler = logging.FileHandler(
 # only debug and more severe logs are written to the log file
 file_handler.setLevel(logging.DEBUG)
 
-#adding the formatter to the logger
+# adding the formatter to the logger
 file_handler.setFormatter(formatter)
 
 # adding console output to the logger for debug purposes in the console demo

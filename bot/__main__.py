@@ -9,15 +9,15 @@ nltk.download('punkt', quiet=True)
 
 target = argv[1] if len(argv) > 1 else None
 
-# trains the pattern recognizer
 if target == 'train-patterns':
+    # Trains the pattern recognizer
     from bot.trainer import train_model
 
     logger.info('Running pattern training')
     train_model(Mode.PATTERNS)
 
-# trains the sentiment analysis  (mood, affection) models
 elif target == 'train-sentiments':
+    # Trains the sentiment analysis  (mood, affection) models
     from bot.trainer import train_model
 
     logger.info(
@@ -25,15 +25,15 @@ elif target == 'train-sentiments':
     train_model(Mode.AFFECTIONS)
     train_model(Mode.MOODS)
 
-# trains the chat bots text generator with previously parsed whatsapp chats
 elif target == 'train-chat':
+    # Trains the chat bots text generator with previously parsed whatsapp chats
     from bot.text_processor.train import train_and_evaluate
 
     logger.info('Running chat training')
     train_and_evaluate()
 
-# allows developer to test bot in the command line
 elif target == 'demo':
+    # Allows developer to test bot in the command line
     from bot.request_handler import run_demo
 
     run_demo()

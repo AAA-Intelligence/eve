@@ -52,7 +52,7 @@ def save_training(
     train_x: np.ndarray,
     train_y: np.ndarray,
     words: List[str]
-    ):
+):
     file_name: str = mode.value
 
     # Save model

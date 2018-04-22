@@ -67,4 +67,4 @@ def parse_request(json_data: str) -> Request:
         data["father_age"],
         data["mother_name"],
         data["mother_age"],
-        )
+    )

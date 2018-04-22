@@ -11,8 +11,10 @@ cache: Dict[str, List[str]] = {}
 dir = path.dirname(__file__)
 
 
-def answers_for_category(category: PatternCategory, request: Request) -> List[
-    str]:
+def answers_for_category(
+    category: PatternCategory,
+    request: Request
+) -> List[str]:
     """
     Returns all predefined answers for the given category if possible.
     Answers are cached per category, so the first call for a category will read

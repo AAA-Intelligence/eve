@@ -20,7 +20,6 @@ def load_config(config_path: str):
         return yaml.load(f)
 
 
-
 __dir = path.dirname(__file__)
 config_path = path.join(__dir, 'config.yml')
 model_file = path.join(__dir, 'nmt_small.py')
