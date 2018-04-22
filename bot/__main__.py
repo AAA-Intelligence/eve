@@ -30,14 +30,21 @@ elif target == 'train-sentiments':
 
 elif target == 'train-chat':
     # Trains the chat bots text generator with previously parsed whatsapp chats
-    from bot.text_processor.train import train_and_evaluate
+    from bot.text_processor.train import train
 
     logger.info('Running chat training')
-    train_and_evaluate()
+    train()
 
 elif target == 'demo':
     # Allows developer to test bot in the command line
     from bot.request_handler import run_demo
+    from bot.model_definitions import Mode
+    from bot.trainer import load_model
+
+    # Pre-cache models before starting the loop
+    load_model(Mode.PATTERNS)
+    load_model(Mode.MOODS)
+    load_model(Mode.AFFECTIONS)
 
     run_demo()
 

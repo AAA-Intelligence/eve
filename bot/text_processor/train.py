@@ -6,7 +6,7 @@ import tensorflow as tf
 from bot.text_processor.setup import config, model
 
 
-def train_and_evaluate():
+def train():
     tf.logging.set_verbosity(tf.logging.INFO)
     runner = Runner(model, config)
     runner.train()
