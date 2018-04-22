@@ -37,7 +37,11 @@ elif target == 'demo':
     from bot.request_handler import run_demo
 
     run_demo()
+
 else:
+    # The default mode of the bot:
+    # Runs a loop waiting for JSON encoded input from stdin and returns
+    # JSON encoded output to stdout, seperated by newlines
     from bot.request_handler import run_loop
 
     run_loop()
