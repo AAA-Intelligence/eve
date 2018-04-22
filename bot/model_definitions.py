@@ -19,6 +19,10 @@ class MoodCategory(IntEnum):
 
 @unique
 class PatternCategory(IntEnum):
+    """
+     - different pattern categories which could be recognised by the bot
+     - the category names are equivalent to the file names for the patterns and static answers
+    """
     BLACKLIST = 0
     JOKE = auto()
     BOT_ANY = auto()
@@ -42,10 +46,8 @@ class PatternCategory(IntEnum):
     WEATHER = auto()
     COMPLIMENTS = auto()
     PICKUP_LINES = auto()
-    """
-    DATE = auto()
     BOT_HOBBIES = auto()
-    """
+    DATE = auto()
 
 
 Category = Union[MoodCategory, AffectionCategory, PatternCategory]

@@ -10,7 +10,7 @@ class Gender(Enum):
     MALE = 0
     FEMALE = 1
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self == Gender.MALE:
             return 'männlich'
         elif self == Gender.FEMALE:
@@ -32,11 +32,11 @@ class Request(NamedTuple):
     mother_age: int
 
     @property
-    def bot_birthday(self):
+    def bot_birthday(self) -> str:
         return self.bot_birthdate.strftime('%d.%m.%Y')
 
     @property
-    def bot_age(self):
+    def bot_age(self) -> int:
         today = date.today()
         bdate = self.bot_birthdate
         return today.year - bdate.year - (
@@ -50,7 +50,7 @@ class Response(NamedTuple):
     affection: float
 
 
-def parse_request(json_data: str):
+def parse_request(json_data: str) -> Request:
     data = json.loads(json_data)
 
     return Request(
@@ -67,4 +67,4 @@ def parse_request(json_data: str):
         data["father_age"],
         data["mother_name"],
         data["mother_age"],
-    )
+        )

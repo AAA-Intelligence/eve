@@ -9,6 +9,7 @@ import (
 // Year is the duraction of one year in nano seconds
 const Year time.Duration = time.Hour * 24 * 365
 
+
 func randomBirthDate(minAge, maxAge int) time.Time {
 	nowYear := time.Now().Year()
 	min := time.Date(nowYear-maxAge, 1, 0, 0, 0, 0, 0, time.UTC).Unix()
@@ -19,6 +20,7 @@ func randomBirthDate(minAge, maxAge int) time.Time {
 	return time.Unix(sec, 0)
 }
 
+// returns primary key of random color
 func randomColor() int {
 	var color int
 	err := dbConnection.db.QueryRow("SELECT ColorID FROM Color ORDER BY RANDOM() LIMIT 1").Scan(&color)
@@ -29,7 +31,7 @@ func randomColor() int {
 	return color
 }
 
-// returns random name id
+// returns primary key of random name
 func randomName(gender Gender) int {
 	var name int
 	err := dbConnection.db.QueryRow("SELECT NameId FROM Name WHERE Gender = $1 ORDER BY RANDOM() LIMIT 1", gender).Scan(&name)

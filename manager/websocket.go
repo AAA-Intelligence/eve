@@ -1,8 +1,11 @@
 package manager
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/AAA-Intelligence/eve/db"
 	"github.com/gorilla/websocket"
@@ -34,17 +37,16 @@ func webSocket(w http.ResponseWriter, r *http.Request) {
 		var request MessageRequest
 		err := c.ReadJSON(&request)
 		if err != nil {
-			if !websocket.IsCloseError(err, websocket.CloseGoingAway) {
+			if !websocket.IsCloseError(err, websocket.CloseAbnormalClosure) && !websocket.IsCloseError(err, websocket.CloseGoingAway) {
 				log.Println("error reading:", err)
 			}
 			break
 		}
-		user := GetUserFromRequest(r)
-		if user == nil {
+		request.User = GetUserFromRequest(r)
+		if request.User == nil {
 			log.Println("error reading user from context")
 			break
 		}
-		request.User = user
 		answer := handleMessage(request)
 		err = c.WriteMessage(websocket.TextMessage, []byte(answer))
 		if err != nil {
@@ -52,4 +54,37 @@ func webSocket(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
+}
+
+// Answers messages via http requests.
+// A request can be made with a HTTP POST request.
+// The body must be a json which contains a message and the bot id.
+// Example for request body:
+// 	{
+//		"message":"message string",
+//		"bot": 1
+//	}
+// The HTTP response body contains the answer as plain text.
+//
+// IMPORTANT!
+// Authentification is needed!
+// HTTP header musst contain basic auth credentials or a session key as cookie.
+// see basicAuth(...) for more information
+func httpMessageInterface(w http.ResponseWriter, r *http.Request) {
+	if strings.ToLower(r.Method) != "POST" {
+		http.Error(w, "HTTP POST only", http.StatusMethodNotAllowed)
+		return
+	}
+	var request MessageRequest
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		http.Error(w, "invalid request", http.StatusBadRequest)
+		return
+	}
+	request.User = GetUserFromRequest(r)
+	if request.User == nil {
+		http.Error(w, "not authenticated", http.StatusUnauthorized)
+		return
+	}
+	answer := handleMessage(request)
+	fmt.Fprint(w, answer)
 }

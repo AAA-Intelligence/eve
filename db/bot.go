@@ -46,11 +46,24 @@ type Bot struct {
 	Pattern *int
 
 	Birthdate     time.Time
+
+	// FavoriteColor is the primary key of the bots favorite color
 	FavoriteColor int
+	
+	// FatherName is the primary key of the bots fathers name
 	FatherName    int
+
+	// FatherAge is the bots fathers age in years
 	FatherAge     int
+
+	// MotherName is the primary key of the bots mothers name
 	MotherName    int
+
+	// MotherAge is the bots mothers age in years
 	MotherAge     int
+	
+	// CreationDate is the point in time when the bot was created by a user
+	CreationDate  time.Time
 }
 
 // Create creates a bot entry in the database
@@ -64,10 +77,11 @@ func (b *Bot) Create() error {
 	b.FatherAge = rand.Intn(20) + 40
 	b.MotherName = randomName(Female)
 	b.MotherAge = b.FatherAge + rand.Intn(10) - 5
+	b.CreationDate = time.Now()
 
 	v, err := dbConnection.db.Exec(`
-		INSERT INTO Bot(Name,Image,Gender,User,Affection,Mood,Pattern,Birthdate,FavoriteColor,FatherName,FatherAge,MotherName,MotherAge) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
-		b.Name, b.Image, b.Gender, b.User, b.Affection, b.Mood, b.Pattern, b.Birthdate, b.FavoriteColor, b.FatherName, b.FatherAge, b.MotherName, b.MotherAge)
+		INSERT INTO Bot(Name,Image,Gender,User,Affection,Mood,Pattern,Birthdate,FavoriteColor,FatherName,FatherAge,MotherName,MotherAge,CreationDate) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)`,
+		b.Name, b.Image, b.Gender, b.User, b.Affection, b.Mood, b.Pattern, b.Birthdate, b.FavoriteColor, b.FatherName, b.FatherAge, b.MotherName, b.MotherAge, b.CreationDate)
 	if err != nil {
 		log.Println("error inserting new bot:", err)
 		return ErrInternalServerError
