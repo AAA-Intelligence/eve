@@ -1,3 +1,5 @@
+import io
+import sys
 import json
 from datetime import date
 
@@ -18,7 +20,7 @@ def handle_request(request: Request) -> Response:
     Returns:
         The response generated for the specified request.
     """
-    logger.debug('Handling request')
+    logger.debug('Handling request: {}'.format(request))
 
     # mood, affection:
     # value between -1 (negative sentiment) and 1 (positive sentiment)
@@ -95,19 +97,26 @@ def run_loop():
     """
     logger.info('Starting request loop')
 
+    # Setup streams for reading requests and writing responses
+    input_stream = io.TextIOWrapper(
+        sys.stdin.buffer, encoding='utf-8', newline='\n')
+    output_stream = io.TextIOWrapper(
+        sys.stdout.buffer, encoding='utf-8', newline='\n', line_buffering=True)
+
     while True:
         try:
-            logger.info('Waiting for request input')
-            json_data = input()
-            logger.info('Received request, parsing')
+            logger.debug('Waiting for request input')
+            json_data = input_stream.readline()
+            if json_data == '':
+                # Empty string equals EOF for io.TextIOWrapper
+                # Abort loop
+                logger.info('EOF detected, aborting request loop')
+                return
+
+            logger.debug('Received request, parsing')
             request = parse_request(json_data)
-            logger.info('Handling request: {}'.format(request))
             response = handle_request(request)
-            print(json.dumps(response._asdict()))
-        except EOFError:
-            # Stdin pipe has been closed by Go
-            logger.info('EOF detected, aborting request loop')
-            return
+            output_stream.write(json.dumps(response._asdict()) + '\n')
         except KeyboardInterrupt:
             # Interrupt requested by developer
             logger.info('Keyboard interrupt detected, aborting request loop')

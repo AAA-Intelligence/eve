@@ -22,5 +22,6 @@ stream_handler.setLevel(logging.DEBUG)
 stream_handler.setFormatter(formatter)
 
 logger = logging.Logger('EVE')
+logger.setLevel(logging.INFO)
 logger.addHandler(file_handler)
 logger.addHandler(stream_handler)

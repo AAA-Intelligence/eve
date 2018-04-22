@@ -4,6 +4,7 @@ from enum import Enum
 from typing import NamedTuple, Optional
 
 from bot.model_definitions import PatternCategory
+from bot.logger import logger
 
 
 class Gender(Enum):
@@ -75,6 +76,7 @@ def parse_request(json_data: str) -> Request:
     Returns:
         The decoded data as an instance of the Request class.
     """
+    logger.debug('Type: {}'.format(type(json_data)))
     data = json.loads(json_data)
 
     return Request(
