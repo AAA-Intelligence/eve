@@ -51,7 +51,7 @@ else:
 
     # Pre-cache models before starting the loop
     load_model(Mode.PATTERNS)
-    load_model(Mode.MOOD)
-    load_model(Mode.AFFECTION)
+    load_model(Mode.MOODS)
+    load_model(Mode.AFFECTIONS)
 
     run_loop()
