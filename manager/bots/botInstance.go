@@ -60,7 +60,7 @@ func (b *botInstance) sendRequest(data MessageData) *BotAnswer {
 	serialized, err := json.Marshal(data)
 	_, err = fmt.Fprintln(writer, string(serialized))
 	if err != nil {
-		log.Println("error writing to bot pipt:", err)
+		log.Println("error writing to bot pipe:", err)
 		return errorBotAnswer(data.Mood, data.Affection)
 	}
 	response, _, err := b.reader.ReadLine()
