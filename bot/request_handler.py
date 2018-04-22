@@ -26,6 +26,7 @@ def handle_request(request: Request) -> Response:
     # value between -1 (negative sentiment) and 1 (positive sentiment)
 
     mood_bot, affection_bot = analyze(request)
+    logger.debug('Mood {}, Affection {}'.format(mood_bot, affection_bot))
     result = answer_for_pattern(request)
     if result:
         pattern, answer = result

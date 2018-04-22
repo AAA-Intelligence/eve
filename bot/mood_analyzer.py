@@ -4,6 +4,7 @@ from typing import Tuple
 from bot.data import Request
 from bot.model_definitions import Mode, MoodCategory, AffectionCategory
 from bot.pattern_recognizer import analyze_input
+from bot.logger import logger
 
 # factor 0.2 ensures steady adjustment of bots mood and affection
 IMPACT_FACTOR = 0.2
@@ -13,9 +14,12 @@ def stretch_prob(probability: float) -> float:
     """
     Fits probabilities between 0.75 and 1 into the range of [-1,1] depending on the result
 
-    :param probability: The probability with which the bot determined either mood or affection
-    :return: Returns a value between 0 and 1 which is later passed to the tanh(2*x) function for
-            a more realistic change in mood and affection
+    Args:
+        probability: The probability with which the bot determined either mood or affection
+
+    Returns:
+        A value between 0 and 1 which is later passed to the tanh(2*x) function for
+        a more realistic change in mood and affection
     """
 
     return 4 * probability - 3
@@ -23,12 +27,14 @@ def stretch_prob(probability: float) -> float:
 
 def analyze(request: Request) -> Tuple[float, float]:
     """
+    Args:
+        request:
+            The request passed by the web server to the bot instance.
+            It contains all the necessary information to determine a new bot mood/affection.
 
-
-    :param request: The request passed by the web server to the bot instance.
-                    It contains all the necessary information to determine a new bot mood/affection.
-    :return: Returns the new mood/affection of the bot calculated on the text of the message and the
-            previous mood and affection
+    Returns:
+        The new mood/affection of the bot calculated on the text of the message and the
+        previous mood and affection
     """
     # input message of the user passed by a request
     text = request.text
@@ -40,6 +46,7 @@ def analyze(request: Request) -> Tuple[float, float]:
     # Estimate mood through the neural network
     mood_result = analyze_input(text, Mode.MOODS)
     if mood_result:
+        logger.debug('Affection: {}'.format(mood_result.category.name))
         mood_probability = mood_result.probability
         # checking for a negative or positive mood
         if mood_result.category == MoodCategory.M_NEG:
@@ -62,6 +69,7 @@ def analyze(request: Request) -> Tuple[float, float]:
     # Estimate mood through the neural network
     affection_result = analyze_input(text, Mode.AFFECTIONS)
     if affection_result:
+        logger.debug('Affection: {}'.format(affection_result.category.name))
         affection_probability = affection_result.probability
 
         # checking for a negative or positive affection

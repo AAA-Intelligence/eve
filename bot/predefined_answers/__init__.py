@@ -31,13 +31,13 @@ def answers_for_category(
         An array containing all answers defined for the given category.
     """
 
-    direction = ""
+    direction = ''
     if category in [PatternCategory.MOOD, PatternCategory.PICKUP_LINES]:
-        direction = "_POS" if request.mood >= 0 else "_NEG"
+        direction = '_POS' if request.mood > 0 else '_NEG'
     elif category == PatternCategory.AFFECTION:
-        direction = "_POS" if request.affection >= 0 else "_NEG"
+        direction = '_POS' if request.affection > 0 else '_NEG'
     elif category == PatternCategory.DATE:
-        direction = "_POS" if request.affection >= 0.5 else "_NEG"
+        direction = '_POS' if request.affection > 0.5 else '_NEG'
 
     name = category.name + direction
     if name in cache:
