@@ -8,8 +8,7 @@ from sys import stderr
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
 # setting up the file to which the logs are written
-file_handler = logging.FileHandler(
-    path.join(path.dirname(__file__), 'bot.log'))
+file_handler = logging.FileHandler('bot.log')
 
 # only debug and more severe logs are written to the log file
 file_handler.setLevel(logging.DEBUG)
