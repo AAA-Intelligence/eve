@@ -5,8 +5,11 @@ import nltk
 from bot.logger import logger
 from bot.model_definitions import Mode
 
+# Download the nltk model required for the tokenizer.
+# Will be skipped if the model has already been downloaded.
 nltk.download('punkt', quiet=True)
 
+# Check if the bot has been executed with a command-line arg, i.e. the target
 target = argv[1] if len(argv) > 1 else None
 
 if target == 'train-patterns':
