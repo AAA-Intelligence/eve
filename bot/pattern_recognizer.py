@@ -66,7 +66,7 @@ def analyze_input(text: str, mode: Mode) -> Optional[PredictionResult]:
     logger.debug('Results: {}'.format(results))
 
     error_threshold = 0.9
-    if mode == Mode.MOODS or mode == mode.AFFECTIONS:
+    if mode == Mode.MOODS or mode == Mode.AFFECTIONS:
         # Sentiment analysis should be less sensitive than pattern recognition
         # as false-positives don't have as big of an impact and real persons
         # are more likely to misinterprete the mood or affection of a sentence
