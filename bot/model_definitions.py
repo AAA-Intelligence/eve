@@ -4,15 +4,18 @@ from typing import Union, Type
 
 @unique
 class AffectionCategory(IntEnum):
-    # TODO separate sentiment and mood
-    # A_*: Describes the affection data
+    """
+    Categories for describing the affection data.
+    """
     A_NEG = 0
     A_POS = 1
 
 
 @unique
 class MoodCategory(IntEnum):
-    # M_*: Describes the mood data
+    """
+    Categories for describing the mood data.
+    """
     M_NEG = 0
     M_POS = 1
 
@@ -20,8 +23,8 @@ class MoodCategory(IntEnum):
 @unique
 class PatternCategory(IntEnum):
     """
-     - different pattern categories which could be recognised by the bot
-     - the category names are equivalent to the file names for the patterns and static answers
+    Different pattern categories which could be recognised by the bot
+    The category names are equivalent to the file names for the patterns and static answers
     """
     BLACKLIST = 0
     JOKE = auto()
@@ -55,6 +58,10 @@ Category = Union[MoodCategory, AffectionCategory, PatternCategory]
 
 @unique
 class Mode(Enum):
+    """
+    The modes the pattern recognizer can run in.
+    Affects parameters like data source, model and error threshold.
+    """
     PATTERNS = 'patterns'
     AFFECTIONS = 'affections'
     MOODS = 'moods'

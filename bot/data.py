@@ -4,9 +4,14 @@ from enum import Enum
 from typing import NamedTuple, Optional
 
 from bot.model_definitions import PatternCategory
+from bot.logger import logger
 
 
 class Gender(Enum):
+    """
+    Specifies the possible bot genders and provides a method for converting
+    the value a to a string in German language.
+    """
     MALE = 0
     FEMALE = 1
 
@@ -18,6 +23,12 @@ class Gender(Enum):
 
 
 class Request(NamedTuple):
+    """
+    Specifies the structure of incoming request data.
+    The JSON encoded requests will be decoded to an instance of this class.
+    Also provides helper methods for formatting certain data to strings that
+    can be used in the answer templates.
+    """
     text: str
     previous_pattern: Optional[PatternCategory]
     mood: float
@@ -44,6 +55,11 @@ class Request(NamedTuple):
 
 
 class Response(NamedTuple):
+    """
+    Specifies the structure of outgoing response data.
+    The response will be encoded to a JSON string before being written to
+    the output.
+    """
     text: str
     pattern: Optional[PatternCategory]
     mood: float
@@ -51,6 +67,16 @@ class Response(NamedTuple):
 
 
 def parse_request(json_data: str) -> Request:
+    """
+    Parses a JSON request string to an instance of the Request class.
+
+    Args:
+        json_data: The JSON encoded request string.
+
+    Returns:
+        The decoded data as an instance of the Request class.
+    """
+    logger.debug('Type: {}'.format(type(json_data)))
     data = json.loads(json_data)
 
     return Request(
@@ -67,4 +93,4 @@ def parse_request(json_data: str) -> Request:
         data["father_age"],
         data["mother_name"],
         data["mother_age"],
-        )
+    )

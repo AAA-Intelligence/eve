@@ -11,6 +11,12 @@ from bot.training_data import TrainingData
 
 
 def setup_models_dir() -> str:
+    """
+    Creates the models directory if it does not exist
+
+    Returns:
+        The path to the models directory.
+    """
     dir = path.join(path.dirname(__file__), 'models')
     if not path.exists(dir):
         mkdir(dir)
@@ -29,6 +35,9 @@ def train_model(mode: Mode):
     indexed by saving all stems in a list of total stems and assigning indices.
     The trained model will be saved in the models directory and can be loaded
     by the pattern recognizer using the load_model function.
+
+    Args:
+        mode: The mode to the train the model for.
     """
     # Creates a directory where the trained models are stored
 
@@ -39,8 +48,8 @@ def train_model(mode: Mode):
                   optimizer='adam', metrics=['accuracy'])
     # Train neural network
     # validation_split is set to 0 because our dataset for pattern recognition
-    # is too small to compensate for not using data during training
-    model.fit(train_x, train_y, batch_size=32, epochs=100,
+    # is too small to compensate for disregarding data during training
+    model.fit(train_x, train_y, batch_size=32, epochs=200,
               verbose=1, validation_split=0, shuffle=True)
 
     save_training(mode, model, train_x, train_y, words)
@@ -52,7 +61,17 @@ def save_training(
     train_x: np.ndarray,
     train_y: np.ndarray,
     words: List[str]
-    ):
+):
+    """
+    Saves the trained model and other relevant trained data.
+
+    Args:
+        mode: The mode to save the model for
+        model: The sequential model to save
+        train_x: The feature parameters
+        train_y: The label parameters
+        words: Bag of words used for indexing the words in train_x
+    """
     file_name: str = mode.value
 
     # Save model
@@ -71,6 +90,11 @@ model_cache: Dict[Mode, Tuple[Sequential, TrainingData]] = {}
 def load_model(mode: Mode) -> Tuple[Sequential, TrainingData]:
     """
     Loads a pre-trained model from disk, as well as the training data dump.
+    If the model has been loaded before during runtime, the cached model
+    will be returned instead.
+
+    Args:
+        mode: The mode to load the model for.
 
     Returns:
         A pre-trained model loaded from disk as well as an instance of

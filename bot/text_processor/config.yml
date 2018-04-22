@@ -19,7 +19,7 @@ train:
   bucket_width: 1
   save_checkpoints_steps: 5000
   save_summary_steps: 50
-  train_steps: 15000 # More steps will give a better model but take longer to train
+  train_steps: 20000 # More steps will give a better model but take longer to train
   maximum_features_length: 50
   maximum_labels_length: 50
   sample_buffer_size: 1000000  # Consider setting this to the training dataset size.

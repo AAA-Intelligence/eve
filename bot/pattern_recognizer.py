@@ -17,8 +17,6 @@ dir = path.dirname(__file__)
 
 # Create German snowball stemmer
 stemmer = GermanStemmer()
-# Threshold for pattern recognition
-ERROR_THRESHOLD = 0.9
 
 
 class PredictionResult(NamedTuple):
@@ -26,7 +24,7 @@ class PredictionResult(NamedTuple):
     Data type for prediction results, used by analyze_input
     """
     category: Category
-    probability: float
+    probability: float  # 1 equals 100% probability
 
 
 def analyze_input(text: str, mode: Mode) -> Optional[PredictionResult]:
@@ -39,7 +37,6 @@ def analyze_input(text: str, mode: Mode) -> Optional[PredictionResult]:
     Returns:
         The category of the recognized pattern or None if none was found.
     """
-
     # Load model and data
     model, data = load_model(mode)
     # Tokenize pattern
@@ -65,20 +62,29 @@ def analyze_input(text: str, mode: Mode) -> Optional[PredictionResult]:
                if i > lower_bound]
     results.sort(key=lambda result: result.probability, reverse=True)
 
+    # Log all results to debug the percentages
     logger.debug('Results: {}'.format(results))
 
-    global ERROR_THRESHOLD
-    if mode == Mode.MOODS or mode == mode.AFFECTIONS:
-        ERROR_THRESHOLD = 0.75
-    else:
-        ERROR_THRESHOLD = 0.9
+    error_threshold = 0.9
+    if mode == Mode.MOODS or mode == Mode.AFFECTIONS:
+        # Sentiment analysis should be less sensitive than pattern recognition
+        # as false-positives don't have as big of an impact and real persons
+        # are more likely to misinterprete the mood or affection of a sentence
+        # as well.
+        error_threshold = 0.75
 
-    if len(results) > 0 and results[0].probability > ERROR_THRESHOLD:
+    # Only the most-probable result is interesting for us here.
+    # Check if it passes the error threshold and continue if applicable.
+    if len(results) > 0 and results[0].probability > error_threshold:
         return results[0]
 
     return None
 
 
+# Pattern transitions for context recognition as a relation of the form
+# { [PatternCategory, PatternCategory]: PatternCategory }.
+# Only the previously occuring pattern will be considered for transitions and
+# only certain pattern combinations lead to a new pattern.
 pattern_transitions: Dict[Tuple[PatternCategory, PatternCategory], PatternCategory] = {
     (PatternCategory.FATHER_AGE, PatternCategory.ANY_NAME): PatternCategory.FATHER_NAME,
     (PatternCategory.MOTHER_AGE, PatternCategory.ANY_NAME): PatternCategory.MOTHER_NAME,
@@ -103,11 +109,11 @@ def answer_for_pattern(request: Request) -> Optional[Tuple[PatternCategory, str]
     pre-defined answer if possible.
 
     Args:
-            request: The request to scan for patterns.
+        request: The request to scan for patterns.
 
     Returns:
-            A pre-defined answer for the scanned request or None if a pre-defined
-            answer isn't possible.
+        A tuple containing the detected pattern category and pre-defined answer
+        for the scanned request, or None if no pattern was recognized.
     """
     result = analyze_input(request.text, Mode.PATTERNS)
     if result is not None:
@@ -124,17 +130,16 @@ def answer_for_pattern(request: Request) -> Optional[Tuple[PatternCategory, str]
     return None
 
 
-def demo(mode: str):
+def demo():
     """
     Demo mode for the pattern recognizer
     """
-
     request = Request(
         text=input('Please enter a question: '),
-        previous_text='Ich bin ein Baum',
+        previous_pattern=PatternCategory.BOT_NAME,
         mood=0.0,
         affection=0.0,
-        bot_gender=Gender.APACHE,
+        bot_gender=Gender.FEMALE,
         bot_name='Lara',
         bot_birthdate=date(1995, 10, 5),
         bot_favorite_color='grün'

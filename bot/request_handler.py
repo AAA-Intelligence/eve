@@ -1,3 +1,5 @@
+import io
+import sys
 import json
 from datetime import date
 
@@ -13,19 +15,18 @@ def handle_request(request: Request) -> Response:
     Handles a request and generates an appropriate response.
 
     Args:
-            request: The request to handle.
+        request: The request to handle.
 
     Returns:
-            The response generated for the specified request.
+        The response generated for the specified request.
     """
+    logger.debug('Handling request: {}'.format(request))
 
-    logger.debug('Handling request')
+    # mood, affection:
+    # value between -1 (negative sentiment) and 1 (positive sentiment)
 
-    """
-        mood, affection : value between -1 and 1 indicating a positive or negative sentiment
-
-    """
     mood_bot, affection_bot = analyze(request)
+    logger.debug('Mood {}, Affection {}'.format(mood_bot, affection_bot))
     result = answer_for_pattern(request)
     if result:
         pattern, answer = result
@@ -33,11 +34,13 @@ def handle_request(request: Request) -> Response:
         # No pattern found, fall back to generative model
         pattern = None
         answer = generate_answer(request)
+
     response = Response(text=answer,
                         pattern=pattern,
                         mood=mood_bot,
                         affection=affection_bot)
     logger.debug(response)
+
     return response
 
 
@@ -63,7 +66,7 @@ def run_demo():
                 father_age=49,
                 mother_name='Agathe',
                 mother_age=47
-                )
+            )
             response = handle_request(request)
             print('Response: ', response.text)
             previous_pattern = response.pattern
@@ -93,21 +96,28 @@ def run_loop():
     an EOFError handled by the loop, or by sending a
     keyboard interrupt (Ctrl + C).
     """
-
     logger.info('Starting request loop')
+
+    # Setup streams for reading requests and writing responses
+    input_stream = io.TextIOWrapper(
+        sys.stdin.buffer, encoding='utf-8', newline='\n')
+    output_stream = io.TextIOWrapper(
+        sys.stdout.buffer, encoding='utf-8', newline='\n', line_buffering=True)
+
     while True:
         try:
-            logger.info('Waiting for request input')
-            json_data = input()
-            logger.info('Received request, parsing')
+            logger.debug('Waiting for request input')
+            json_data = input_stream.readline()
+            if json_data == '':
+                # Empty string equals EOF for io.TextIOWrapper
+                # Abort loop
+                logger.info('EOF detected, aborting request loop')
+                return
+
+            logger.debug('Received request, parsing')
             request = parse_request(json_data)
-            logger.info('Handling request: {}'.format(request))
             response = handle_request(request)
-            print(json.dumps(response._asdict()))
-        except EOFError:
-            # Stdin pipe has been closed by Go
-            logger.info('EOF detected, aborting request loop')
-            return
+            output_stream.write(json.dumps(response._asdict()) + '\n')
         except KeyboardInterrupt:
             # Interrupt requested by developer
             logger.info('Keyboard interrupt detected, aborting request loop')
