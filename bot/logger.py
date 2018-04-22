@@ -11,7 +11,7 @@ formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 file_handler = logging.FileHandler('bot.log')
 
 # only debug and more severe logs are written to the log file
-file_handler.setLevel(logging.DEBUG)
+file_handler.setLevel(logging.INFO)
 
 # adding the formatter to the logger
 file_handler.setFormatter(formatter)
@@ -22,6 +22,5 @@ stream_handler.setLevel(logging.DEBUG)
 stream_handler.setFormatter(formatter)
 
 logger = logging.Logger('EVE')
-logger.setLevel(logging.INFO)
 logger.addHandler(file_handler)
 logger.addHandler(stream_handler)
