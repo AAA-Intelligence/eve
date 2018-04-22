@@ -46,5 +46,12 @@ else:
     # Runs a loop waiting for JSON encoded input from stdin and returns
     # JSON encoded output to stdout, seperated by newlines
     from bot.request_handler import run_loop
+    from bot.model_definitions import Mode
+    from bot.trainer import load_model
+
+    # Pre-cache models before starting the loop
+    load_model(Mode.PATTERNS)
+    load_model(Mode.MOOD)
+    load_model(Mode.AFFECTION)
 
     run_loop()
