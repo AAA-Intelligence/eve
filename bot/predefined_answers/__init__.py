@@ -32,15 +32,18 @@ def answers_for_category(
     """
 
     direction = ""
-    if category in cache:
-        return cache[category]
-    if category.name in 'MOOD PICKUP_LINES':
+    if category in [PatternCategory.MOOD, PatternCategory.PICKUP_LINES]:
         direction = "_POS" if request.mood >= 0 else "_NEG"
-    elif category.name in 'AFFECTION':
+    elif category == PatternCategory.AFFECTION:
         direction = "_POS" if request.affection >= 0 else "_NEG"
-    elif category.name in 'DATES':
+    elif category == PatternCategory.DATE:
         direction = "_POS" if request.affection >= 0.5 else "_NEG"
-    p = Path(dir, '%s%s.txt' % (category.name, direction))
+
+    name = category.name + direction
+    if name in cache:
+        return cache[name]
+
+    p = Path(dir, name + '.txt')
 
     if not p.is_file():
         raise FileNotFoundError(
