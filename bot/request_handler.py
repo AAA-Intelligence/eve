@@ -13,18 +13,16 @@ def handle_request(request: Request) -> Response:
     Handles a request and generates an appropriate response.
 
     Args:
-            request: The request to handle.
+        request: The request to handle.
 
     Returns:
-            The response generated for the specified request.
+        The response generated for the specified request.
     """
-
     logger.debug('Handling request')
 
-    """
-        mood, affection : value between -1 and 1 indicating a positive or negative sentiment
+    # mood, affection:
+    # value between -1 (negative sentiment) and 1 (positive sentiment)
 
-    """
     mood_bot, affection_bot = analyze(request)
     result = answer_for_pattern(request)
     if result:
@@ -33,11 +31,13 @@ def handle_request(request: Request) -> Response:
         # No pattern found, fall back to generative model
         pattern = None
         answer = generate_answer(request)
+
     response = Response(text=answer,
                         pattern=pattern,
                         mood=mood_bot,
                         affection=affection_bot)
     logger.debug(response)
+
     return response
 
 
@@ -93,8 +93,8 @@ def run_loop():
     an EOFError handled by the loop, or by sending a
     keyboard interrupt (Ctrl + C).
     """
-
     logger.info('Starting request loop')
+
     while True:
         try:
             logger.info('Waiting for request input')
