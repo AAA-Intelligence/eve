@@ -11,6 +11,12 @@ from bot.training_data import TrainingData
 
 
 def setup_models_dir() -> str:
+    """
+    Creates the models directory if it does not exist
+
+    Returns:
+        The path to the models directory.
+    """
     dir = path.join(path.dirname(__file__), 'models')
     if not path.exists(dir):
         mkdir(dir)
@@ -29,6 +35,9 @@ def train_model(mode: Mode):
     indexed by saving all stems in a list of total stems and assigning indices.
     The trained model will be saved in the models directory and can be loaded
     by the pattern recognizer using the load_model function.
+
+    Args:
+        mode: The mode to the train the model for.
     """
     # Creates a directory where the trained models are stored
 
@@ -53,6 +62,16 @@ def save_training(
     train_y: np.ndarray,
     words: List[str]
 ):
+    """
+    Saves the trained model and other relevant trained data.
+
+    Args:
+        mode: The mode to save the model for
+        model: The sequential model to save
+        train_x: The feature parameters
+        train_y: The label parameters
+        words: Bag of words used for indexing the words in train_x
+    """
     file_name: str = mode.value
 
     # Save model
@@ -71,6 +90,11 @@ model_cache: Dict[Mode, Tuple[Sequential, TrainingData]] = {}
 def load_model(mode: Mode) -> Tuple[Sequential, TrainingData]:
     """
     Loads a pre-trained model from disk, as well as the training data dump.
+    If the model has been loaded before during runtime, the cached model
+    will be returned instead.
+
+    Args:
+        mode: The mode to load the model for.
 
     Returns:
         A pre-trained model loaded from disk as well as an instance of

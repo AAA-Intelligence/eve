@@ -14,6 +14,18 @@ from bot.patterns import patterns_for_category
 
 def setup_bot(mode: Mode) -> Tuple[
         Sequential, np.ndarray, np.ndarray, List[str]]:
+    """
+    Loads and returns the relevant data for executing the bot in the specified mode,
+    i.e. for pattern recognition or sentiment analysis.
+
+    Args:
+        mode: The mode to load data for.
+
+    Returns:
+        A tuple contain the trained model, the feature parameters, the label
+        parameters and the bag of words used for indexing words in the feature set.
+    """
+
     elements, words = read_training_data(mode)
     # Now that all stems have been collected, we can create an array suitable
     # for training our TensorFlow model.
@@ -24,7 +36,19 @@ def setup_bot(mode: Mode) -> Tuple[
     return model, train_x, train_y, words
 
 
-def read_training_data(mode: Mode) -> Tuple[Category, Set[str]]:
+def read_training_data(mode: Mode) -> Tuple[List[Tuple[Category, Set[str]]], List[str]]:
+    """
+    Reads the training data for the specified mode.
+
+    Args:
+        mode: The mode to load training data for.
+
+    Returns:
+        A tuple containing a list of all categories with their respective vocabulary
+        and the bag of words used for indexing a string (i.e. for conversion to a
+        1xN matrix as feature parameters).
+    """
+
     total_stems: Set[str] = set()
     elements: List[Tuple[Category, Set[str]]] = []
 
@@ -56,6 +80,23 @@ def build_stems(
     elements: List[Tuple[Category, Set[str]]],
     total_stems: Set[str]
 ) -> Set[str]:
+    """
+    Builds a set of stems for all words used in the pattern.
+
+    Args:
+        pattern: The pattern to tokenize and stem.
+        category: The category of the pattern.
+        elements:
+            A mutable list of (category, stem) pairs that the new stems will
+            be appended to.
+        total_stems:
+            The set of total stems before this function was invoked.
+            Will not be mutated.
+
+    Returns:
+        The union of total_stems and stems found in the pattern.
+    """
+
     # Tokenize pattern into words
     words = nltk.word_tokenize(pattern)
     # Get stems for the pattern's words, as a set to avoid duplicates
@@ -75,6 +116,23 @@ def setup_traing_data(
     elements: List[Tuple[Category, Set[str]]],
     words: List[str]
 ) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Prepares training data for training the model.
+
+    Args:
+        CategoryType:
+            The category type to be used. Can be either MoodCategory,
+            AffectionCategory or PatternCategory.
+            Note that these are the enum types themselves and not enum values.
+        elements:
+            A list containg pairs of categories of type CategoryType and their
+            associated set of stems.
+        words: The bag of words used for indexing.
+
+    Returns:
+        The training axes x and y, where x is the feature axis and y is the
+        label (= category) axis.
+    """
     train_x = []
     train_y = []
     for category, stems in elements:
@@ -90,6 +148,18 @@ def setup_traing_data(
 
 
 def setup_nn_model(train_x: np.ndarray, train_y: np.ndarray) -> Sequential:
+    """
+    Creates a sequential neural network model that takes a 1-dimensional array
+    as input and outputs a number representing a category.
+
+    Args:
+        train_x: The feature axis for the model.
+        train_y: The label axis for the model.
+
+    Returns:
+        An untrained sequential model.
+    """
+
     # Define neural network
 
     # Amount of words in our vocabulary / bag of words

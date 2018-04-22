@@ -47,6 +47,24 @@ def clean_output(text):
 
 
 def input_fn_impl(text, model, batch_size, metadata):
+    """
+    Initializes the model with the metadata, creates a single-tensor dataset
+    from the input text and creates a process function that convert the input into
+    a sequence. Then creates an iterator that creates predictions for all input tensors.
+    Will only contain one in this case because there's only one string tensor as input,
+    but can also be used for generating predictions for a whole set of inputs, i.e.
+    a file listing multiple inputs to generate predictions for.
+
+    Args:
+        text: The input text
+        model: The trained model
+        batch_size: The maximum number of inputs to generate predictions for in one iteration call.
+        metadata: The config dict containg the paths to the vocabulary files.
+
+    Returns:
+        The first prediction in the iterator, i.e. the answer sequence to the
+        input text.
+    """
     model._initialize(metadata)
 
     dataset = tf.data.Dataset.from_tensor_slices([text])
@@ -61,6 +79,8 @@ def input_fn_impl(text, model, batch_size, metadata):
     iterator = dataset.make_initializable_iterator()
 
     # Add the initializer to a standard collection for it to be initialized.
+    # See https://www.tensorflow.org/api_docs/python/tf/Graph for more information
+    # about tensorflow graphs.
     tf.add_to_collection(tf.GraphKeys.TABLE_INITIALIZERS, iterator.initializer)
 
     return iterator.get_next()
@@ -97,6 +117,8 @@ def generate_answer(request: Request) -> str:
     batch_size = config['infer'].get('batch_size', 1)
 
     # Create an input function as datasource for tensorflow
+    # See https://www.tensorflow.org/get_started/datasets_quickstart
+    # for more information.
     def input_fn():
         return input_fn_impl(
             text,
@@ -108,7 +130,7 @@ def generate_answer(request: Request) -> str:
     # Create a string buffer as output stream
     stream = StringIO()
 
-    # Write all predictions into the output stream
+    # Format and write all predictions into the output stream
     for prediction in estimator.predict(input_fn=input_fn):
         model.print_prediction(prediction, stream=stream)
 
