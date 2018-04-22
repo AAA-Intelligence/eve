@@ -42,7 +42,8 @@ def clean_output(text):
     for p in punct_after:
         text = text.replace(' ' + p, p)
 
-    return text
+    # Remove whitespace at start and end and return the text
+    return text.strip()
 
 
 def input_fn_impl(text, model, batch_size, metadata):
@@ -120,5 +121,9 @@ def generate_answer(request: Request) -> str:
 
     # Clean up output
     answer = clean_output(answer)
+
+    if answer == '':
+        # If no answer could be generated, fall back to a default answer.
+        answer = 'Da fällt mir jetzt leider nichts zu ein.'
 
     return answer
