@@ -94,8 +94,10 @@ window.onload = function () {
     if (window["WebSocket"]) {
         conn = new WebSocket("ws://" + document.location.host + "/ws");
         conn.onclose = function (evt) {
-            appendChat("Ich bin dann mal im Flugmodus... Bis demnächst!", "bot");
-			showPopup("disconnectpopup");
+			setTimeout(function(){ 
+					appendChat("Ich bin dann mal im Flugmodus... Bis demnächst!", "bot");
+					showPopup("disconnectpopup");
+			}, 500); //Show delayed due to strange behavior on some browsers (Issue #115)
         };
         conn.onmessage = function (evt) {
             var messages = evt.data.split('\n');
@@ -154,6 +156,7 @@ var noBotsAvail = false;
 var popupDidLoad = false;
 var imageListDidLoad = -1; //-1 = did not load yet, 0 = male, 1 = female
 var sidebarShowing = false;
+var didLoadHQ = false;
 
 
 	function showPopup(id) {
@@ -181,6 +184,14 @@ var sidebarShowing = false;
 		
 		if (id == 'disconnectpopup') {
 			blurstrength = 1.5;
+		}
+		
+		if (id == 'profilepopup' && !didLoadHQ) { //Load HQ image for profile
+			var profileimageel = document.getElementById('profileimage');
+			profileimageurl = profileimageel.src;
+			profileimageurl = getHQImageURL(profileimageurl);
+			profileimageel.src = profileimageurl;
+			didLoadHQ = true;
 		}
 		
 		//Show popup
@@ -318,7 +329,8 @@ var sidebarShowing = false;
 	function setImage(id, url) {
 		picID = id;
 		var imagebutton = document.getElementById("imageinput");
-		imagebutton.style["background-image"] = "url("+url+")";
+		hqurl = getHQImageURL(url);
+		imagebutton.style["background-image"] = "url("+hqurl+")";
 		hidePopup("imagepopup");
 		showPopup("popup");
 	}
@@ -424,5 +436,12 @@ var sidebarShowing = false;
 			array[randomIndex] = temporaryValue;
 		}
 		return array;
+	}
+	
+	function getHQImageURL(url) {
+		urlsplit = url.split("/");
+		urlsplit[urlsplit.length-1] = "hq_"+urlsplit[urlsplit.length-1];
+		newurl = urlsplit.join("/");
+		return newurl;
 	}
 	
