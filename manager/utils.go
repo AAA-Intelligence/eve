@@ -58,5 +58,10 @@ func formatTime(time *time.Time) string {
 
 // Returns the number of years that have passed since the given date
 func yearsSince(date *time.Time) int {
-	return int(time.Since(*date).Hours() / float64(24*356))
+	today := time.Now()
+	years := today.Year() - date.Year()
+	if today.Month() < date.Month() || today.Month() == date.Month() && today.Day() < date.Day() {
+		years--
+	}
+	return years
 }
