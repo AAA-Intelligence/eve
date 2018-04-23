@@ -1,4 +1,5 @@
 Was hast du so für Hobbies?
+Was hast du so für Hobbys?
 Was treibst du so in deiner Freizeit?
 Was machst du gerne außerhalb von der Arbeit?
 Was machst du gerne außerhalb von der Studium?
@@ -6,3 +7,11 @@ Was machst du gerne außerhalb von der Schule?
 Wie vertreibst du dir so deine Zeit?
 Was tust du gerne?
 Was machst du gerne?
+Was hast du für Hobbies?
+Was hast du für Hobbys?
+Welche Hobbys hast du?
+Welche Hobbies hast du?
+Wie sind deine Hobbys?
+Wie sind deine Hobbies?
+Was sind deine Hobbys?
+Was sind deine Hobbies?
