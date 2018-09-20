@@ -71,7 +71,7 @@ func webSocket(w http.ResponseWriter, r *http.Request) {
 // HTTP header musst contain basic auth credentials or a session key as cookie.
 // see basicAuth(...) for more information
 func httpMessageInterface(w http.ResponseWriter, r *http.Request) {
-	if strings.ToLower(r.Method) != "POST" {
+	if strings.ToLower(r.Method) != "post" {
 		http.Error(w, "HTTP POST only", http.StatusMethodNotAllowed)
 		return
 	}
