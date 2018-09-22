@@ -1,31 +1,19 @@
-# Project EVE
-Interactive Bot Chat
+# Project EVE - lightweight version
 
-# How to run
-## Installation
+## Build
 
-```
-go get "github.com/AAA-Intelligence/eve"
-```
+IMPORTANT: copy model and chat-data into bot directory before building
+
+`docker build -t eve-light .`
 
 ## Run
-After starting the webserver open http://localhost:8080/register in your browser to create an account.
 
-### With Makefile
-```
-cd "%GOPATH%/src/github.com/AAA-Intelligence/eve"
-make deps
-make all
-```
-### Without Makefile
-#### Windows
-```
-go build -o "eve.exe" "github.com/AAA-Intelligence/eve/cmd/eve" 
-eve.exe -http 8080
-```
-#### macOS / linux
-```
-go build -o "eve" "github.com/AAA-Intelligence/eve/cmd/eve" 
-./eve -http 8080
-```
+`docker run --name eve-light -p 8080:8080 -d eve-light`
 
+Create a HTTP POST request to http://localhost:8080/messageApi with following body:
+
+```json
+{
+  "message":"Hello eve"
+}
+```
