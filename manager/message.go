@@ -31,13 +31,13 @@ func handleMessage(request MessageRequest) string {
 		Mood:            1,
 		Affection:       1,
 		Gender:          1,
-		Name:            "Leon",
+		Name:            "Emma",
 		PreviousPattern: nil,
-		Birthdate:       0,
+		Birthdate:       22,
 		FavoriteColor:   "Red",
 		FatherName:      "Peter",
 		FatherAge:       50,
-		MotherName:      "Hans",
+		MotherName:      "Helena",
 		MotherAge:       50,
 	})
 
@@ -61,6 +61,7 @@ func handleMessage(request MessageRequest) string {
 //	}
 // The HTTP response body contains the answer as plain text.
 func httpMessageInterface(w http.ResponseWriter, r *http.Request) {
+
 	if strings.ToLower(r.Method) != "post" {
 		http.Error(w, "HTTP POST only", http.StatusMethodNotAllowed)
 		return
@@ -70,7 +71,7 @@ func httpMessageInterface(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid request", http.StatusBadRequest)
 		return
 	}
-	r.Header.Add("Access-Control-Allow-Origin", "*")
+
 	answer := handleMessage(request)
 	fmt.Fprint(w, answer)
 }

@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-
+	"github.com/rs/cors"
 	"github.com/AAA-Intelligence/eve/manager/bots"
 )
 
@@ -25,10 +25,10 @@ func StartWebServer(host string, httpPort int) {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/messageApi", httpMessageInterface)
-
+	handler := cors.Default().Handler(mux)
 	server := http.Server{
 		Addr:    host + ":" + strconv.Itoa(httpPort),
-		Handler: mux,
+		Handler: handler,
 	}
 	//go startBot()
 
@@ -36,6 +36,7 @@ func StartWebServer(host string, httpPort int) {
 	server.RegisterOnShutdown(onShutdown)
 	// start as many bot instances as cpu has cores
 	botPool = bots.NewBotPool(1)
+
 	err := server.ListenAndServe()
 	if err != nil {
 		log.Println(err)
