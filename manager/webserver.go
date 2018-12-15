@@ -24,7 +24,7 @@ func onShutdown() {
 func StartWebServer(host string, httpPort int) {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/messageApi", httpMessageInterface)
+	mux.HandleFunc("/message-api", httpMessageInterface)
 	handler := cors.Default().Handler(mux)
 	server := http.Server{
 		Addr:    host + ":" + strconv.Itoa(httpPort),
