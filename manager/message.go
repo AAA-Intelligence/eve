@@ -33,7 +33,7 @@ func handleMessage(request MessageRequest) string {
 		Gender:          1,
 		Name:            "Emma",
 		PreviousPattern: nil,
-		Birthdate:       22,
+		Birthdate:       898732800,
 		FavoriteColor:   "Red",
 		FatherName:      "Peter",
 		FatherAge:       50,
@@ -56,8 +56,7 @@ func handleMessage(request MessageRequest) string {
 // The body must be a json which contains a message and the bot id.
 // Example for request body:
 // 	{
-//		"message":"message string",
-//		"bot": 1
+//		"message":"message string"
 //	}
 // The HTTP response body contains the answer as plain text.
 func httpMessageInterface(w http.ResponseWriter, r *http.Request) {
@@ -74,4 +73,14 @@ func httpMessageInterface(w http.ResponseWriter, r *http.Request) {
 
 	answer := handleMessage(request)
 	fmt.Fprint(w, answer)
+}
+
+func httpHealthInterface(w http.ResponseWriter, r *http.Request) {
+
+	if strings.ToLower(r.Method) != "get" {
+		http.Error(w, "HTTP get only", http.StatusMethodNotAllowed)
+		return
+	}
+
+	fmt.Fprint(w, "I'm alive.")
 }

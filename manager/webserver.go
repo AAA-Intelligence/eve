@@ -26,6 +26,7 @@ func StartWebServer(host string, httpPort int) {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/api/eve/message-api", httpMessageInterface)
+	mux.HandleFunc("/api/eve/health-check", httpHealthInterface)
 	handler := cors.Default().Handler(mux)
 	server := http.Server{
 		Addr:    host + ":" + strconv.Itoa(httpPort),
