@@ -26,5 +26,5 @@ RUN pip install -r ./bot/requirements.txt
 COPY --from=builder /root/eve .
 
 # Define entrypoint for server application
-ENTRYPOINT [ "./eve", "-http", "8080" ]
-EXPOSE 8080
+ENTRYPOINT [ "./eve", "-http", "3001" ]
+EXPOSE 3001
