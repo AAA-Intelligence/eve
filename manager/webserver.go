@@ -4,8 +4,9 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"github.com/rs/cors"
+
 	"github.com/AAA-Intelligence/eve/manager/bots"
+	"github.com/rs/cors"
 )
 
 // if the webserver is shut down, all bot instances are killed
@@ -24,7 +25,7 @@ func onShutdown() {
 func StartWebServer(host string, httpPort int) {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/message-api", httpMessageInterface)
+	mux.HandleFunc("/api/eve/message-api", httpMessageInterface)
 	handler := cors.Default().Handler(mux)
 	server := http.Server{
 		Addr:    host + ":" + strconv.Itoa(httpPort),
